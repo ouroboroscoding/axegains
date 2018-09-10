@@ -1,0 +1,14 @@
+{
+	"__storage__": {
+		"server": "default",
+		"db": "axegains"
+	},
+	"__name__": "stats",
+	"_id": {"__type__":"uuid", "__optional__":true},
+	"_created": {"__type__":"timestamp"},
+	"user_id": {"__type__":"uuid"},
+	"throws": {
+		"__hash__":true,
+		"__type__":"uint"
+	}
+}

@@ -1,0 +1,39 @@
+{
+	"developer": {
+		"emails": ["chris@fuelforthefire.ca"]
+	},
+
+	"nosql": {
+		"hosts": {
+			"default": {
+				"host": "localhost",
+				"port": 28015
+			}
+		}
+	},
+
+	"redis": {
+		"session": {
+			"host": "localhost",
+			"port": 6379,
+			"db": 0,
+			"charset": "utf8"
+		},
+		"sync": {
+			"host": "localhost",
+			"port": 6379,
+			"db": 1,
+			"charset": "utf8"
+		}
+	},
+
+	"services": {
+		"default": {
+			"protocol": "http",
+			"domain": "localhost"
+		},
+		"specific": {
+			"rest": {"port":8082}
+		}
+	}
+}

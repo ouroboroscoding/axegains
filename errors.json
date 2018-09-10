@@ -1,0 +1,24 @@
+{
+	"1":		"Missing or invalid parameters",
+	"3":		"No such service",
+	"4":		"Service already registered",
+	"5":		"Communication error",
+	"6":		"Invalid Result",
+	"7":		"Invalid Request",
+	"8":		"Unauthorized access",
+	"9":		"No session found",
+	"10":		"Invalid method",
+	"11":		"Invalid noun",
+	"12":		"No object found with given ID",
+	"19":		"Can't updated locked item",
+	"20":		"Can't delete locked item",
+	"22":		"Revision out of sync",
+	"24":		"Failed to create object",
+	"25":		"Failed to update object",
+	"26":		"Failed to delete object",
+	"27":		"Invalid Content-Type",
+	"28":		"Body too large (most likely trying to upload a huge file)",
+
+	"100":		"User name already exists",
+	""
+}
