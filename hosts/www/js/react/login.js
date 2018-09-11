@@ -49,24 +49,22 @@
 
 		render: function () {
 			return React.createElement(
-				'section',
-				{ className: 'login', style: { "display": this.state.visible ? 'block' : 'none' } },
+				'div',
+				{ id: 'login', style: { "display": this.state.visible ? 'block' : 'none' } },
 				React.createElement(
-					'div',
-					{ className: 'container' },
+					'form',
+					{ ref: 'form', id: 'signin-form', action: '/signin', onSubmit: this.submit },
+					React.createElement('input', { id: 'name', type: 'text', name: 'name', placeholder: 'Name', className: 'form-top' }),
+					React.createElement('br', null),
+					React.createElement('input', { id: 'password', type: 'password', name: 'passwd', placeholder: 'Password', className: 'form-bottom' }),
+					React.createElement('br', null),
 					React.createElement(
 						'div',
-						{ className: 'col-md-10 col-md-offset-1' },
+						null,
 						React.createElement(
-							'form',
-							{ ref: 'form', id: 'signin-form', action: '/signin', onSubmit: this.submit },
-							React.createElement('input', { id: 'name', type: 'text', name: 'name', placeholder: 'Name', className: 'form-top' }),
-							React.createElement('input', { id: 'password', type: 'password', name: 'passwd', placeholder: 'Password', className: 'form-bottom' }),
-							React.createElement(
-								'button',
-								{ type: 'submit', className: 'button' },
-								'Sign In'
-							)
+							'button',
+							{ type: 'submit', className: 'button' },
+							'Sign In'
 						)
 					)
 				)

@@ -50,17 +50,15 @@
 
 		render: function() {
 			return (
-				<section className="login" style={{"display": (this.state.visible ? 'block':'none')}}>
-					<div className="container">
-						<div className="col-md-10 col-md-offset-1">
-							<form ref="form" id="signin-form" action="/signin" onSubmit={this.submit}>
-								<input id="name" type="text" name="name" placeholder="Name" className="form-top" />
-								<input id="password" type="password" name="passwd" placeholder="Password" className="form-bottom" />
-								<button type="submit" className="button">Sign In</button>
-							</form>
+				<div id="login" style={{"display": (this.state.visible ? 'block':'none')}}>
+					<form ref="form" id="signin-form" action="/signin" onSubmit={this.submit}>
+						<input id="name" type="text" name="name" placeholder="Name" className="form-top" /><br />
+						<input id="password" type="password" name="passwd" placeholder="Password" className="form-bottom" /><br />
+						<div>
+							<button type="submit" className="button">Sign In</button>
 						</div>
-					</div>
-				</section>
+					</form>
+				</div>
 			)
 		},
 
