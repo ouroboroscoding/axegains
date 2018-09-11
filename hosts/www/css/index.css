@@ -1,0 +1,15 @@
+header {
+	text-align: center;
+}
+
+header h1 {
+	margin: 1px;
+}
+
+header p {
+	margin: 1px;
+}
+
+section#main {
+	text-align: center;
+}

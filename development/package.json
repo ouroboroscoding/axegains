@@ -7,7 +7,7 @@
     "babel-core": "*",
     "babel-preset-react": "*",
     "grunt": "*",
-    "grunt-babel": "*",
+    "grunt-babel": "7.0.0",
     "grunt-contrib-watch": "*",
     "grunt-newer": "*",
     "grunt-sass": "*",

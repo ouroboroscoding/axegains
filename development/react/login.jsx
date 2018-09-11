@@ -21,7 +21,7 @@
 	}
 
 	// Add the login component to the APP
-	App.Components.Login = React.createClass({
+	APP.Components.Login = React.createClass({
 		componentDidMount :function(){
 
 		},
@@ -53,7 +53,6 @@
 				<section className="login" style={{"display": (this.state.visible ? 'block':'none')}}>
 					<div className="container">
 						<div className="col-md-10 col-md-offset-1">
-							<h1>Welcome to AxeGains {this.props.page}</span></h1>
 							<form ref="form" id="signin-form" action="/signin" onSubmit={this.submit}>
 								<input id="name" type="text" name="name" placeholder="Name" className="form-top" />
 								<input id="password" type="password" name="passwd" placeholder="Password" className="form-bottom" />

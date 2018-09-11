@@ -10,7 +10,7 @@ $(function() {
 
 	// Render the SessionComponent
 	ReactDOM.render(
-		React.createElement(App.Components.Session, {}),
+		React.createElement(APP.Components.Session, {}),
 		document.getElementById('react-session')
 	);
 

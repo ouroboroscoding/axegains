@@ -11,7 +11,7 @@
 	}
 
 	// Add the login component to the APP
-	App.Components.Session = React.createClass({
+	APP.Components.Session = React.createClass({
 		close: function() {
 			this.state.visible = false;
 			this.setState(this.state);
@@ -52,25 +52,29 @@
 			var self = this;
 			return (
 				<div id="session" style={{"display": (this.state.visible ? 'block':'none')}}>
-					<input type="button" onClick={this.new} value="New Session" />
 					{this.state.values !== false ?
-						<input type="button" onClick={this.reset} value="Reset Session" />
-						<input type="button" onClick={this.store} value="Store Session" />
-						<input type="button" onClick={this.throw} data-value="d" value="Drop" />
-						<input type="button" onClick={this.throw} data-value="0" value="Zero" />
-						<input type="button" onClick={this.throw} data-value="1" value="One" />
-						<input type="button" onClick={this.throw} data-value="3" value="Three" />
-						<input type="button" onClick={this.throw} data-value="5" value="Bullseye" />
-						<input type="button" onClick={this.throw} data-value="7" value="Clutch" />
-						<input type="button" onClick={this.throw} data-value="cd" value="Clutch Drop" />
-						<input type="button" onClick={this.throw} data-value="c0" value="Clutch Miss" />
-
+						<div id="session-buttons">
+							<input type="button" onClick={this.reset} value="Reset Session" />
+							<input type="button" onClick={this.store} value="Store Session" />
+							<input type="button" onClick={this.throw} data-value="d" value="Drop" />
+							<input type="button" onClick={this.throw} data-value="0" value="Zero" />
+							<input type="button" onClick={this.throw} data-value="1" value="One" />
+							<input type="button" onClick={this.throw} data-value="3" value="Three" />
+							<input type="button" onClick={this.throw} data-value="5" value="Bullseye" />
+							<input type="button" onClick={this.throw} data-value="7" value="Clutch" />
+							<input type="button" onClick={this.throw} data-value="cd" value="Clutch Drop" />
+							<input type="button" onClick={this.throw} data-value="c0" value="Clutch Miss" />
+						</div>
 					:
-
-						<input type="button" onClick={this.new} value="New Session" />
+						<div id="session-buttons">
+							<input type="button" onClick={this.new} value="New Session" />
+						</div>
 					}
 
 				</div>
 			);
 		}
 	});
+
+//Call the closure with this
+}).call(this);
