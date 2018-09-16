@@ -33,7 +33,7 @@ _moSessionTree = Tree.fromFile('definitions/session.json')
 _mdSessionConf = Document.generateConfig(_moSessionTree)
 
 # Stats structure and config
-_moStatsTree = Tree.fromFile('definitions/session.json')
+_moStatsTree = Tree.fromFile('definitions/stats.json')
 _mdStatsConf = Document.generateConfig(_moStatsTree)
 
 # User class

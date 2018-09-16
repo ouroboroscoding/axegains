@@ -130,4 +130,23 @@ class Rest(Services.Service):
 		Returns:
 			bool
 		"""
-		return True
+
+		# Try to create the database
+		if not Storage.db_create('axegains', 'default'):
+			print_error('Could not create `axegains` database on "default" server')
+			return False
+
+		# Call the User class' tableCreate method
+		if not User.tableCreate():
+			print_error('Could not create `%s` table in `axegains`' % User.tableName())
+			return False
+
+		# Call the Session class' tableCreate method
+		if not Session.tableCreate():
+			print_error('Could not create `%s` table in `axegains`' % Session.tableName())
+			return False
+
+		# Call the Stats class' tableCreate method
+		if not Stats.tableCreate():
+			print_error('Could not create `%s` table in `axegains`' % Stats.tableName())
+			return False

@@ -42,11 +42,11 @@ apt-get -qq install python2.7 python2.7-dev
 # Install pip and necessary Python modules including virtualenvs
 echo -e "${G}Installing pip and setting up the virtualenvs...${R}"
 apt-get -qq install python-pip
-pip -q install --upgrade pip
-pip -q install virtualenv
+/usr/bin/pip -q install --upgrade pip
+/usr/local/bin/pip -q install virtualenv
 mkdir /root/venvs
 mkdir /root/venvs/axegains
-virtualenv -p /usr/bin/python2 /root/venvs/axegains
+/usr/local/bin/virtualenv -p /usr/bin/python2 /root/venvs/axegains
 /root/venvs/axegains/bin/pip install -r /axegains/install/requirements.txt
 
 # Install supervisor
@@ -69,6 +69,10 @@ npm install -g grunt-cli
 echo -e "${G}Creating directories and copying configuration files...${R}"
 mkdir /var/log/axegains
 cp -R /axegains/install/devops/* /
+
+# Restart RethinkDB
+echo -e "${G}Restarting RethinkDB Server...${R}"
+service rethinkdb restart
 
 # Setup Redis configs
 echo -e "${G}Setting up Redis configurations...${R}"
@@ -94,6 +98,11 @@ supervisorctl reread && supervisorctl update
 # Restart NGINX
 echo -e "${G}Restarting NGINX Server...${R}"
 service nginx restart
+
+# Install app itself
+echo -e "${G}Installing AxeGains...${R}"
+cd /axegains
+/root/venvs/axegains/bin/python -m install.install
 
 # Let the user know we're done
 echo -e "${G}Done setting up the server...${R}"
