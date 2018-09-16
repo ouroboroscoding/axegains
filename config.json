@@ -33,7 +33,8 @@
 			"domain": "localhost"
 		},
 		"specific": {
-			"rest": {"port":8082}
+			"rest": {"port":8002},
+			"websocket": {"port": 8001}
 		}
 	}
 }

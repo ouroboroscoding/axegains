@@ -10,6 +10,6 @@
 	"throws": {
 		"__array__":"duplicate",
 		"__type__":"string",
-		"__options__":["d","0","1","3","5","7","cd","c0",]
+		"__options__":["D","0","1","3","5","7","cD","c0"]
 	}
 }

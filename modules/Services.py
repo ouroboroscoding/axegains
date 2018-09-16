@@ -130,7 +130,7 @@ def __request(name, action, uri, data):
 		raise ServiceException(5, name)
 
 # Create function
-def create(name, uri, data, session=None):
+def create(name, uri, data):
 	"""Create
 
 	Make a POST request to an API service
@@ -139,15 +139,14 @@ def create(name, uri, data, session=None):
 		name (str): The name of the service we are creating on
 		uri (str): The uri representing the object to create
 		data (mixed): The data to send with the request
-		session (Session): Optional Session associated with the request
 
 	Return:
 		Result
 	"""
-	return __request(name, 'create', uri, data, session)
+	return __request(name, 'create', uri, data)
 
 # Delete function
-def delete(name, uri, data, session=None):
+def delete(name, uri, data):
 	"""Delete
 
 	Make a DELETE request to an API service
@@ -156,12 +155,11 @@ def delete(name, uri, data, session=None):
 		name (str): The name of the service we are deleting from
 		uri (str): The uri representing the object to delete
 		data (mixed): The data to send with the request
-		session (Session): Optional Session associated with the request
 
 	Return:
 		Result
 	"""
-	return __request(name, 'delete', uri, data, session)
+	return __request(name, 'delete', uri, data)
 
 # Read function
 def read(name, uri, data, session=None):
@@ -173,12 +171,11 @@ def read(name, uri, data, session=None):
 		name (str): The name of the service we are reading from
 		uri (str): The uri representing the object to read
 		data (mixed): The data to send with the request
-		session (Session): Optional Session associated with the request
 
 	Return:
 		Result
 	"""
-	return __request(name, 'read', uri, data, session)
+	return __request(name, 'read', uri, data)
 
 # Update function
 def update(name, uri, data, session=None):
@@ -190,12 +187,11 @@ def update(name, uri, data, session=None):
 		name (str): The name of the service we are update
 		uri (str): The uri representing the object to update
 		data (mixed): The data to send with the request
-		session (Session): Optional Session associated with the request
 
 	Return:
 		Result
 	"""
-	return __request(name, 'update', uri, data, session)
+	return __request(name, 'update', uri, data)
 
 # Register function
 def register(services, pathinfo=None):
@@ -565,7 +561,7 @@ class Service(object):
 			return ResultError((11, 'POST %s' % uri))
 
 		# Call the method
-		f(data)
+		return f(data)
 
 	# delete method
 	def delete(self, session, uri, data):
@@ -595,7 +591,7 @@ class Service(object):
 			return ResultError((11, 'DELETE %s' % uri))
 
 		# Call the method
-		f(data)
+		return f(data)
 
 	# generateInternalKey classmethod
 	@classmethod
@@ -695,7 +691,7 @@ class Service(object):
 			return ResultError((11, 'GET %s' % uri))
 
 		# Call the method
-		f(data)
+		return f(data)
 
 	# update method
 	def update(self, session, uri, data):
@@ -726,7 +722,7 @@ class Service(object):
 			return ResultError((11, 'PUT %s' % uri))
 
 		# Call the method
-		f(data)
+		return f(data)
 
 	@staticmethod
 	def uriToMethod(uri, postfix=''):
@@ -746,7 +742,7 @@ class Service(object):
 		l = len(uri)					# Get the length of the uri
 		i = 0							# Init the index
 		while i < l:					# While we are going through the uri
-			if(uri[i] == '/'):			# 	If we get a /
+			if(uri[i] in ['/', '_']):	# 	If we get a /
 				i += 1					# 		Increment the index
 				ret += uri[i].upper()	# 		Add the next character as an uppercase one
 			else:						#	Else

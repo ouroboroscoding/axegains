@@ -19,7 +19,8 @@ import os
 import platform
 
 # Import project modules
-from shared import Config, Session, Storage
+from modules import Config, Session, Storage
+from modules.REST import PathInfo
 from modules.Services import register, verbose
 from modules.WebServer import WebServer, M
 
@@ -34,6 +35,8 @@ sCustomConfig = 'config.%s.json' % platform.node()
 if os.path.isfile(sCustomConfig):
 	Config.merge(sCustomConfig)
 
+print(os.environ)
+
 # If verbose mode is requested
 if 'LOGLEVEL' in os.environ and os.environ['LOGLEVEL'] == 'verbose':
 	verbose()
@@ -41,6 +44,9 @@ if 'LOGLEVEL' in os.environ and os.environ['LOGLEVEL'] == 'verbose':
 # Add the default DB and prefix
 Storage.server('default', Config.get(('nosql','hosts','default')))
 Storage.globalPrefix(Config.get(('nosql', 'db_prefix'), ''))
+
+# Init the Sessions
+Session.init(Config.get(('redis', 'sync')))
 
 # Create a PathInfo instance
 path_info = PathInfo(Config.get(('services')))
@@ -57,10 +63,10 @@ _workers = 'API_WORKERS' in os.environ and os.environ['API_WORKERS'] or 2
 
 # Setup and start the WebServer
 WebServer({
-	"/login": {"service":"rest", "methods": M.CREATE},
-	"/signup": {"service":"rest", "methods": M.CREATE},
-	"/signout": {"service":"rest", "methods": M.CREATE},
-	"/user": {"service":"rest", "methods": M.READ | M.UPDATE},
-	"/session": {"service":"rest", "methods": M.CREATE | M.READ},
-	"/stats": {"service":"rest", "methods": M.READ}
+	"/rest/signin": {"service":"rest", "methods": M.CREATE, "noun": "signin"},
+	"/rest/signout": {"service":"rest", "methods": M.CREATE, "noun": "signout"},
+	"/rest/signup": {"service":"rest", "methods": M.CREATE, "noun": "signup"},
+	"/rest/user": {"service":"rest", "methods": M.READ | M.UPDATE, "noun": "user"},
+	"/rest/session": {"service":"rest", "methods": M.CREATE | M.READ, "noun": "session"},
+	"/rest/stats": {"service":"rest", "methods": M.READ, "noun": "stats"}
 }).run(host=_host, port=_port, server="gunicorn", workers=_workers)

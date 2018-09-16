@@ -112,7 +112,7 @@
 		// Asynchronous Javascript and JSON
 		"ajaj":	function(url, data, callback) {
 
-			// Get the params type
+			/*// Get the params type
 			var dtype = typeof data;
 
 			// if it's undefined
@@ -138,18 +138,20 @@
 
 				// Add the ajax param
 				data._ajaj_ = 'x';
-			}
+			}*/
 
 			// Call the jquery ajax method
 			$.ajax({
 				"beforeSend": function(xhr, settings) {
 					xhr._url = url;
+					xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
 				},
-				"data": data,
+				"data": JSON.stringify(data),
 				"method": "post",
+				"processData": false,
 				"success": processAjaj(callback),
 				"url": url
-			})
+			});
 		},
 
 		"callback": function(special, callback) {
@@ -457,38 +459,6 @@
 
 			// Return the socket
 			return oSock;
-		},
-
-		"showError" : function (message) {
-
-			//Log the error to console
-			console.error('error', message);
-
-			//Show an error message on the UI
-			$('.message.error').text(message).addClass('active');
-
-			//if success message actually exists
-			if ($('.message.error').length > 0) {
-
-				//scroll to error message
-				$('.message.error').get(0).scrollIntoView();
-			}
-		},
-
-		"showSuccess" : function (message) {
-
-			//Log the error to console
-			console.log('success', message);
-
-			//Show an error message on the UI
-			$('.message.success').text(message).addClass('active');
-
-			//if success message actually exists
-			if ($('message.success').length > 0) {
-
-				//scroll to success message
-				$('message.success').get(0).scrollIntoView();
-			}
 		},
 
 		"hideError" : function (message) {

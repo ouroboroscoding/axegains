@@ -123,34 +123,15 @@ class WebRoute(object):
 			if dData == None:
 				return str(ResultError((1, 'empty')))
 
-		# If a session is required
-		if self.session:
-
-			# Check for an existing authorization token
-			if 'Authorization' not in breq.headers:
-				bres.status	= 401
-				return str(ResultError(8))
-
-			# Get the session from the Authorization token
-			oSession	= Session.start(breq.headers['Authorization'])
-
-			# If the session is not found
-			if not oSession:
-				bres.status	= 401
-				return str(ResultError(101))
-
-		else:
-			oSession	= None
-
 		# Call the appropriate API method based on the HTTP/request method
 		if breq.method == 'DELETE':
-			oResult	= delete(self.service, self.noun, dData, oSession)
+			oResult	= delete(self.service, self.noun, dData)
 		elif breq.method == 'GET':
-			oResult	= read(self.service, self.noun, dData, oSession)
+			oResult	= read(self.service, self.noun, dData)
 		elif breq.method == 'POST':
-			oResult	= create(self.service, self.noun, dData, oSession)
+			oResult	= create(self.service, self.noun, dData)
 		elif breq.method == 'PUT':
-			oResult	= update(self.service, self.noun, dData, oSession)
+			oResult	= update(self.service, self.noun, dData)
 
 		# Return the result as a string
 		return str(oResult)

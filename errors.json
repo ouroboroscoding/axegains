@@ -20,5 +20,5 @@
 	"28":		"Body too large (most likely trying to upload a huge file)",
 
 	"100":		"User name already exists",
-	""
+	"101":		"Email invalid"
 }

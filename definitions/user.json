@@ -1,7 +1,10 @@
 {
 	"__storage__": {
 		"server": "default",
-		"db": "axegains"
+		"db": "axegains",
+		"indexes": {
+			"name":null
+		}
 	},
 	"__name__": "user",
 	"_id": {"__type__":"uuid", "__optional__":true},

@@ -432,7 +432,7 @@ class Document(SharedDocument.BaseDocument):
 			"indexes": {},
 			"primary": "_id",
 			"revisions": False
-		}, tree.special('rethinkdb', default={}))
+		}, tree.special('storage', default={}))
 
 		# If there's no name throw an exception
 		if not tree._name:

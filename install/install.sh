@@ -14,6 +14,11 @@ fi
 
 # Update and upgrade apt-get
 echo -e "${G}Updating package repository...${R}"
+#	Redis
+apt-add-repository -y ppa:chris-lea/redis-server
+#	RethinkDB
+source /etc/lsb-release && echo "deb http://download.rethinkdb.com/apt $DISTRIB_CODENAME main" | tee /etc/apt/sources.list.d/rethinkdb.list
+wget -qO- http://download.rethinkdb.com/apt/pubkey.gpg | apt-key add -
 apt-get -qq update
 
 # Install development libraries
@@ -21,6 +26,14 @@ echo -e "${G}Installing Shared Libraries...${R}"
 apt-get -qq install gcc make
 apt-get -qq install build-essential libssl-dev openssl software-properties-common xorg
 apt-get -qq install libjpeg8 libjpeg62-dev libfreetype6 libfreetype6-dev
+
+# Install Redis
+echo -e "${G}Installing Redis Server...${R}"
+apt-get -qq install redis-server
+
+# Install RethinkDB
+echo -e "${G}Installing RethinkDB Server...${R}"
+apt-get -qq install rethinkdb
 
 # Install Python 2.7
 echo -e "${G}Installing Python 2.7...${R}"
@@ -56,6 +69,18 @@ npm install -g grunt-cli
 echo -e "${G}Creating directories and copying configuration files...${R}"
 mkdir /var/log/axegains
 cp -R /axegains/install/devops/* /
+
+# Setup Redis configs
+echo -e "${G}Setting up Redis configurations...${R}"
+
+#	Remove the default server
+systemctl disable redis-server
+service redis-server stop
+rm -f /etc/init.d/redis-server
+
+#	Install the session server
+update-rc.d redis-session defaults
+service redis-session start
 
 # Install aliases, environment, and creating paths
 echo -e "${G}Install aliases, environment, and creating paths...${R}"

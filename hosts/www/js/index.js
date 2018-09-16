@@ -4,8 +4,8 @@ $(function() {
 
 	// Render the LoginComponent
 	ReactDOM.render(
-		React.createElement(APP.Components.Login, {}),
-		document.getElementById('react-login')
+		React.createElement(APP.Components.Signin, {}),
+		document.getElementById('react-signin')
 	);
 
 	// Render the SessionComponent
@@ -15,7 +15,7 @@ $(function() {
 	);
 
 	// If we're logged in
-	if(APP.login) {
+	if(APP.session) {
 		APP.trigger('signin');
 	} else {
 		APP.trigger('signout');

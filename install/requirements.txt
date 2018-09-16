@@ -1,7 +1,8 @@
 boto3==1.4.7
 botocore==1.7.9
 bottle==0.12.8
-format-oc==1.3.3cd
+enum34==1.1.6
+format-oc==1.3.4
 futures==3.1.1
 gevent==1.2.2
 gevent-websocket==0.10.1
