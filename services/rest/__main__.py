@@ -35,8 +35,6 @@ sCustomConfig = 'config.%s.json' % platform.node()
 if os.path.isfile(sCustomConfig):
 	Config.merge(sCustomConfig)
 
-print(os.environ)
-
 # If verbose mode is requested
 if 'LOGLEVEL' in os.environ and os.environ['LOGLEVEL'] == 'verbose':
 	verbose()
@@ -67,6 +65,6 @@ WebServer({
 	"/rest/signout": {"service":"rest", "methods": M.CREATE, "noun": "signout"},
 	"/rest/signup": {"service":"rest", "methods": M.CREATE, "noun": "signup"},
 	"/rest/user": {"service":"rest", "methods": M.READ | M.UPDATE, "noun": "user"},
-	"/rest/session": {"service":"rest", "methods": M.CREATE | M.READ, "noun": "session"},
+	"/rest/sitting": {"service":"rest", "methods": M.CREATE | M.READ, "noun": "sitting"},
 	"/rest/stats": {"service":"rest", "methods": M.READ, "noun": "stats"}
 }).run(host=_host, port=_port, server="gunicorn", workers=_workers)

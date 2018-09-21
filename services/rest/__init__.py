@@ -16,17 +16,19 @@ __created__		= "2018-09-09"
 
 # Import python modules
 from base64 import b64decode, b64encode
+from email.utils import parseaddr as parseEmail
 import mimetypes
 from time import time
 
 # Include shared modules
-from modules import Config, Services, Session, SSS, Storage, Strings
+from modules import Config, Services, SSS, Storage, Strings
 import modules.Dictionaries as Dict
 from modules.OS import print_error
 from modules.Services import Result, ResultError, ServiceException
+from modules.Session import Session
 
 # Include local modules
-from .Structures import Session, Stats, User
+from .Structures import Sitting, Stats, User
 
 class Rest(Services.Service):
 	"""Rest Service class
@@ -73,7 +75,7 @@ class Rest(Services.Service):
 		# See if the user already exists
 		dUser = User.get(data['user']['name'], index='name')
 		if dUser:
-			return ResultErrro((100, data['name']))
+			return ResultError((100, data['user']['name']))
 
 		# If the password is not already encrypted
 		if len(data['user']['passwd']) != 72 or not Strings.isHex(data['user']['passwd']):
@@ -90,7 +92,7 @@ class Rest(Services.Service):
 		if 'email' in data['user']:
 
 			# Validate the e-mail format
-			tRes = parseEmail(data['email'])
+			tRes = parseEmail(data['user']['email'])
 
 			# If the address is not valid
 			if tRes[0] == '' and tRes[1] == '':

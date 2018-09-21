@@ -14,11 +14,16 @@ __maintainer__	= "Chris Nasr"
 __email__		= "chris@fuelforthefire.ca"
 __created__		= "2018-09-09"
 
+# Import python modules
+from hashlib import sha1
+from md5 import md5
+
 # Import pip modules
 from FormatOC import Tree
 import rethinkdb as r
 
 # Import local modules
+from modules import Strings
 from modules.Storage import Document
 
 # Valid mime types
@@ -29,8 +34,8 @@ _moUserTree = Tree.fromFile('definitions/user.json')
 _mdUserConf = Document.generateConfig(_moUserTree)
 
 # Session structure and config
-_moSessionTree = Tree.fromFile('definitions/session.json')
-_mdSessionConf = Document.generateConfig(_moSessionTree)
+_moSittingTree = Tree.fromFile('definitions/sitting.json')
+_mdSittingConf = Document.generateConfig(_moSittingTree)
 
 # Stats structure and config
 _moStatsTree = Tree.fromFile('definitions/stats.json')
@@ -114,11 +119,11 @@ class User(Document):
 			"conf": _mdUserConf
 		}
 
-# Session class
-class Session(Document):
-	"""Session
+# Sitting class
+class Sitting(Document):
+	"""Sitting
 
-	Represents a single session for a user
+	Represents a single sitting for a user
 
 	Extends: modules.Storage.Document
 	"""
@@ -135,8 +140,8 @@ class Session(Document):
 			dict
 		"""
 		return {
-			"tree": _moSessionTree,
-			"conf": _mdSessionConf
+			"tree": _moSittingTree,
+			"conf": _mdSittingConf
 		}
 
 # Stats class
