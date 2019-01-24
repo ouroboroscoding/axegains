@@ -12,6 +12,5 @@ ExecStart=-/sbin/agetty --autologin root --noclear %I 38400 linux" >> /etc/syste
 # Allow root ssh access
 passwd root
 passwd -u root
-sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 service ssh restart
