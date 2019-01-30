@@ -73,7 +73,7 @@ if [[ $MAIN != 0 ]]; then
 	pip3 -q install virtualenv &>> $LOGFILE
 	mkdir -p /root/venvs/axegains
 	virtualenv -p /usr/bin/python3 /root/venvs/axegains &>> $LOGFILE
-	/root/venvs/axegains/bin/pip install -r /axegains/microservices/requirements.txt &>> $LOGFILE
+	/root/venvs/axegains/bin/pip install -r /axegains/services/requirements.txt &>> $LOGFILE
 
 	# Install nginx
 	echo -e "${G}Installing NGINX...${R}"
@@ -100,8 +100,8 @@ if [[ $MAIN != 0 ]]; then
 
 	# Installing Microservices
 	echo -e "${G}Installing Microservices...${R}"
-	cd /axegains/microservices
-	/root/venvs/axegains/bin/python install.py
+	cd /axegains/services
+	#/root/venvs/axegains/bin/python install.py
 
 fi
 
@@ -123,9 +123,8 @@ if [[ $DEVELOP != 0 ]]; then
 	sed -i 's/environment=AXE_VERBOSE=0/environment=AXE_VERBOSE=1/' /etc/supervisor/supervisord.conf
 
 	# Change nginx info
-	sed -i 's/listen 81;/listen 80;/' /etc/nginx/sites-available/*.conf
-	sed -i 's/#listen 443 ssl;/listen 443 ssl;/' /etc/nginx/sites-available/*.conf
 	sed -i 's/axegains.com/axegains.local/g' /etc/nginx/sites-available/*.conf
 	sed -i 's/axegains\\\.com/axegains\\\.local/' /etc/nginx/sites-available/static.conf
+	sed -i 's/axegains.com/axegains.local/g' /etc/nginx/ssl_params
 
 fi
