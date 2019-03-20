@@ -1,7 +1,13 @@
+// External modules
 var React = require('react');
 
+// Generic modules
+var Events = require('../../generic/events.js');
+
+// React components
 var Board = require('./board.jsx');
 
+// Practice Component
 class Practice extends React.Component {
 
 	constructor(props) {
@@ -13,20 +19,7 @@ class Practice extends React.Component {
 		this.state = {
 			"mode": null,
 			/*"points": [],*/
-			"points": [
-				[false, 5], [false, 5], [false, 5], [false, 5], [true, 7],
-				[false, 5], [false, 5], [false, 5], [false, 5], [true, 7],
-				[false, 5], [false, 5], [false, 5], [false, 5], [true, 7],
-				[false, 5], [false, 5], [false, 5], [false, 5], [true, 7],
-				[false, 5], [false, 5], [false, 5], [false, 5], [true, 7],
-				[false, 5], [false, 5], [false, 5], [false, 5], [true, 7],
-				[false, 5], [false, 5], [false, 5], [false, 5], [true, 7],
-				[false, 5], [false, 5], [false, 5], [false, 5], [true, 7],
-				[false, 5], [false, 5], [false, 5], [false, 5], [true, 7],
-				[false, 5], [false, 5], [false, 5], [false, 5], [true, 7],
-				[false, 5], [false, 5], [false, 5], [false, 5], [true, 7],
-				[false, 5], [false, 5], [false, 5], [false, 5], [true, 7]
-			],
+			"points": [],
 			"showPoints": false
 		};
 
@@ -35,6 +28,20 @@ class Practice extends React.Component {
 		this.points = this.points.bind(this);
 		this.pointsHide = this.pointsHide.bind(this);
 		this.pointsShow = this.pointsShow.bind(this);
+		this.signin = this.signin.bind(this);
+		this.signout = this.signout.bind(this);
+	}
+
+	componentWillMount() {
+		// Track any signin/signout events
+		Events.add('signin', this.signin);
+		Events.add('signout', this.signout);
+	}
+
+	componentWillUnmount() {
+		// Track any signin/signout events
+		Events.remove('signin', this.signin);
+		Events.remove('signout', this.signout);
 	}
 
 	modeChange(ev) {
@@ -59,14 +66,16 @@ class Practice extends React.Component {
 		return (
 			<div className="practice">
 				<Board ref="board" clutchMode="select" onPoints={self.points} />
-				<div className="points">
-					{self.state.points.length > 29 &&
-						<span key={-1} onClick={self.pointsShow}>...</span>
-					}
-					{self.state.points.slice(-29).map(function(p, i) {
-						return <span key={i} className={p[0] ? 'clutch':''}>{p[1]}</span>
-					})}
-				</div>
+				{self.state.points.length > 0 &&
+					<div className="points">
+						{self.state.points.length > 29 &&
+							<span key={-1} onClick={self.pointsShow}>...</span>
+						}
+						{self.state.points.slice(-29).map(function(p, i) {
+							return <span key={i} className={p[0] ? 'clutch':''}>{p[1]}</span>
+						})}
+					</div>
+				}
 				{self.state.showPoints &&
 					<div className="allPoints">
 						<div className="header">
@@ -93,6 +102,14 @@ class Practice extends React.Component {
 		this.setState({
 			"points": []
 		})
+	}
+
+	signin() {
+		console.log('signed in');
+	}
+
+	signout() {
+		console.log('signed out');
 	}
 }
 

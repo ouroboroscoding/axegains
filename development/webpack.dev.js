@@ -4,7 +4,7 @@ var webpack = require('webpack');
 module.exports = {
   devtool: 'inline-source-map',
   entry: {
-    "components": "./react/index.js"
+    "site": "./webpack/index.js"
   },
   mode: "development",
   module: {
@@ -20,9 +20,7 @@ module.exports = {
   },
   output: {
     filename: "../hosts/static/js/[name].dev.js",
-    path: path.resolve(__dirname, '.'),
-    libraryTarget: "var",
-    library: "Components"
+    path: path.resolve(__dirname, '.')
   },
   watch: true
 };

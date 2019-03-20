@@ -186,3 +186,8 @@ input, select {
   .natf .practice .points span.clutch, .natf .practice .allPoints .content span.clutch {
     background-color: green;
     color: white; }
+
+.natf .practice .points {
+  border: 2px solid black;
+  margin-top: 10px;
+  width: 304px; }
