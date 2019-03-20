@@ -7,18 +7,21 @@ class Board extends React.Component {
 		// Call the parent constructor
 		super(props);
 
-		// If there's no
+		// If there's no onPoints prop
+		if(!props.onPoints) {
+			throw 'must specify onPoints property for NATF Board';
+		}
 
 		// Initialise the state
 		this.state = {
-			"clutch": props.clutch,
+			"clutchMode": props.clutchMode,
 			"selected": false
 		};
 
 		// Bind methods
 		this.clutchClick = this.clutchClick.bind(this);
 		this.dropClick = this.dropClick.bind(this);
-		this.scoreClick = this.scoreClick.bind(this);
+		this.pointClick = this.pointClick.bind(this);
 	}
 
 	clutchClick(ev) {
@@ -27,7 +30,7 @@ class Board extends React.Component {
 		ev.stopPropagation();
 
 		// If clutches are not allowed
-		if(this.state.clutch == 'no') {
+		if(this.state.clutchMode == 'no') {
 
 			// Store the current target
 			var target = ev.currentTarget;
@@ -41,7 +44,7 @@ class Board extends React.Component {
 			// And set a timeout to turn it off
 			setTimeout(function() {
 				target.className = className;
-			}, 2000);
+			}, 1000);
 
 			// Don't count the click
 			return;
@@ -50,7 +53,7 @@ class Board extends React.Component {
 		else {
 
 			if(this.state.selected) {
-				this.props.onPoint(7);
+				this.props.onPoints(true, 7);
 				this.resetClutch();
 			} else {
 				this.setState({"selected": true});
@@ -67,7 +70,7 @@ class Board extends React.Component {
 		var target = ev.currentTarget;
 
 		// Send out the drop
-		this.props.onPoint('d');
+		this.props.onPoints(this.state.selected, 'd');
 
 		// De-select the clutch if there's one selected
 		if(this.state.selected) {
@@ -80,18 +83,18 @@ class Board extends React.Component {
 		// And set a timeout to turn it off
 		setTimeout(function() {
 			target.className = 'drop';
-		}, 2000);
+		}, 1000);
 	}
 
 	resetClutch() {
 
 		// If the mode is selected
-		if(this.state.clutch == 'select') {
+		if(this.state.clutchMode == 'select') {
 			this.setState({"selected": false});
 		}
 	}
 
-	scoreClick(ev) {
+	pointClick(ev) {
 
 		// Stop propagation no matter what
 		ev.stopPropagation();
@@ -109,10 +112,10 @@ class Board extends React.Component {
 
 		// If there's a clutch selected
 		if(this.state.selected) {
-			this.props.onPoint(0);
+			this.props.onPoints(true, 0);
 			this.resetClutch();
 		} else {
-			this.props.onPoint(target.dataset.value);
+			this.props.onPoints(false, target.dataset.value);
 		}
 
 		// Turn on the active flag
@@ -121,23 +124,40 @@ class Board extends React.Component {
 		// And set a timeout to turn it off
 		setTimeout(function() {
 			target.className = classNames[0];
-		}, 2000);
+		}, 1000);
 	}
 
 	render() {
 		var self = this;
 		return (
-			<div className="board" data-value={0} onClick={self.scoreClick}>
+			<div className="board" data-value={0} onClick={self.pointClick}>
 				<div className={"clutch left" + (self.state.selected ? ' selected' : '')} onClick={self.clutchClick}></div>
 				<div className="drop" onClick={self.dropClick}>DROP</div>
 				<div className={"clutch right" + (self.state.selected ? ' selected' : '')} onClick={self.clutchClick}></div>
-				<div className="one" data-value={1} onClick={self.scoreClick}>
-					<div className="three" data-value={3} onClick={self.scoreClick}>
-						<div className="five" data-value={5} onClick={self.scoreClick}></div>
+				<div className="one" data-value={1} onClick={self.pointClick}>
+					<div className="three" data-value={3} onClick={self.pointClick}>
+						<div className="five" data-value={5} onClick={self.pointClick}></div>
 					</div>
 				</div>
 			</div>
 		);
+	}
+
+	set clutchMode(mode) {
+
+		// Figure out the selected value
+		var selected = null;
+		switch(mode) {
+			case 'none': selected = false; break;
+			case 'expected': selected = true; break;
+			case 'select': selected = this.state.selected; break;
+		}
+
+		// Set the new state
+		this.setState({
+			"clutchMode": mode,
+			"selected": selected
+		});
 	}
 }
 
