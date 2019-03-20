@@ -1,9 +1,15 @@
+// External
+var React = require('react');
+var ReactDOM = require('react-dom');
+
 // Components
-var Target = require('./natf/target.jsx');
+var Board = require('./natf/board.jsx');
 
 // Export
 module.exports = {
-	"natf": {
-		"target": Target
-	}
+	"NATF": {
+		"Board": Board
+	},
+	"React": React,
+	"ReactDOM": ReactDOM,
 }

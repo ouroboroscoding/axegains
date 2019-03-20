@@ -91,3 +91,71 @@ input, select {
   vertical-align: middle; }
 
 /* natf */
+.natf .board {
+  background-color: white;
+  height: 350px;
+  width: 300px; }
+  .natf .board .clutch {
+    background-color: green;
+    border: 5px solid green;
+    border-radius: 50%;
+    display: inline-block;
+    height: 40px;
+    width: 40px; }
+  .natf .board .clutch.left {
+    margin: 5px 55px 0px 20px; }
+  .natf .board .clutch.right {
+    margin: 5px 20px 0px 55px; }
+  .natf .board .clutch.selected {
+    border: 5px solid black; }
+  .natf .board .clutch.invalid {
+    background-color: red; }
+  .natf .board .drop {
+    background-color: grey;
+    border: 1px solid grey;
+    color: white;
+    display: inline-block;
+    margin-top: 5px;
+    padding: 6px 0 4px 0;
+    position: relative;
+    text-align: center;
+    width: 70px;
+    vertical-align: top; }
+  .natf .board .drop.active {
+    background-color: white;
+    border: 1px solid black;
+    color: grey; }
+  .natf .board .one {
+    background-color: white;
+    border: 5px solid blue;
+    border-radius: 50%;
+    height: 300px;
+    position: relative;
+    width: 300px; }
+  .natf .board .one.active {
+    background-color: blue; }
+  .natf .board .three {
+    background-color: white;
+    border: 5px solid red;
+    border-radius: 50%;
+    height: 68%;
+    left: 16%;
+    position: relative;
+    top: 16%;
+    width: 68%; }
+  .natf .board .three.active {
+    background-color: red; }
+  .natf .board .five {
+    background-color: white;
+    border: 5px solid black;
+    border-radius: 50%;
+    height: 46%;
+    left: 27%;
+    position: relative;
+    top: 27%;
+    width: 46%; }
+  .natf .board .five.active {
+    background-color: black; }
+
+.natf .board.active {
+  background-color: grey; }
