@@ -4,8 +4,8 @@
   "description": "Scoring site for axe throwing",
   "main": " ",
   "scripts": {
-    "components-dev": "webpack --config webpack.dev.js",
-    "components": "webpack --config webpack.prod.js",
+    "webpack-dev": "webpack --config webpack.dev.js",
+    "webpack": "webpack --config webpack.js",
     "sass": "node-sass --include-path sass sass/main.scss ../hosts/static/css/main.css",
 
     "watch-css": "nodemon -e scss -x \"npm run sass\""

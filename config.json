@@ -3,12 +3,20 @@
 		"emails": ["chris@fuelforthefire.ca"]
 	},
 
-	"nosql": {
-		"hosts": {
-			"default": {
-				"host": "localhost",
-				"port": 28015
-			}
+	"domain": {
+		"primary": "emr.local",
+		"protocol": "http"
+	},
+
+	"email": {
+		"errors": "webmaster@axegains.local",
+		"method": "queue",
+		"smtp": {
+			"host": "localhost",
+			"port": 587,
+			"tls": true,
+			"user": "noone",
+			"passwd": "nopasswd"
 		}
 	},
 
@@ -27,14 +35,32 @@
 		}
 	},
 
-	"services": {
+	"rest": {
 		"default": {
+			"domain": "localhost",
+			"host": "0.0.0.0",
+			"port": 8000,
 			"protocol": "http",
-			"domain": "localhost"
+			"workers": 2
 		},
-		"specific": {
-			"rest": {"port":8002},
-			"websocket": {"port": 8001}
+		"services": {
+			"auth": {"port":2, "workers": 5},
+			"communications": {"port":3},
+			"websocket": {"port": 1}
 		}
+	},
+
+	"rethinkdb": {
+		"hosts": {
+			"primary": {
+				"host": "localhost",
+				"port": 28015
+			}
+		},
+		"db": "axegains"
+	},
+
+	"services": {
+		"salt": null
 	}
 }

@@ -1,0 +1,9 @@
+.main {
+	left: 50%;
+	position: absolute;
+
+	.centered {
+		left: -50%;
+		position: relative;
+	}
+}

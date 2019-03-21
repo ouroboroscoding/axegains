@@ -3,13 +3,10 @@ var React = require('react');
 
 // Generic modules
 var Events = require('../generic/events.js');
+var Services = require('../generic/services.js');
 
-// Components
-var Header = require('./header.jsx');
-var NatfPractice = require('./natf/practice.jsx');
-
-// Site component
-class Site extends React.Component {
+// Header component
+class Header extends React.Component {
 
 	constructor(props) {
 
@@ -17,18 +14,19 @@ class Site extends React.Component {
 		super(props);
 
 		// Initialise the state
-		this.state = {};
+		this.state = {
+			"signedin": false
+		};
 	}
 
 	render() {
 		return (
-			<React.Fragment>
-				<Header />
-				<NatfPractice />
-			</React.Fragment>
+			<header>
+
+			</header>
 		);
 	}
 }
 
 // Export the component
-module.exports = Site;
+module.exports = Header;

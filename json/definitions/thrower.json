@@ -1,0 +1,27 @@
+{
+	"__rethinkdb__": {
+		"changes": ["creator"],
+		"db": "axegains",
+		"host": "primary",
+		"indexes": {
+			"alias": null
+		},
+		"table": "thrower"
+	},
+	"__name__": "Thrower",
+	"_id": {"__type__":"uuid", "__optional__":true},
+	"_created": {"__type__":"timestamp"},
+	"alias": {"__type__":"string", "__regex__":"^\\S{3,32}$"},
+	"passwd": {"__type__":"string", "__regex__":"^[0-9a-fA-F]{72}$"},
+	"locale":{"__type__": "string", "__regex__":"^[a-z]{2}-[A-Z]{2}$"},
+	"email": {"__type__":"string", "__optional__":true},
+	"verified": [
+		{"__type__": "bool"},
+		{"__type__": "string", "__regex__": "^[0-9a-f]{32}$"}
+	],
+	"forgot": {
+		"__optional__": true,
+		"expires": {"__type__": "timestamp"},
+		"key": {"__type__": "string", "__regex__": "^[0-9a-f]{32}$"}
+	}
+}

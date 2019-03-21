@@ -14,57 +14,50 @@ __maintainer__	= "Chris Nasr"
 __email__		= "chris@fuelforthefire.ca"
 __created__		= "2018-09-09"
 
-# Import python modules
-import os
-import platform
+# Python imports
+import os, platform
 
-# Import project modules
-from modules import Config, Session, Storage
-from modules.REST import PathInfo
-from modules.Services import register, verbose
-from modules.WebServer import WebServer, M
+# Framework imports
+from RestOC import Conf, Record_Base, Record_ReDB, REST, Services, Sesh
 
-# Import service
-from services.rest import Rest
+# App imports
+from apps.auth import Auth
 
 # Load the config
-Config.load('config.json')
+Conf.load('../config.json')
+sConfOverride = '../config.%s.json' % platform.node()
+if os.path.isfile(sConfOverride):
+	Conf.load_merge(sConfOverride)
 
-# If there's a custom config for the system
-sCustomConfig = 'config.%s.json' % platform.node()
-if os.path.isfile(sCustomConfig):
-	Config.merge(sCustomConfig)
+# Add the global prepend and primary host to rethinkdb
+Record_Base.dbPrepend(Conf.get(("rethinkdb", "prepend"), ''))
+Record_ReDB.addHost('primary', Conf.get(("rethinkdb", "hosts", "primary")))
 
-# If verbose mode is requested
-if 'LOGLEVEL' in os.environ and os.environ['LOGLEVEL'] == 'verbose':
-	verbose()
+# Init the Sesh module
+Sesh.init(Conf.get(("redis", "session")))
 
-# Add the default DB and prefix
-Storage.server('default', Config.get(('nosql','hosts','default')))
-Storage.globalPrefix(Config.get(('nosql', 'db_prefix'), ''))
+# Create the REST config instance
+oRestConf = REST.Config(Conf.get("rest"))
 
-# Init the Sessions
-Session.init(Config.get(('redis', 'sync')))
+# Set verbose mode if requested
+if 'AXE_VERBOSE' in os.environ and os.environ['AXE_VERBOSE'] == '1':
+	Services.verbose()
 
-# Create a PathInfo instance
-path_info = PathInfo(Config.get(('services')))
+# Create a list of all available services, override Auth
+dServices = {k:None for k in Conf.get(('rest', 'services'))}
+dServices['auth'] = Auth()
 
-# Register the service
-register({
-	'rest':Rest()
-}, pathinfo=path_info)
+# Register all services
+Services.register(dServices, oRestConf, Conf.get(('services', 'salt')))
 
-# Set the host, port, and number of workers
-_host = 'API_HOST' in os.environ and os.environ['API_HOST'] or '0.0.0.0'
-_port = 'API_PORT' in os.environ and os.environ['API_PORT'] or path_info['rest']['port']
-_workers = 'API_WORKERS' in os.environ and os.environ['API_WORKERS'] or 2
-
-# Setup and start the WebServer
-WebServer({
-	"/rest/signin": {"service":"rest", "methods": M.CREATE, "noun": "signin"},
-	"/rest/signout": {"service":"rest", "methods": M.CREATE, "noun": "signout"},
-	"/rest/signup": {"service":"rest", "methods": M.CREATE, "noun": "signup"},
-	"/rest/user": {"service":"rest", "methods": M.READ | M.UPDATE, "noun": "user"},
-	"/rest/sitting": {"service":"rest", "methods": M.CREATE | M.READ, "noun": "sitting"},
-	"/rest/stats": {"service":"rest", "methods": M.READ, "noun": "stats"}
-}).run(host=_host, port=_port, server="gunicorn", workers=_workers)
+# Create the HTTP server and map requests to service
+REST.Server({
+	"/signin": {"methods": REST.POST},
+	"/signout": {"methods": REST.POST, "session": True},
+	"/signup": {"methods": REST.POST},
+	"/user": {"methods": REST.READ | REST.UPDATE, "session": True}
+}, 'auth', "https?://.*\\.%s" % Conf.get(("domain","primary")).replace('.', '\\.')).run(
+	host=oRestConf['auth']['host'],
+	port=oRestConf['auth']['port'],
+	workers=oRestConf['auth']['workers']
+)

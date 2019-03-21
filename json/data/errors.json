@@ -1,0 +1,33 @@
+{
+	"_": "REST Errors",
+	"100": "Invalid data sent in request (must be valid JSON)",
+	"101": "Invalid Content-Type in request",
+	"102": "Invalid or missing Authorization header in request",
+	"103": "Request recieved invalid data",
+	"104": "Object can not be found",
+
+	"_": "Service Errors",
+	"200": "Invalid action",
+	"201": "Service returned bad status code",
+	"202": "Service returned bad content type",
+	"203": "Service unreachable",
+	"204": "Service not registered",
+	"205": "Service has no such noun",
+	"206": "Invalid internal key",
+	"207": "No profile in session",
+
+	"_": "DB Errors",
+	"300": "Failed to store record",
+	"301": "Duplicate",
+	"302": "Failed to create DB",
+	"303": "Failed to drop DB",
+	"304": "Failed to create Table",
+	"305": "Failed to drop Table",
+
+	"_": "Thrower Errors",
+	"400": "Alias already in use",
+	"401": "No such user / password invalid",
+	"402": "Password forgot key already exists",
+	"403": "Password forgot key is invalid",
+	"404": "Password isn't strong enough"
+}

@@ -90,6 +90,70 @@ input, select {
   box-sizing: border-box;
   vertical-align: middle; }
 
+/* reusable */
+.color-error {
+  color: #E24E28; }
+
+.color-success {
+  color: #4EE8B5; }
+
+.color-warning {
+  color: #E8E24C; }
+
+.modal {
+  background-color: rgba(10, 10, 10, 0.33);
+  height: 100%;
+  left: 0;
+  margin: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10; }
+  .modal .cell {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center; }
+    .modal .cell .container {
+      border: 1px solid black;
+      border-radius: 0 0 5px 5px;
+      box-shadow: 0 10px 38px 0 #111;
+      display: flex;
+      flex-direction: column;
+      max-width: 95%;
+      margin: 0;
+      overflow: hidden;
+      padding: 0;
+      position: relative; }
+      .modal .cell .container .header {
+        background-color: #2C689B;
+        color: #E8B15A;
+        margin: 0px;
+        padding: 10px;
+        text-align: center; }
+        .modal .cell .container .header span {
+          font-weight: 600;
+          text-transform: uppercase; }
+        .modal .cell .container .header i {
+          position: absolute;
+          right: 7px;
+          top: 7px; }
+      .modal .cell .container .content {
+        background-color: white;
+        border-top: 1px black solid;
+        border-bottom: 1px black solid;
+        color: #000;
+        flex-grow: 1;
+        margin: 0;
+        overflow: auto;
+        padding: 10px; }
+      .modal .cell .container .footer {
+        padding: 5px;
+        text-align: right; }
+        .modal .cell .container .footer button {
+          margin-left: 10px; }
+
 /* natf */
 .natf .board {
   background-color: white;
@@ -191,3 +255,11 @@ input, select {
   border: 2px solid black;
   margin-top: 10px;
   width: 304px; }
+
+/* site */
+.main {
+  left: 50%;
+  position: absolute; }
+  .main .centered {
+    left: -50%;
+    position: relative; }

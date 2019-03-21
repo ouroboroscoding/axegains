@@ -64,35 +64,37 @@ class Practice extends React.Component {
 	render() {
 		var self = this;
 		return (
-			<div className="practice">
-				<Board ref="board" clutchMode="select" onPoints={self.points} />
-				{self.state.points.length > 0 &&
-					<div className="points">
-						{self.state.points.length > 29 &&
-							<span key={-1} onClick={self.pointsShow}>...</span>
-						}
-						{self.state.points.slice(-29).map(function(p, i) {
-							return <span key={i} className={p[0] ? 'clutch':''}>{p[1]}</span>
-						})}
-					</div>
-				}
-				{self.state.showPoints &&
-					<div className="allPoints">
-						<div className="header">
-							<i className="fas fa-times-circle" onClick={this.pointsHide}></i>
-							<span>All points this practice</span>
-						</div>
-						<div className="content">
-							{self.state.points.map(function(p, i) {
+			<div className="natf">
+				<div className="practice">
+					<Board ref="board" clutchMode="select" onPoints={self.points} />
+					{self.state.points.length > 0 &&
+						<div className="points">
+							{self.state.points.length > 29 &&
+								<span key={-1} onClick={self.pointsShow}>...</span>
+							}
+							{self.state.points.slice(-29).map(function(p, i) {
 								return <span key={i} className={p[0] ? 'clutch':''}>{p[1]}</span>
 							})}
 						</div>
+					}
+					{self.state.showPoints &&
+						<div className="allPoints">
+							<div className="header">
+								<i className="fas fa-times-circle" onClick={this.pointsHide}></i>
+								<span>All points this practice</span>
+							</div>
+							<div className="content">
+								{self.state.points.map(function(p, i) {
+									return <span key={i} className={p[0] ? 'clutch':''}>{p[1]}</span>
+								})}
+							</div>
+						</div>
+					}
+					<div>
+						<button data-mode="select" onClick={self.modeChange}>Free</button>
+						<button data-mode="expected" onClick={self.modeChange}>Clutch</button>
+						<button data-mode="no" onClick={self.modeChange}>Target</button>
 					</div>
-				}
-				<div>
-					<button data-mode="select" onClick={self.modeChange}>Free</button>
-					<button data-mode="expected" onClick={self.modeChange}>Clutch</button>
-					<button data-mode="no" onClick={self.modeChange}>Target</button>
 				</div>
 			</div>
 		);

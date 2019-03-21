@@ -14,31 +14,34 @@ __maintainer__	= "Chris Nasr"
 __email__		= "chris@fuelforthefire.ca"
 __created__		= "2018-09-09"
 
-# Import python modules
-from base64 import b64decode, b64encode
-from email.utils import parseaddr as parseEmail
-import mimetypes
+# Python imports
+import re
 from time import time
 
-# Include shared modules
-from modules import Config, Services, SSS, Storage, Strings
-import modules.Dictionaries as Dict
-from modules.OS import print_error
-from modules.Services import Result, ResultError, ServiceException
-from modules.Session import Session
+# Framework imports
+from RestOC import Conf, DictHelper, Record_ReDB, Services, Sesh, StrHelper
 
-# Include local modules
-from .Structures import Sitting, Stats, User
+# Shared imports
+from shared import SSS
 
-class Rest(Services.Service):
-	"""Rest Service class
+# Service imports
+from .Records import Thrower
 
-	Service for Rest
+# Regex for validating email
+_emailRegex = re.compile(r"[^@\s]+@[^@\s]+\.[a-zA-Z0-9]{2,}$")
+
+class Auth(Services.Service):
+	"""Auth Service class
+
+	Service for Authorization, sign in, sign up, etc.
 
 	Extends: shared.Services.Service
 	"""
 
-	def _signinCreate(self, data):
+	_install = [Thrower]
+	"""Record types called in install"""
+
+	def signinCreate(self, data):
 		"""Signin
 
 		Signs a user into the system
@@ -51,12 +54,12 @@ class Rest(Services.Service):
 		"""
 
 		# Check arguments
-		aErrs = Dict.validate(data, {"user": ['name', 'passwd']})
-		if aErrs: return ResultError((1, ', '.join(aErrs)))
+		aErrs = DictHelper.validate(data, {"user": ['name', 'passwd']})
+		if aErrs: return Services.Effect(error=(1, ', '.join(aErrs)))
 
-		return Result(True)
+		return Services.Effect(True)
 
-	def _signupCreate(self, data):
+	def signupCreate(self, data):
 		"""Signup
 
 		Creates a new user on the system
@@ -68,59 +71,94 @@ class Rest(Services.Service):
 			Result
 		"""
 
-		# Check arguments
-		aErrs = Dict.validate(data, {"user": ['name', 'passwd']})
-		if aErrs: return ResultError((1, ', '.join(aErrs)))
+		# Verify fields
+		try: DictHelper.eval(data, ['alias', 'passwd'])
+		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
 
-		# See if the user already exists
-		dUser = User.get(data['user']['name'], index='name')
-		if dUser:
-			return ResultError((100, data['user']['name']))
+		# Make sure the email is valid structurally
+		if 'email' in data and not _emailRegex.match(data['email']):
+			return Services.Effect(error=(103, [('email', 'invalid')]))
+
+		# Make sure the password is strong enough
+		if not Thrower.passwordStrength(data['passwd']):
+			return Services.Effect(error=508)
+
+		# Look for someone else with that alias
+		dThrower = Thrower.get(data['alias'], index='alias', raw=['_id'])
+		if dThrower:
+			return Services.Effect(error=(400, data['alias']))
+
+		# If no language was passed
+		if 'locale' not in data:
+			data['locale'] = 'en-US'
 
 		# If the password is not already encrypted
-		if len(data['user']['passwd']) != 72 or not Strings.isHex(data['user']['passwd']):
+		if len(data['passwd']) != 72 or not Strings.isHex(data['passwd']):
 
 			# Encrypt the passwd
-			data['user']['passwd'] = User.passwordHash(data['user']['passwd'])
+			data['passwd'] = Thrower.passwordHash(data['passwd'])
 
-		# Add data to the User
-		data['user']['_created'] = int(time())
-		data['user']['active'] = True
-		data['user']['verified'] = False
+		# Init the thrower data
+		dThrower = {
+			"_created": int(time()),
+			"alias": data['alias'],
+			"locale": data['locale'],
+			"passwd": Thrower.passwordHash(data['passwd']),
+			"verified": StrHelper.random(32, '_0x')
+		}
 
-		# If we have an email
-		if 'email' in data['user']:
+		# If there's an email
+		if 'email' in data:
+			dThrower['email'] = data['email']
+			dThrower['verified'] = StrHelper.random(32, '_0x')
+		else:
+			dThrower['verified'] = False
 
-			# Validate the e-mail format
-			tRes = parseEmail(data['user']['email'])
-
-			# If the address is not valid
-			if tRes[0] == '' and tRes[1] == '':
-				return ResultError(101)
-
-		# Create a user instance
+		# Create an instance
 		try:
-			oUser = User(data['user'])
+			oThrower = Thrower(dThrower)
 		except ValueError as e:
-			return ResultError((1, e.args[0]))
+			return Services.Effect(error=(103, e.args[0]))
 
-		# Add the user to the database
-		oUser.insert()
+		# Store the instance
+		if not oThrower.create(changes={"creator":"signup"}):
+			return Services.Effect(error=300)
+
+		# If there's an e-mail
+		if 'email' in data:
+
+			# Send en e-mail for verification
+			dConf = Conf.get("domain")
+			sURL = "%s://external.%s/verify/%s/%s" % (
+				dConf['protocol'],
+				dConf['primary'],
+				oProfile['_id'],
+				oProfile['verified']
+			)
+			oEffect = Services.create('communications', 'email', {
+				"_internal_": Services.internalKey(),
+				"from": "noreply@%s" % dConf['primary'],
+				"html_body": Templates.generate('email/verify.html', {"url":sURL}, data['locale']),
+				"subject": Templates.generate('email/verify_subject.txt', {}, data['locale']),
+				"to": data['email'],
+			})
+			if oEffect.errorExists():
+				return oEffect
 
 		# If we don't already have a session, create one
 		if 'session' not in data:
-			oSess = Session.create()
+			oSess = Sesh.create()
 
 		# Else, load the existing session
 		else:
-			oSess = Session.start(data['session'])
+			oSess = Sesh.start(data['session'])
 
 		# Add the user ID to it
-		oSess['user'] = {"_id":oUser['_id']}
+		oSess['user'] = {"_id":oThrower['_id']}
 		oSess.save()
 
 		# Return the session token
-		return Result(oSess._token)
+		return Services.Effect(oSess.id())
 
 	@classmethod
 	def install(cls):
@@ -133,22 +171,9 @@ class Rest(Services.Service):
 			bool
 		"""
 
-		# Try to create the database
-		if not Storage.db_create('axegains', 'default'):
-			print_error('Could not create `axegains` database on "default" server')
-			return False
+		# Go through each Record type
+		for o in cls._install:
 
-		# Call the User class' tableCreate method
-		if not User.tableCreate():
-			print_error('Could not create `%s` table in `axegains`' % User.tableName())
-			return False
-
-		# Call the Session class' tableCreate method
-		if not Session.tableCreate():
-			print_error('Could not create `%s` table in `axegains`' % Session.tableName())
-			return False
-
-		# Call the Stats class' tableCreate method
-		if not Stats.tableCreate():
-			print_error('Could not create `%s` table in `axegains`' % Stats.tableName())
-			return False
+			# Install the table
+			if not o.tableCreate():
+				print("Failed to create `%s` table" % o.tableName())
