@@ -88,15 +88,13 @@ class Thrower(Record_ReDB.Record):
 		# Return OK
 		return True
 
-	def passwordValidate(self, passwd, exact_comparison=False):
+	def passwordValidate(self, passwd):
 		"""Password Validate
 
 		Validates the given password against the current instance
 
 		Arguments:
 			passwd {str} -- The password to validate
-			exact_comparison {bool} -- If True it will compare the field itself
-				instead of the hashed value
 
 		Returns:
 			bool

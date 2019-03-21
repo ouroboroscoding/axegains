@@ -18,7 +18,8 @@ __created__		= "2018-09-09"
 import os, platform
 
 # Framework imports
-from RestOC import Conf, Record_Base, Record_ReDB, REST, Services, Sesh
+from RestOC import Conf, Record_Base, Record_ReDB, REST, \
+					Services, Sesh, Templates
 
 # App imports
 from apps.auth import Auth
@@ -50,12 +51,21 @@ dServices['auth'] = Auth()
 # Register all services
 Services.register(dServices, oRestConf, Conf.get(('services', 'salt')))
 
+# Init Templates
+Templates.init('../templates')
+
 # Create the HTTP server and map requests to service
 REST.Server({
+	"/passwd/forgot": {"methods": REST.CREATE | REST.UPDATE},
+
 	"/signin": {"methods": REST.POST},
 	"/signout": {"methods": REST.POST, "session": True},
 	"/signup": {"methods": REST.POST},
-	"/user": {"methods": REST.READ | REST.UPDATE, "session": True}
+
+	"/thrower": {"methods": REST.READ | REST.UPDATE, "session": True},
+	"/thrower/email": {"methods": REST.UPDATE, "session": True},
+	"/thrower/verify": {"methods": REST.UPDATE}
+
 }, 'auth', "https?://.*\\.%s" % Conf.get(("domain","primary")).replace('.', '\\.')).run(
 	host=oRestConf['auth']['host'],
 	port=oRestConf['auth']['port'],

@@ -29,5 +29,8 @@
 	"401": "No such user / password invalid",
 	"402": "Password forgot key already exists",
 	"403": "Password forgot key is invalid",
-	"404": "Password isn't strong enough"
+	"404": "Password isn't strong enough",
+	"405": "Invalid verification code",
+	"406": "Email already in use"
+
 }

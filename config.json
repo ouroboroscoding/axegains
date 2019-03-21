@@ -4,7 +4,7 @@
 	},
 
 	"domain": {
-		"primary": "emr.local",
+		"primary": "axegains.local",
 		"protocol": "http"
 	},
 
@@ -46,6 +46,7 @@
 		"services": {
 			"auth": {"port":2, "workers": 5},
 			"communications": {"port":3},
+			"external": {"port": 4},
 			"websocket": {"port": 1}
 		}
 	},

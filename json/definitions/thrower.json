@@ -4,7 +4,8 @@
 		"db": "axegains",
 		"host": "primary",
 		"indexes": {
-			"alias": null
+			"alias": null,
+			"email": null
 		},
 		"table": "thrower"
 	},
