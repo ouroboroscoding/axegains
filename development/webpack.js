@@ -2,11 +2,10 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  devtool: 'inline-source-map',
   entry: {
     "site": "./webpack/index.js"
   },
-  mode: "development",
+  mode: "production",
   module: {
     rules: [
       {
@@ -19,8 +18,7 @@ module.exports = {
     ]
   },
   output: {
-    filename: "../hosts/static/js/[name].dev.js",
+    filename: "../hosts/static/js/[name].js",
     path: path.resolve(__dirname, '.')
-  },
-  watch: true
+  }
 };

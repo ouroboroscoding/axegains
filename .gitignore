@@ -1,4 +1,10 @@
-node_modules
+# Files
+config.*.json
+*.pyc
 *.sublime-project
 *.sublime-workspace
-*.pyc
+install.log
+
+# Folders
+__pycache__
+node_modules

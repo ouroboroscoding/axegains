@@ -90,4 +90,291 @@ input, select {
   box-sizing: border-box;
   vertical-align: middle; }
 
+/* reusable */
+.color-error {
+  color: #E24E28; }
+
+.color-success {
+  color: #4EE8B5; }
+
+.color-warning {
+  color: #E8E24C; }
+
+/* alignment */
+.acenter {
+  text-align: center; }
+
+.aleft {
+  text-align: left; }
+
+.aright {
+  text-align: right; }
+
+/* floating */
+.fleft {
+  float: left; }
+
+.fright {
+  float: right; }
+
+/* types */
+.link {
+  cursor: pointer;
+  color: #2C689B; }
+
+dl.select {
+  margin: 5px 0; }
+  dl.select dt {
+    background-color: #2C689B;
+    border: 1px solid black;
+    color: #E8B15A;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 5px; }
+  dl.select dd {
+    border: 1px solid black;
+    border-top: 0;
+    padding: 5px;
+    margin: 0 0 10px 10px; }
+
+.modal {
+  background-color: rgba(10, 10, 10, 0.33);
+  height: 100%;
+  left: 0;
+  margin: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10; }
+  .modal .cell {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center; }
+    .modal .cell .container {
+      border: 1px solid black;
+      border-radius: 0 0 5px 5px;
+      box-shadow: 0 10px 38px 0 #111;
+      display: flex;
+      flex-direction: column;
+      max-width: 95%;
+      margin: 0;
+      overflow: hidden;
+      padding: 0;
+      position: relative; }
+      .modal .cell .container .header {
+        background-color: #2C689B;
+        color: #E8B15A;
+        margin: 0px;
+        padding: 10px;
+        text-align: center; }
+        .modal .cell .container .header span {
+          font-weight: 600;
+          text-transform: uppercase; }
+        .modal .cell .container .header i {
+          position: absolute;
+          right: 7px;
+          top: 7px; }
+      .modal .cell .container .content {
+        background-color: white;
+        border-top: 1px black solid;
+        border-bottom: 1px black solid;
+        color: #000;
+        flex-grow: 1;
+        margin: 0;
+        overflow: auto;
+        padding: 10px; }
+      .modal .cell .container .footer {
+        padding: 5px;
+        text-align: right; }
+        .modal .cell .container .footer button {
+          margin-left: 10px; }
+
 /* natf */
+.natf .board {
+  background-color: white;
+  height: 350px;
+  width: 300px; }
+  .natf .board .clutch {
+    background-color: green;
+    border: 5px solid green;
+    border-radius: 50%;
+    display: inline-block;
+    height: 40px;
+    width: 40px; }
+  .natf .board .clutch.left {
+    margin: 5px 55px 0px 20px; }
+  .natf .board .clutch.right {
+    margin: 5px 20px 0px 55px; }
+  .natf .board .clutch.selected {
+    border: 5px solid black; }
+  .natf .board .clutch.invalid {
+    border: 5px solid red; }
+  .natf .board .drop {
+    background-color: grey;
+    border: 1px solid grey;
+    color: white;
+    display: inline-block;
+    margin-top: 5px;
+    padding: 6px 0 4px 0;
+    position: relative;
+    text-align: center;
+    width: 70px;
+    vertical-align: top; }
+  .natf .board .drop.active {
+    background-color: white;
+    border: 1px solid black;
+    color: grey; }
+  .natf .board .one {
+    background-color: white;
+    border: 5px solid blue;
+    border-radius: 50%;
+    height: 300px;
+    position: relative;
+    width: 300px; }
+  .natf .board .one.active {
+    background-color: blue; }
+  .natf .board .three {
+    background-color: white;
+    border: 5px solid red;
+    border-radius: 50%;
+    height: 68%;
+    left: 16%;
+    position: relative;
+    top: 16%;
+    width: 68%; }
+  .natf .board .three.active {
+    background-color: red; }
+  .natf .board .five {
+    background-color: white;
+    border: 5px solid black;
+    border-radius: 50%;
+    height: 46%;
+    left: 27%;
+    position: relative;
+    top: 27%;
+    width: 46%; }
+  .natf .board .five.active {
+    background-color: black; }
+
+.natf .board.active {
+  background-color: grey; }
+
+.natf .practice .allPoints {
+  background-color: white;
+  border: 2px solid black;
+  left: 0;
+  margin: 0 auto;
+  position: absolute;
+  right: 0;
+  top: 10px;
+  width: 304px; }
+  .natf .practice .allPoints .header {
+    border-bottom: 1px solid black;
+    padding: 10px;
+    width: 300px; }
+    .natf .practice .allPoints .header i {
+      float: right; }
+
+.natf .practice .points, .natf .practice .allPoints .content {
+  width: 300px; }
+  .natf .practice .points span, .natf .practice .allPoints .content span {
+    display: inline-block;
+    padding: 3px 0;
+    text-align: center;
+    width: 30px; }
+  .natf .practice .points span.clutch, .natf .practice .allPoints .content span.clutch {
+    background-color: green;
+    color: white; }
+
+.natf .practice .points {
+  border: 2px solid black;
+  margin-top: 10px;
+  width: 304px; }
+
+.natf .practice .averages {
+  margin: 10px 0 0 0; }
+
+.natf .practice .reset {
+  cursor: pointer; }
+
+/* site */
+html, body {
+  height: 100%;
+  width: 100%; }
+
+/* alignment */
+.acenter {
+  text-align: center; }
+
+.aleft {
+  text-align: left; }
+
+.aright {
+  text-align: right; }
+
+/* floating */
+.fleft {
+  float: left; }
+
+.fright {
+  float: right; }
+
+/* types */
+.link {
+  cursor: pointer;
+  color: #2C689B; }
+
+header {
+  background: #2C689B;
+  color: #E8B15A;
+  padding: 8px; }
+  header h1 {
+    font-size: 150%; }
+  header .actions i {
+    margin-left: 10px;
+    margin-bottom: 10px; }
+
+.menu {
+  margin: 0;
+  text-align: center;
+  width: 100%; }
+  .menu span {
+    cursor: pointer;
+    display: inline-block;
+    border-radius: 10px;
+    margin: 3px 10px;
+    padding: 3px 7px; }
+  .menu span:hover {
+    padding: 5px; }
+  .menu span.active {
+    font-weight: 600;
+    padding: 5px; }
+
+.menu.primary {
+  background-color: #7CC3FF;
+  color: #172A3B; }
+  .menu.primary span:hover {
+    border-left: 2px solid #E8B15A;
+    border-right: 2px solid #E8B15A; }
+  .menu.primary span.active {
+    border-left: 2px solid #9B6A1D;
+    border-right: 2px solid #9B6A1D; }
+
+.menu.secondary {
+  background-color: #2C689B;
+  color: #E8B15A; }
+  .menu.secondary span:hover {
+    border-left: 2px solid #9B6A1D;
+    border-right: 2px solid #9B6A1D; }
+  .menu.secondary span.active {
+    border-left: 2px solid #E8B15A;
+    border-right: 2px solid #E8B15A; }
+
+#content {
+  left: 50%;
+  position: absolute; }
+  #content #centered {
+    left: -50%;
+    position: relative; }

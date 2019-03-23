@@ -1,13 +1,153 @@
 .natf {
 
 	.board {
+		background-color: white;
+		height: 350px;
+		width: 300px;
 
-		.clutches {
-
+		.clutch {
+			background-color: green;
+			border: 5px solid green;
+			border-radius: 50%;
+			display: inline-block;
+			height: 40px;
+			width: 40px;
 		}
 
-		.target {
+		.clutch.left {
+			margin: 5px 55px 0px 20px;
+		}
 
+		.clutch.right {
+			margin: 5px 20px 0px 55px;
+		}
+
+		.clutch.selected {
+			border: 5px solid black;
+		}
+
+		.clutch.invalid {
+			border: 5px solid red;
+		}
+
+		.drop {
+			background-color: grey;
+			border: 1px solid grey;
+			color: white;
+			display: inline-block;
+			margin-top: 5px;
+			padding: 6px 0 4px 0;
+			position: relative;
+			text-align: center;
+			width: 70px;
+			vertical-align: top;
+		}
+
+		.drop.active {
+			background-color: white;
+			border: 1px solid black;
+			color: grey;
+		}
+
+		.one {
+			background-color: white;
+			border: 5px solid blue;
+			border-radius: 50%;
+			height: 300px;
+			position: relative;
+			width: 300px;
+		}
+
+		.one.active {
+			background-color: blue;
+		}
+
+		.three {
+			background-color: white;
+			border: 5px solid red;
+			border-radius: 50%;
+			height: 68%;
+			left: 16%;
+			position: relative;
+			top: 16%;
+			width: 68%;
+		}
+
+		.three.active {
+			background-color: red;
+		}
+
+		.five {
+			background-color: white;
+			border: 5px solid black;
+			border-radius: 50%;
+			height: 46%;
+			left: 27%;
+			position: relative;
+			top: 27%;
+			width: 46%;
+		}
+
+		.five.active {
+			background-color: black;
+		}
+	}
+
+	.board.active {
+		background-color: grey;
+	}
+
+	.practice {
+
+		.allPoints {
+			background-color: white;
+			border: 2px solid black;
+			left: 0;
+			margin: 0 auto;
+			position: absolute;
+			right: 0;
+			top: 10px;
+			width: 304px;
+
+			.header {
+				border-bottom: 1px solid black;
+				padding: 10px;
+				width: 300px;
+
+				i {
+					float: right;
+				}
+			}
+		}
+
+		.points, .allPoints .content {
+			width: 300px;
+
+			span {
+				display: inline-block;
+				padding: 3px 0;
+				text-align: center;
+				width: 30px;
+			}
+
+			span.clutch {
+				background-color: green;
+				color: white;
+			}
+		}
+
+		.points {
+			border: 2px solid black;
+			margin-top: 10px;
+			width: 304px;
+		}
+
+		.averages {
+			margin: 10px 0 0 0;
+		}
+
+		.reset {
+			cursor: pointer;
 		}
 	}
 }
