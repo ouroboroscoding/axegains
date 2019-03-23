@@ -44,7 +44,7 @@ class Board extends React.Component {
 			// And set a timeout to turn it off
 			setTimeout(function() {
 				target.className = className;
-			}, 1000);
+			}, 500);
 
 			// Don't count the click
 			return;
@@ -83,7 +83,7 @@ class Board extends React.Component {
 		// And set a timeout to turn it off
 		setTimeout(function() {
 			target.className = 'drop';
-		}, 1000);
+		}, 500);
 	}
 
 	resetClutch() {
@@ -124,7 +124,7 @@ class Board extends React.Component {
 		// And set a timeout to turn it off
 		setTimeout(function() {
 			target.className = classNames[0];
-		}, 1000);
+		}, 500);
 	}
 
 	render() {

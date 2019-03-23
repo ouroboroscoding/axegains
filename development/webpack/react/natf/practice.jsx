@@ -17,9 +17,12 @@ class Practice extends React.Component {
 
 		// Initialise the state
 		this.state = {
+			"clutchAttempts": 0,
+			"clutchHits": 0,
 			"mode": null,
 			"points": [],
-			"showPoints": false
+			"showPoints": false,
+			"totalPoints": 0
 		};
 
 		// Bind methods
@@ -60,8 +63,30 @@ class Practice extends React.Component {
 	}
 
 	points(clutch, value) {
+
+		// Add to the points list
 		this.state.points.push([clutch, value]);
-		this.setState({"points": this.state.points}, function() {
+
+		// If we got a clutch attempt
+		if(clutch) {
+			this.state.clutchAttempts += 1;
+			if(value == 7) {
+				this.state.clutchHits += 1;
+			}
+		}
+
+		// If we got a value
+		var v = parseInt(value);
+		if(v > 0) {
+			this.state.totalPoints += v;
+		}
+
+		this.setState({
+			"clutchAttempts": this.state.clutchAttempts,
+			"clutchHits": this.state.clutchHits,
+			"points": this.state.points,
+			"totalPoints": this.state.totalPoints
+		}, function() {
 			if(this.state.mode == 'supernatural') {
 				if(this.state.points.length % 5 == 4) {
 					this.refs.board.clutchMode = 'expected';
@@ -99,9 +124,12 @@ class Practice extends React.Component {
 	reset() {
 		if(confirm('Are you sure you want to reset your practice?')) {
 			this.setState({
+				"clutchAttempts": 0,
+				"clutchHits": 0,
 				"mode": null,
 				"points": [],
-				"showPoints": false
+				"showPoints": false,
+				"totalPoints": 0
 			});
 		}
 	}
@@ -125,14 +153,21 @@ class Practice extends React.Component {
 			<React.Fragment>
 				<Board ref="board" clutchMode={self.state.mode} onPoints={self.points} />
 				{self.state.points.length > 0 &&
-					<div className="points">
-						{self.state.points.length > 29 &&
-							<span key={-1} onClick={self.pointsShow}>...</span>
-						}
-						{self.state.points.slice(-29).map(function(p, i) {
-							return <span key={i} className={p[0] ? 'clutch':''}>{p[1]}</span>
-						})}
-					</div>
+					<React.Fragment>
+						<div className="averages">
+							<span className="clutches fright"><b>Clutch Rate: </b><span>{self.state.clutchAttempts == 0 ? "0.00" : ((self.state.clutchHits / self.state.clutchAttempts) * 100.0).toFixed(2)}</span></span>
+							<span className="average fleft"><b>Average Points: </b><span>{(self.state.totalPoints / self.state.points.length).toFixed(2)}</span></span>
+							<br />
+						</div>
+						<div className="points">
+							{self.state.points.length > 29 &&
+								<span key={-1} onClick={self.pointsShow}>...</span>
+							}
+							{self.state.points.slice(-29).map(function(p, i) {
+								return <span key={i} className={p[0] ? 'clutch':''}>{p[1]}</span>
+							})}
+						</div>
+					</React.Fragment>
 				}
 				<div className="reset fright" onClick={self.reset}>Reset</div>
 				{self.state.showPoints &&
