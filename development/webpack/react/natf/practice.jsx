@@ -155,8 +155,8 @@ class Practice extends React.Component {
 				{self.state.points.length > 0 &&
 					<React.Fragment>
 						<div className="averages">
-							<span className="clutches fright"><b>Clutch Rate: </b><span>{self.state.clutchAttempts == 0 ? "0.00" : ((self.state.clutchHits / self.state.clutchAttempts) * 100.0).toFixed(2)}</span></span>
-							<span className="average fleft"><b>Average Points: </b><span>{(self.state.totalPoints / self.state.points.length).toFixed(2)}</span></span>
+							<span className="clutches fright"><b>Clutch %: </b><span>{self.state.clutchAttempts == 0 ? "0.00" : ((self.state.clutchHits / self.state.clutchAttempts) * 100.0).toFixed(2)}</span></span>
+							<span className="average fleft"><b>Avg Throw: </b><span>{(self.state.totalPoints / self.state.points.length).toFixed(2)}</span></span>
 							<br />
 						</div>
 						<div className="points">
