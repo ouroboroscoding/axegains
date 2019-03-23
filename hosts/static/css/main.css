@@ -100,6 +100,43 @@ input, select {
 .color-warning {
   color: #E8E24C; }
 
+/* alignment */
+.acenter {
+  text-align: center; }
+
+.aleft {
+  text-align: left; }
+
+.aright {
+  text-align: right; }
+
+/* floating */
+.fleft {
+  float: left; }
+
+.fright {
+  float: right; }
+
+/* types */
+.link {
+  cursor: pointer;
+  color: #2C689B; }
+
+dl.select {
+  margin: 5px 0; }
+  dl.select dt {
+    background-color: #2C689B;
+    border: 1px solid black;
+    color: #E8B15A;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 5px; }
+  dl.select dd {
+    border: 1px solid black;
+    border-top: 0;
+    padding: 5px;
+    margin: 0 0 10px 10px; }
+
 .modal {
   background-color: rgba(10, 10, 10, 0.33);
   height: 100%;
@@ -256,10 +293,85 @@ input, select {
   margin-top: 10px;
   width: 304px; }
 
+.natf .practice .reset {
+  cursor: pointer; }
+
 /* site */
-.main {
+html, body {
+  height: 100%;
+  width: 100%; }
+
+/* alignment */
+.acenter {
+  text-align: center; }
+
+.aleft {
+  text-align: left; }
+
+.aright {
+  text-align: right; }
+
+/* floating */
+.fleft {
+  float: left; }
+
+.fright {
+  float: right; }
+
+/* types */
+.link {
+  cursor: pointer;
+  color: #2C689B; }
+
+header {
+  background: #2C689B;
+  color: #E8B15A;
+  padding: 8px; }
+  header h1 {
+    font-size: 150%; }
+  header .actions i {
+    margin-left: 10px;
+    margin-bottom: 10px; }
+
+.menu {
+  margin: 0;
+  text-align: center;
+  width: 100%; }
+  .menu span {
+    cursor: pointer;
+    display: inline-block;
+    border-radius: 10px;
+    margin: 3px 10px;
+    padding: 3px 7px; }
+  .menu span:hover {
+    padding: 5px; }
+  .menu span.active {
+    font-weight: 600;
+    padding: 5px; }
+
+.menu.primary {
+  background-color: #7CC3FF;
+  color: #172A3B; }
+  .menu.primary span:hover {
+    border-left: 2px solid #E8B15A;
+    border-right: 2px solid #E8B15A; }
+  .menu.primary span.active {
+    border-left: 2px solid #9B6A1D;
+    border-right: 2px solid #9B6A1D; }
+
+.menu.secondary {
+  background-color: #2C689B;
+  color: #E8B15A; }
+  .menu.secondary span:hover {
+    border-left: 2px solid #9B6A1D;
+    border-right: 2px solid #9B6A1D; }
+  .menu.secondary span.active {
+    border-left: 2px solid #E8B15A;
+    border-right: 2px solid #E8B15A; }
+
+#content {
   left: 50%;
   position: absolute; }
-  .main .centered {
+  #content #centered {
     left: -50%;
     position: relative; }

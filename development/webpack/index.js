@@ -22,7 +22,7 @@ var Site = require('./react/site.jsx');
 	// Render the LoginComponent
 	ReactDOM.render(
 		React.createElement(Site, {
-			"signedIn": Services.session() ? true : false
+			"thrower": Services.session() ? true : false
 		}),
 		document.getElementById('react')
 	);
