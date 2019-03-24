@@ -138,8 +138,17 @@
 
 		.points {
 			border: 2px solid black;
-			margin-top: 10px;
+			margin: 5px 0;
 			width: 304px;
+
+			.last {
+				cursor: pointer;
+			}
+
+			.overwrite {
+				background-color: red;
+				color: white;
+			}
 		}
 
 		.averages {

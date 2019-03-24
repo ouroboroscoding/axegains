@@ -137,6 +137,204 @@ dl.select {
     padding: 5px;
     margin: 0 0 10px 10px; }
 
+form {
+  margin-bottom: 10px; }
+
+input[type=text], input[type=password], select, textarea {
+  width: 100%; }
+
+input.error::placeholder {
+  color: white; }
+
+input.error, select.error {
+  background-color: #E24E28;
+  border-color: red;
+  color: white; }
+
+button::-moz-focus-inner {
+  border: 0;
+  padding: 0; }
+
+button {
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+  padding: 6px 20px;
+  margin: 0;
+  cursor: pointer;
+  border: 1px solid #bbb;
+  overflow: visible;
+  font: bold 13px arial, helvetica, sans-serif;
+  text-decoration: none;
+  white-space: nowrap;
+  color: #2C689B;
+  background-color: #E8B15A;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(rgba(255, 255, 255, 0)));
+  background-image: -webkit-linear-gradient(top, white, rgba(255, 255, 255, 0));
+  background-image: -moz-linear-gradient(top, white, rgba(255, 255, 255, 0));
+  background-image: -ms-linear-gradient(top, white, rgba(255, 255, 255, 0));
+  background-image: -o-linear-gradient(top, white, rgba(255, 255, 255, 0));
+  background-image: linear-gradient(top, white, rgba(255, 255, 255, 0));
+  -webkit-transition: background-color .2s ease-out;
+  -moz-transition: background-color .2s ease-out;
+  -ms-transition: background-color .2s ease-out;
+  -o-transition: background-color .2s ease-out;
+  transition: background-color .2s ease-out;
+  background-clip: padding-box;
+  /* Fix bleeding */
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 2px 2px -1px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(155, 107, 29, 0.3) inset;
+  -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 2px 2px -1px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(155, 107, 29, 0.3) inset;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 2px 2px -1px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(155, 107, 29, 0.3) inset;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+
+button:hover {
+  background-color: #eee;
+  color: #555; }
+
+button:active {
+  background: #e9e9e9;
+  position: relative;
+  top: 1px;
+  text-shadow: none;
+  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3) inset;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3) inset;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3) inset; }
+
+button[disabled], .button[disabled]:hover, .button[disabled]:active {
+  border-color: #eaeaea;
+  background: #fafafa;
+  cursor: default;
+  position: static;
+  color: #999;
+  /* Usually, !important should be avoided but here it's really needed :) */
+  -moz-box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important; }
+
+/* Smaller buttons styles */
+button.small {
+  padding: 4px 12px; }
+
+/* Larger buttons styles */
+button.large {
+  padding: 12px 30px;
+  text-transform: uppercase; }
+
+button.large:active {
+  top: 2px; }
+
+/* Group buttons */
+.button-group,
+.button-group li {
+  display: inline-block;
+  *display: inline;
+  zoom: 1; }
+
+.button-group {
+  font-size: 0;
+  /* Inline block elements gap - fix */
+  margin: 0;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 7px;
+  -moz-border-radius: 7px;
+  -webkit-border-radius: 7px;
+  border-radius: 7px; }
+
+.button-group li {
+  margin-right: -1px;
+  /* Overlap each right button border */ }
+
+.button-group .button {
+  font-size: 13px;
+  /* Set the font size, different from inherited 0 */
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  border-radius: 0; }
+
+.button-group .button:active {
+  -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, 5px 0 5px -3px rgba(0, 0, 0, 0.2) inset, -5px 0 5px -3px rgba(0, 0, 0, 0.2) inset;
+  -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, 5px 0 5px -3px rgba(0, 0, 0, 0.2) inset, -5px 0 5px -3px rgba(0, 0, 0, 0.2) inset;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, 5px 0 5px -3px rgba(0, 0, 0, 0.2) inset, -5px 0 5px -3px rgba(0, 0, 0, 0.2) inset; }
+
+.button-group li:first-child .button {
+  -moz-border-radius: 3px 0 0 3px;
+  -webkit-border-radius: 3px 0 0 3px;
+  border-radius: 3px 0 0 3px; }
+
+.button-group li:first-child .button:active {
+  -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, -5px 0 5px -3px rgba(0, 0, 0, 0.2) inset;
+  -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, -5px 0 5px -3px rgba(0, 0, 0, 0.2) inset;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, -5px 0 5px -3px rgba(0, 0, 0, 0.2) inset; }
+
+.button-group li:last-child .button {
+  -moz-border-radius: 0 3px 3px 0;
+  -webkit-border-radius: 0 3px 3px 0;
+  border-radius: 0 3px 3px 0; }
+
+.button-group li:last-child .button:active {
+  -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, 5px 0 5px -3px rgba(0, 0, 0, 0.2) inset;
+  -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, 5px 0 5px -3px rgba(0, 0, 0, 0.2) inset;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, 5px 0 5px -3px rgba(0, 0, 0, 0.2) inset; }
+
+#loader {
+  background-color: rgba(0, 0, 0, 0.33);
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 20; }
+  #loader .cell {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center; }
+  #loader .content {
+    margin: 0 auto;
+    text-align: center; }
+
+#messages {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  max-width: 400px;
+  width: 100%;
+  z-index: 30; }
+  #messages div {
+    border: 3px solid black;
+    border-radius: 15px;
+    background-color: #fff;
+    font-weight: bold;
+    padding: 10px;
+    margin: 5px 5px 0;
+    text-align: center; }
+    #messages div i {
+      float: left; }
+  #messages div.error {
+    border-color: #E24E28;
+    color: #E24E28; }
+  #messages div.success {
+    border-color: #4EE8B5;
+    color: #4EE8B5; }
+  #messages div.warning {
+    border-color: #E8E24C;
+    color: #E8E24C; }
+
 .modal {
   background-color: rgba(10, 10, 10, 0.33);
   height: 100%;
@@ -290,8 +488,13 @@ dl.select {
 
 .natf .practice .points {
   border: 2px solid black;
-  margin-top: 10px;
+  margin: 5px 0;
   width: 304px; }
+  .natf .practice .points .last {
+    cursor: pointer; }
+  .natf .practice .points .overwrite {
+    background-color: red;
+    color: white; }
 
 .natf .practice .averages {
   margin: 10px 0 0 0; }
@@ -333,8 +536,19 @@ header {
   header h1 {
     font-size: 150%; }
   header .actions i {
+    cursor: pointer;
     margin-left: 10px;
     margin-bottom: 10px; }
+
+#signup {
+  background-color: #7CC3FF;
+  border: 2px solid #2C689B;
+  padding: 10px;
+  position: absolute;
+  right: 32px;
+  top: 30px;
+  width: 250px;
+  z-index: 10; }
 
 .menu {
   margin: 0;

@@ -33,3 +33,23 @@ dl.select {
 		margin: 0 0 10px 10px;
 	}
 }
+
+form {
+	margin-bottom: 10px;
+}
+
+input[type=text], input[type=password], select, textarea {
+	width: 100%;
+}
+
+input.error::placeholder {
+	color: white;
+}
+
+input.error, select.error {
+	background-color: $color-error;
+	border-color: red;
+	color: white;
+}
+
+@import 'buttons';

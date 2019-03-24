@@ -186,15 +186,7 @@ class Auth(Services.Service):
 		oSesh.save()
 
 		# Return the session ID and primary thrower data
-		return Services.Effect({
-			"session": oSesh.id(),
-			"thrower": {
-				"_id": oThrower['_id'],
-				"alias": oThrower['alias'],
-				"locale": oThrower['locale'],
-				"email": 'email' in oThrower and oThrower['email'] or ''
-			}
-		})
+		return Services.Effect(oSesh.id())
 
 	def signoutCreate(self, data, sesh):
 		"""Signout

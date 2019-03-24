@@ -22,11 +22,13 @@ class Practice extends React.Component {
 			"mode": null,
 			"points": [],
 			"showPoints": false,
+			"thrower": props.thrower,
 			"totalPoints": 0
 		};
 
 		// Bind methods
 		this.modeSelect = this.modeSelect.bind(this);
+		this.overwrite = this.overwrite.bind(this);
 		this.points = this.points.bind(this);
 		this.pointsHide = this.pointsHide.bind(this);
 		this.pointsShow = this.pointsShow.bind(this);
@@ -36,15 +38,40 @@ class Practice extends React.Component {
 	}
 
 	componentWillMount() {
+
 		// Track any signin/signout events
 		Events.add('signin', this.signin);
 		Events.add('signout', this.signout);
+
+		// If we have data in local storage
+		if('natf_practice' in localStorage) {
+			this.setState(JSON.parse(localStorage['natf_practice']), function() {
+				if(this.state.mode == 'supernatural') {
+					if(this.state.points.length % 5 == 4) {
+						this.refs.board.clutchMode = 'expected';
+					} else {
+						this.refs.board.clutchMode = 'none';
+					}
+				} else if(this.state.mode == 'clutch') {
+					this.refs.board.clutchMode = 'expected';
+				} else {
+					this.refs.board.clutchMode = 'select';
+				}
+			});
+			delete localStorage['natf_practice'];
+		}
 	}
 
 	componentWillUnmount() {
-		// // Stop tracking any signin/signout events
+
+		// Stop tracking any signin/signout events
 		Events.remove('signin', this.signin);
 		Events.remove('signout', this.signout);
+
+		// If we have points, store them in local storage
+		if(this.state.points.length) {
+			localStorage['natf_practice'] = JSON.stringify(this.state);
+		}
 	}
 
 	modeSelect(ev) {
@@ -62,10 +89,40 @@ class Practice extends React.Component {
 		});
 	}
 
+	overwrite(ev) {
+		this.setState({"overwrite": true});
+	}
+
 	points(clutch, value) {
 
+		// Get the int version of the value
+		var v = parseInt(value);
+
+		// If the overwrite flag is set
+		if(this.state.overwrite) {
+
+			// Grab the last value
+			var last = this.state.points[this.state.points.length-1];
+
+			// Backtrack the clutch stats
+			if(last[0]) {
+				this.state.clutchAttempts -= 1;
+				if(last[1] == 7) {
+					this.state.clutchHits -= 1;
+				}
+			}
+
+			// Backtrack the points stats
+			if(last[1] != 'd') {
+				this.state.totalPoints -= last[1];
+			}
+
+			// Remove the last item
+			this.state.points.pop();
+		}
+
 		// Add to the points list
-		this.state.points.push([clutch, value]);
+		this.state.points.push([clutch, (value == 'd' ? value : v)]);
 
 		// If we got a clutch attempt
 		if(clutch) {
@@ -76,7 +133,6 @@ class Practice extends React.Component {
 		}
 
 		// If we got a value
-		var v = parseInt(value);
 		if(v > 0) {
 			this.state.totalPoints += v;
 		}
@@ -84,6 +140,7 @@ class Practice extends React.Component {
 		this.setState({
 			"clutchAttempts": this.state.clutchAttempts,
 			"clutchHits": this.state.clutchHits,
+			"overwrite": false,
 			"points": this.state.points,
 			"totalPoints": this.state.totalPoints
 		}, function() {
@@ -122,7 +179,18 @@ class Practice extends React.Component {
 	}
 
 	reset() {
-		if(confirm('Are you sure you want to reset your practice?')) {
+
+		// Init the reset flag
+		var reset = true;
+
+		// If there's points
+		if(this.state.points.length) {
+			// Update the flag based on the user's response
+			reset = confirm('Are you sure you want to reset your practice?');
+		}
+
+		// If we can reset
+		if(reset) {
 			this.setState({
 				"clutchAttempts": 0,
 				"clutchHits": 0,
@@ -149,13 +217,26 @@ class Practice extends React.Component {
 
 	returnBoard() {
 		var self = this;
+
+		// If we have points
+		if(this.state.points.length) {
+
+			// Init the last index
+			var last = 28;
+
+			// If we have less than 29
+			if(this.state.points.length < 29) {
+				last = this.state.points.length - 1;
+			}
+		}
+
 		return (
 			<React.Fragment>
 				<Board ref="board" clutchMode={self.state.mode} onPoints={self.points} />
 				{self.state.points.length > 0 &&
 					<React.Fragment>
 						<div className="averages">
-							<span className="clutches fright"><b>Clutch %: </b><span>{self.state.clutchAttempts == 0 ? "0.00" : ((self.state.clutchHits / self.state.clutchAttempts) * 100.0).toFixed(2)}</span></span>
+							<span className="clutches fright"><b>Clutch %: </b><span>{self.state.clutchAttempts == 0 ? "0.0" : ((self.state.clutchHits / self.state.clutchAttempts) * 100.0).toFixed(1)}</span></span>
 							<span className="average fleft"><b>Avg Throw: </b><span>{(self.state.totalPoints / self.state.points.length).toFixed(2)}</span></span>
 							<br />
 						</div>
@@ -164,7 +245,11 @@ class Practice extends React.Component {
 								<span key={-1} onClick={self.pointsShow}>...</span>
 							}
 							{self.state.points.slice(-29).map(function(p, i) {
-								return <span key={i} className={p[0] ? 'clutch':''}>{p[1]}</span>
+								if(i == last) {
+									return <span key={i} className={"last " + (self.state.overwrite ? 'overwrite' : (p[0] ? 'clutch' : ''))} onClick={self.overwrite}>{p[1]}</span>
+								} else {
+									return <span key={i} className={p[0] ? 'clutch':''}>{p[1]}</span>
+								}
 							})}
 						</div>
 					</React.Fragment>

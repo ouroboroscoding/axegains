@@ -4,9 +4,13 @@ var React = require('react');
 // Generic modules
 var Events = require('../generic/events.js');
 
-// Components
+// Generic components
+var Loader = require('./elements/loader.jsx');
+var {Menu, Item} = require('./elements/menu.jsx');
+var Messages = require ('./elements/messages.jsx');
+
+// Site components
 var Header = require('./header.jsx');
-var {Menu, Item} = require('./menu.jsx');
 var NatfPractice = require('./natf/practice.jsx');
 
 // Site component
@@ -49,7 +53,7 @@ class Site extends React.Component {
 		var self = this;
 		return (
 			<div id="site">
-				<Header thrower={self.props.thrower} />
+				<Header thrower={self.state.thrower} />
 				<Menu className="menu primary" selected={self.state.primary} onChange={self.primaryChange}>
 					<Item name="games">Games</Item>
 					<Item name="practice">Practice</Item>
@@ -62,9 +66,11 @@ class Site extends React.Component {
 				</Menu>
 				<div id="content">
 					<div id="centered">
-						{self.state.primary == 'practice' && self.state.secondary == 'natf' && <NatfPractice />}
+						{self.state.primary == 'practice' && self.state.secondary == 'natf' && <NatfPractice thrower={self.state.thrower} />}
 					</div>
 				</div>
+				<Messages />
+				<Loader />
 			</div>
 		);
 	}
