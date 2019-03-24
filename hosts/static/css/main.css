@@ -499,7 +499,7 @@ button.large:active {
 .natf .practice .averages {
   margin: 10px 0 0 0; }
 
-.natf .practice .reset {
+.natf .practice .reset, .natf .practice .save {
   cursor: pointer; }
 
 /* site */
@@ -539,6 +539,16 @@ header {
     cursor: pointer;
     margin-left: 10px;
     margin-bottom: 10px; }
+
+#signin {
+  background-color: #7CC3FF;
+  border: 2px solid #2C689B;
+  padding: 10px;
+  position: absolute;
+  right: 4px;
+  top: 30px;
+  width: 250px;
+  z-index: 10; }
 
 #signup {
   background-color: #7CC3FF;

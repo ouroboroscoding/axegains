@@ -21,7 +21,8 @@ class Header extends React.Component {
 
 		// Initialise the state
 		this.state = {
-			"thrower": false
+			"modal": false,
+			"thrower": props.thrower ? props.thrower : false
 		};
 
 		// Bind methods
@@ -34,7 +35,7 @@ class Header extends React.Component {
 	}
 
 	accountShow(ev) {
-		this.setState({"account": true});
+		this.setState({"modal": "account"});
 	}
 
 	render() {
@@ -54,7 +55,14 @@ class Header extends React.Component {
 						</React.Fragment>
 					}
 					<br />
-					{self.state.signup &&
+					{self.state.modal == 'signin' &&
+						<div id="signin" className="form">
+							<p><input ref="alias" type="text" title="alias" placeholder="alias" onClick={Forms.errorFocus} /></p>
+							<p><input ref="passwd" type="password" title="password" placeholder="password" onClick={Forms.errorFocus} /></p>
+							<p><button onClick={this.signin}>sign in</button></p>
+						</div>
+					}
+					{self.state.modal == 'signup' &&
 						<div id="signup" className="form">
 							<p><input ref="signup_alias" type="text" title="alias" placeholder="alias" onClick={Forms.errorFocus} /></p>
 							<p><input ref="email" type="text" title="email" placeholder="email (not required)" onClick={Forms.errorFocus} /></p>
@@ -71,14 +79,118 @@ class Header extends React.Component {
 
 	signin(ev) {
 
+		// Store this
+		var self = this;
+
+		// Show loader
+		Events.trigger('loader', true);
+
+		// Store the alias
+		var alias = this.refs.alias.value;
+
+		// Call the signin
+		Services.create('auth', 'signin', {
+			"alias": alias,
+			"passwd": this.refs.passwd.value
+		}).done(res => {
+
+			// If there's an error
+			if(res.error && !Utils.serviceError(res.error)) {
+				var error = ' ';
+				switch(res.error.code) {
+					case 103:
+						// Go through each message and make the ref red
+						for(var i in res.error.msg) {
+							Forms.errorAdd(self.refs[i]);
+						}
+						break;
+					case 401:
+						Events.trigger('error', 'Alias or password invalid');
+						break;
+					case 404:
+						Forms.errorAdd(self.refs['signup_passwd']);
+						Events.trigger('error', 'Password not strong enough');
+						break;
+					default:
+						Events.trigger('error', JSON.stringify(res.error));
+						break;
+				}
+			}
+
+			// If there's a warning
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If there's data
+			if(res.data) {
+
+				// Set the session with the service
+				Services.session(res.data);
+
+				// Revert to sign in and show success message
+				self.setState({
+					"modal": false,
+					"thrower": true
+				});
+
+				// Greet thrower
+				Events.trigger('success', "Welcome back to AxeGains " + alias);
+
+				// Trigger the signin event
+				Events.trigger('signin');
+			}
+
+		}).always(() => {
+			// Hide loader
+			Events.trigger('loader', false);
+		});
 	}
 
 	signinShow(ev) {
-		this.setState({"signin": true});
+		this.setState({"modal": (this.state.modal == 'signin' ? false : 'signin')});
 	}
 
 	signout(ev) {
 
+		// Store this
+		var self = this;
+
+		// Show loader
+		Events.trigger('loader', true);
+
+		// Call the signout
+		Services.create('auth', 'signout', {}).done(res => {
+
+			// If there's an error
+			if(res.error && !Utils.serviceError(res.error)) {
+				Events.trigger('error', JSON.stringify(res.error));
+			}
+
+			// If there's a warning
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If there's data
+			if(res.data) {
+
+				// Reset the session
+				Services.session(null);
+
+				// Return to signin mode and make visible
+				this.setState({
+					"modal": false,
+					"thrower": false
+				});
+
+				// Trigger the signout event
+				Events.trigger('signout');
+			}
+		}).always(() => {
+			// Hide loader
+			Events.trigger('loader', false);
+		});
 	}
 
 	signup(ev) {
@@ -111,7 +223,7 @@ class Header extends React.Component {
 		}
 
 		// Call the signup
-		Services.create('auth', 'signin', oData).done(res => {
+		Services.create('auth', 'signup', oData).done(res => {
 
 			// If there's an error
 			if(res.error && !Utils.serviceError(res.error)) {
@@ -142,6 +254,7 @@ class Header extends React.Component {
 				}
 			}
 
+			// If there's a warning
 			if(res.warning) {
 				Events.trigger('warning', JSON.stringify(res.warning));
 			}
@@ -154,8 +267,9 @@ class Header extends React.Component {
 
 				// Revert to sign in and show success message
 				self.setState({
+					"modal": false,
 					"thrower": true
-				})
+				});
 
 				// Greet thrower
 				Events.trigger('success', "Welcome to AxeGains " + oData.alias);
@@ -168,7 +282,7 @@ class Header extends React.Component {
 	}
 
 	signupShow(ev) {
-		this.setState({"signup": !this.state.signup});
+		this.setState({"modal": (this.state.modal == 'signup' ? false : 'signup')});
 	}
 }
 

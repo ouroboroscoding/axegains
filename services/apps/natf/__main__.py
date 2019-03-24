@@ -1,7 +1,7 @@
 # coding=utf8
-""" Auth Service
+""" NATF Service
 
-Handles adding throwers and letting them sign in/out
+Handles everything related to NATF practice, matches, etc.
 """
 
 # Import future
@@ -12,17 +12,17 @@ __copyright__	= "OuroborosCoding"
 __version__		= "1.0.0"
 __maintainer__	= "Chris Nasr"
 __email__		= "chris@fuelforthefire.ca"
-__created__		= "2018-09-09"
+__created__		= "2019-03-24"
 
 # Python imports
 import os, platform
 
 # Framework imports
 from RestOC import Conf, Record_Base, Record_ReDB, REST, \
-					Services, Sesh, Templates
+					Services, Sesh
 
 # App imports
-from apps.auth import Auth
+from apps.natf import Natf
 
 # Load the config
 Conf.load('../config.json')
@@ -44,30 +44,18 @@ oRestConf = REST.Config(Conf.get("rest"))
 if 'AXE_VERBOSE' in os.environ and os.environ['AXE_VERBOSE'] == '1':
 	Services.verbose()
 
-# Create a list of all available services, override Auth
-dServices = {k:None for k in Conf.get(('rest', 'services'))}
-dServices['auth'] = Auth()
-
-# Register all services
-Services.register(dServices, oRestConf, Conf.get(('services', 'salt')))
-
-# Init Templates
-Templates.init('../templates')
+# Register all necessary services
+Services.register({
+	"auth": None,
+	"natf": Natf()
+}, oRestConf, Conf.get(('services', 'salt')))
 
 # Create the HTTP server and map requests to service
 REST.Server({
-	"/passwd/forgot": {"methods": REST.CREATE | REST.UPDATE},
+	"/practice": {"methods": REST.CREATE, "session": True}
 
-	"/signin": {"methods": REST.POST},
-	"/signout": {"methods": REST.POST, "session": True},
-	"/signup": {"methods": REST.POST},
-
-	"/thrower": {"methods": REST.READ | REST.UPDATE, "session": True},
-	"/thrower/email": {"methods": REST.UPDATE, "session": True},
-	"/thrower/verify": {"methods": REST.UPDATE}
-
-}, 'auth', "https?://%s" % Conf.get(("domain","primary")).replace('.', '\\.')).run(
-	host=oRestConf['auth']['host'],
-	port=oRestConf['auth']['port'],
-	workers=oRestConf['auth']['workers']
+}, 'natf', "https?://%s" % Conf.get(("domain","primary")).replace('.', '\\.')).run(
+	host=oRestConf['natf']['host'],
+	port=oRestConf['natf']['port'],
+	workers=oRestConf['natf']['workers']
 )

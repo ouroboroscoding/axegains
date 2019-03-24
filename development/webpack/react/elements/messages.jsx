@@ -168,8 +168,8 @@ class Messages extends React.Component
 					}
 
 					return (
-						<div ref={"" + i} class={msg.type} style={style}>
-							<i class={"fas fa-" + msg.icon} />
+						<div key={i} ref={"" + i} className={msg.type} style={style}>
+							<i className={"fas fa-" + msg.icon} />
 							{msg.text}
 						</div>
 					)

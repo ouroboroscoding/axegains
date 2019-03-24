@@ -25,24 +25,12 @@ class Site extends React.Component {
 		this.state = {
 			"primary": "practice",
 			"secondary": "natf",
-			"thrower": props.thrower
+			"thrower": props.thrower ? props.thrower : false
 		};
 
 		// Bind methods
 		this.primaryChange = this.primaryChange.bind(this);
 		this.secondaryChange = this.secondaryChange.bind(this);
-	}
-
-	componentWillMount() {
-		// Track any signin/signout events
-		Events.add('signin', this.signin);
-		Events.add('signout', this.signout);
-	}
-
-	componentWillUnmount() {
-		// Stop tracking any signin/signout events
-		Events.remove('signin', this.signin);
-		Events.remove('signout', this.signout);
 	}
 
 	primaryChange(name) {

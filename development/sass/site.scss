@@ -37,6 +37,17 @@ header {
 	}
 }
 
+#signin {
+	background-color: $color-2;
+	border: 2px solid $color-1;
+	padding: 10px;
+	position: absolute;
+	right: 4px;
+	top: 30px;
+	width: 250px;
+	z-index: 10;
+}
+
 #signup {
 	background-color: $color-2;
 	border: 2px solid $color-1;

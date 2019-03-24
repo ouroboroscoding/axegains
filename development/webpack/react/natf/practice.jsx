@@ -33,6 +33,7 @@ class Practice extends React.Component {
 		this.pointsHide = this.pointsHide.bind(this);
 		this.pointsShow = this.pointsShow.bind(this);
 		this.reset = this.reset.bind(this);
+		this.save = this.save.bind(this);
 		this.signin = this.signin.bind(this);
 		this.signout = this.signout.bind(this);
 	}
@@ -255,6 +256,9 @@ class Practice extends React.Component {
 					</React.Fragment>
 				}
 				<div className="reset fright" onClick={self.reset}>Reset</div>
+				{(this.state.thrower && this.state.points.length > 0) &&
+					<div className="save fleft" onClick={self.save}>Save & Reset</div>
+				}
 				{self.state.showPoints &&
 					<div className="allPoints">
 						<div className="header">
@@ -272,12 +276,58 @@ class Practice extends React.Component {
 		);
 	}
 
+	save(ev) {
+
+		// Store this
+		var self = this;
+
+		// Show loader
+		Events.trigger('loader', true);
+
+		// Send the practice to the NATF service
+		Services.create('natf', 'practice', {
+			"points": this.state.points
+		}).done(res => {
+
+			// If there's an error
+			if(res.error && !Utils.serviceError(res.error)) {
+				Events.trigger('error', JSON.stringify(res.error));
+			}
+
+			// If there's a warning
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If there's data
+			if(res.data) {
+
+				// Notify
+				Events.trigger('success', 'Practice saved!');
+
+				// Reset
+				this.setState({
+					"clutchAttempts": 0,
+					"clutchHits": 0,
+					"mode": null,
+					"points": [],
+					"showPoints": false,
+					"totalPoints": 0
+				});
+			}
+
+		}).always(() => {
+			// Hide loader
+			Events.trigger('loader', false);
+		});
+	}
+
 	signin() {
-		console.log('signed in');
+		this.setState({"thrower": true});
 	}
 
 	signout() {
-		console.log('signed out');
+		this.setState({"thrower": false});
 	}
 }
 

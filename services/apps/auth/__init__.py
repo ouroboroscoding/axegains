@@ -1,7 +1,7 @@
 # coding=utf8
-""" Rest Service
+""" Auth Service
 
-Handles all REST requests
+Handles all Auth / Thrower requests
 """
 
 # Import future
