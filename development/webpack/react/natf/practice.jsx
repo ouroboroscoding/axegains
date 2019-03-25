@@ -3,8 +3,13 @@ var React = require('react');
 
 // Generic modules
 var Events = require('../../generic/events.js');
+var Services = require('../../generic/services.js');
+
+// Site modules
+var Utils = require('../../utils.js');
 
 // React components
+var Modal = require('../elements/modal.jsx');
 var Board = require('./board.jsx');
 
 // Practice Component
@@ -91,7 +96,24 @@ class Practice extends React.Component {
 	}
 
 	overwrite(ev) {
-		this.setState({"overwrite": true});
+		this.setState({"overwrite": true}, function() {
+
+			// If the mode is free
+			if(this.state.mode == 'free') {
+				this.refs.board.clutchMode = 'select';
+			}
+
+			// Else if the mode is supernatural
+			else if(this.state.mode == 'supernatural') {
+
+				// If we're divisible by 5
+				if(this.state.points.length % 5 == 0) {
+					this.refs.board.clutchMode = 'expected';
+				} else {
+					this.refs.board.clutchMode = 'none';
+				}
+			}
+		});
 	}
 
 	points(clutch, value) {
@@ -260,17 +282,16 @@ class Practice extends React.Component {
 					<div className="save fleft" onClick={self.save}>Save & Reset</div>
 				}
 				{self.state.showPoints &&
-					<div className="allPoints">
-						<div className="header">
-							<i className="fas fa-times-circle" onClick={this.pointsHide}></i>
-							<span>All points this practice</span>
-						</div>
-						<div className="content">
+					<Modal
+						title="All points this practice"
+						close={self.pointsHide}
+					>
+						<div className="allPoints">
 							{self.state.points.map(function(p, i) {
 								return <span key={i} className={p[0] ? 'clutch':''}>{p[1]}</span>
 							})}
 						</div>
-					</div>
+					</Modal>
 				}
 			</React.Fragment>
 		);

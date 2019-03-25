@@ -52,7 +52,8 @@ Services.register({
 
 # Create the HTTP server and map requests to service
 REST.Server({
-	"/practice": {"methods": REST.CREATE, "session": True}
+	"/practice": {"methods": REST.CREATE, "session": True},
+	"/practice/stats": {"methods": REST.READ, "session": True}
 
 }, 'natf', "https?://%s" % Conf.get(("domain","primary")).replace('.', '\\.')).run(
 	host=oRestConf['natf']['host'],

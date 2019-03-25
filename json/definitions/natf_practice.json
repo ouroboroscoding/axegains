@@ -10,9 +10,11 @@
 	"__name__": "NATF_Practice",
 	"_id": {"__type__":"uuid", "__optional__":true},
 	"_created": "timestamp",
-	"thrower": "uuid",
-	"total": "uint",
-	"points": {
+	"clutches": {
+		"attempts": "uint",
+		"hits": "uint"
+	},
+	"data": {
 		"__array__": "duplicates",
 		"clutch": "bool",
 		"value": [
@@ -20,7 +22,12 @@
 			{"__type__": "string", "__options__": ["d"]}
 		]
 	},
-	"clutches": {
+	"points": {
+		"target": "uint",
+		"total": "uint"
+	},
+	"thrower": "uuid",
+	"throws": {
 		"attempts": "uint",
 		"hits": "uint"
 	}
