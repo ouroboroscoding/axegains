@@ -1,8 +1,10 @@
 // External modules
 var React = require('react');
 
-// Base components
+// components
 var Forms = require('./base/forms.jsx');
+var Modal = require('./elements/modal.jsx');
+var Thrower = require('./thrower.jsx');
 
 // Generic modules
 var Events = require('../generic/events.js');
@@ -29,13 +31,29 @@ class Header extends React.Component {
 		this.accountShow = this.accountShow.bind(this);
 		this.signin = this.signin.bind(this);
 		this.signinShow = this.signinShow.bind(this);
+		this.signinTrigger = this.signinTrigger.bind(this);
 		this.signout = this.signout.bind(this);
+		this.signoutTrigger = this.signoutTrigger.bind(this);
 		this.signup = this.signup.bind(this);
 		this.signupShow = this.signupShow.bind(this);
 	}
 
 	accountShow(ev) {
-		this.setState({"modal": "account"});
+		this.setState({"modal": this.state.modal == "account" ? false : 'account'});
+	}
+
+	componentWillMount() {
+
+		// Track any signin/signout events
+		Events.add('signin', this.signinTrigger);
+		Events.add('signout', this.signoutTrigger);
+	}
+
+	componentWillUnmount() {
+
+		// Stop tracking any signin/signout events
+		Events.remove('signin', this.signinTrigger);
+		Events.remove('signout', this.signoutTrigger);
 	}
 
 	render() {
@@ -55,24 +73,33 @@ class Header extends React.Component {
 						</React.Fragment>
 					}
 					<br />
-					{self.state.modal == 'signin' &&
-						<div id="signin" className="form">
-							<p><input ref="alias" type="text" title="alias" placeholder="alias" onClick={Forms.errorFocus} /></p>
-							<p><input ref="passwd" type="password" title="password" placeholder="password" onClick={Forms.errorFocus} /></p>
-							<p><button onClick={this.signin}>sign in</button></p>
-						</div>
-					}
-					{self.state.modal == 'signup' &&
-						<div id="signup" className="form">
-							<p><input ref="signup_alias" type="text" title="alias" placeholder="alias" onClick={Forms.errorFocus} /></p>
-							<p><input ref="email" type="text" title="email" placeholder="email (not required)" onClick={Forms.errorFocus} /></p>
-							<p><input ref="signup_passwd" type="password" title="password" placeholder="password" onClick={Forms.errorFocus} /></p>
-							<p><input ref="repeat_passwd" type="password" title="repeat password" placeholder="repeat password" onClick={Forms.errorFocus} /></p>
-							<p><button onClick={this.signup}>sign up</button></p>
-						</div>
-					}
 				</div>
 				<h1>AxeGains.com</h1>
+				{self.state.modal == 'signin' &&
+					<div id="signin" className="form">
+						<p><input ref="alias" type="text" title="alias" placeholder="alias" onClick={Forms.errorFocus} /></p>
+						<p><input ref="passwd" type="password" title="password" placeholder="password" onClick={Forms.errorFocus} /></p>
+						<p><button onClick={self.signin}>sign in</button></p>
+					</div>
+				}
+				{self.state.modal == 'signup' &&
+					<div id="signup" className="form">
+						<p><input ref="signup_alias" type="text" title="alias" placeholder="alias" onClick={Forms.errorFocus} /></p>
+						<p><input ref="email" type="text" title="email" placeholder="email (not required)" onClick={Forms.errorFocus} /></p>
+						<p><input ref="signup_passwd" type="password" title="password" placeholder="password" onClick={Forms.errorFocus} /></p>
+						<p><input ref="repeat_passwd" type="password" title="repeat password" placeholder="repeat password" onClick={Forms.errorFocus} /></p>
+						<p><button onClick={self.signup}>sign up</button></p>
+					</div>
+				}
+				{self.state.modal == 'account' &&
+					<Modal
+						title="Account"
+						close={self.accountShow}
+						width="95%"
+					>
+						<Thrower />
+					</Modal>
+				}
 			</header>
 		);
 	}
@@ -128,12 +155,6 @@ class Header extends React.Component {
 				// Set the session with the service
 				Services.session(res.data);
 
-				// Revert to sign in and show success message
-				self.setState({
-					"modal": false,
-					"thrower": true
-				});
-
 				// Greet thrower
 				Events.trigger('success', "Welcome back to AxeGains " + alias);
 
@@ -149,6 +170,15 @@ class Header extends React.Component {
 
 	signinShow(ev) {
 		this.setState({"modal": (this.state.modal == 'signin' ? false : 'signin')});
+	}
+
+	signinTrigger() {
+
+		// Hide any modals and set a thrower to true
+		this.setState({
+			"modal": false,
+			"thrower": true
+		});
 	}
 
 	signout(ev) {
@@ -178,18 +208,21 @@ class Header extends React.Component {
 				// Reset the session
 				Services.session(null);
 
-				// Return to signin mode and make visible
-				this.setState({
-					"modal": false,
-					"thrower": false
-				});
-
 				// Trigger the signout event
 				Events.trigger('signout');
 			}
 		}).always(() => {
 			// Hide loader
 			Events.trigger('loader', false);
+		});
+	}
+
+	signoutTrigger() {
+
+		// Hide and modals and set the thrower to false
+		this.setState({
+			"modal": false,
+			"thrower": false
 		});
 	}
 

@@ -4,21 +4,6 @@ html, body {
 	width: 100%;
 }
 
-/* alignment */
-.acenter {text-align: center;}
-.aleft {text-align: left;}
-.aright {text-align: right;}
-
-/* floating */
-.fleft {float: left;}
-.fright {float: right;}
-
-/* types */
-.link {
-	cursor: pointer;
-	color: $color-1;
-}
-
 header {
 	background: $color-1;
 	color: $color-5;
@@ -30,7 +15,6 @@ header {
 
 	.actions {
 		i {
-			cursor: pointer;
 			margin-left: 10px;
 			margin-bottom: 10px;
 		}

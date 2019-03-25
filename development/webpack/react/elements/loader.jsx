@@ -36,6 +36,9 @@ class Loader extends React.PureComponent
 			"visible": props.visible ? props.visible : false
 		};
 
+		// This count
+		this.count = 0;
+
 		// Bind methods
 		this.loader = this.loader.bind(this);
 	}
@@ -51,10 +54,35 @@ class Loader extends React.PureComponent
 	}
 
 	loader(show) {
+
+		// Make sure we know whether to show or hide
 		if(typeof show == 'undefined') {
-			show = !this.state.visible;
+			throw 'Must specify true for show, or false for hide';
 		}
-		this.setState({"visible":show})
+
+		// If we are showing
+		if(show) {
+
+			// Increment the count
+			this.count++;
+
+			// If this is the first one
+			if(this.count == 1) {
+				this.setState({"visible":true});
+			}
+		}
+
+		// Else if we are hiding
+		else {
+
+			// Decrement the count
+			this.count--;
+
+			// If this is the last one
+			if(this.count == 0) {
+				this.setState({"visible":false});
+			}
+		}
 	}
 
 	render() {

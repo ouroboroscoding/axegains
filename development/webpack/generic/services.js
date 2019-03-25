@@ -21,16 +21,34 @@ var _domain = '';
 var _error = function() {}
 
 /**
+ * Clear
+ *
+ * Clears the session from local storage and cookies
+ *
+ * @name _clear
+ * access private
+ * @return void
+ */
+function _clear() {
+
+	// Delete from localStorage
+	delete localStorage['_session'];
+
+	// Delete the cookie
+	Cookies.remove('_session', '.' + window.location.hostname, '/');
+}
+
+/**
  * Request
  *
  * Handles actual requests
  *
  * @name request
  * @access private
- * @param str method			The method used to send the request
- * @param str url				The full URL to the service/noun
+ * @param string method			The method used to send the request
+ * @param string url			The full URL to the service/noun
  * @param object data			The data to send to the service
- * @param str auth				Optional Authorization token
+ * @param string auth			Optional Authorization token
  * @return xhr
  */
 function _request(method, url, data) {
@@ -47,7 +65,18 @@ function _request(method, url, data) {
 		},
 		"contentType": "application/json; charset=utf-8",
 		"error": function(xhr, status, error) {
+
+			// If we got an Authorization error
+			if(xhr.status == 401) {
+
+				// Clear the current token
+				_clear();
+			}
+
+			// Put the error in the console
 			console.error(method + ' ' + xhr._url + ' returned: ' + error);
+
+			// Return the xhr to the error callback
 			_error(xhr);
 		},
 		"method": method,
@@ -70,14 +99,33 @@ function _request(method, url, data) {
 }
 
 /**
+ * Store
+ *
+ * Stores the session token in local storage and cookies
+ *
+ * @name _store
+ * @access private
+ * @param string token
+ * @return void
+ */
+function _store(token) {
+
+	// Set the session in localStorage
+	localStorage['_session'] = token
+
+	// Set the session in a cookie
+	Cookies.set('_session', token, 86400, '.' + window.location.hostname, '/');
+}
+
+/**
  * Success
  *
  * Handles success from xhr
  *
  * @name _success
  * @access private
- * @param str res				The result from the server
- * @param str status			The status of the request
+ * @param string res			The result from the server
+ * @param string status			The status of the request
  * @param xhr xhr				The request object
  * @return void
  */
@@ -108,10 +156,12 @@ var Services = {
 	 *
 	 * @name init
 	 * @access public
-	 * @param str subdomain			The sub-domain services can be reached through
+	 * @param string subdomain		The sub-domain services can be reached through
 	 * @return void
 	 */
 	"init": function(subdomain, error) {
+
+		// Store the full domain name for service calls
 		_domain = '//' + subdomain +
 					'.' + window.location.hostname +
 					'/';
@@ -142,8 +192,8 @@ var Services = {
 	 *
 	 * @name create
 	 * @access public
-	 * @param str service			The name of the service to call
-	 * @param str noun				The noun to call on the service
+	 * @param string service		The name of the service to call
+	 * @param string noun			The noun to call on the service
 	 * @param object data			The data to send to the service
 	 * @return xhr
 	 */
@@ -158,8 +208,8 @@ var Services = {
 	 *
 	 * @name delete
 	 * @access public
-	 * @param str service			The name of the service to call
-	 * @param str noun				The noun to call on the service
+	 * @param string service		The name of the service to call
+	 * @param string noun			The noun to call on the service
 	 * @param object data			The data to send to the service
 	 * @return xhr
 	 */
@@ -174,8 +224,8 @@ var Services = {
 	 *
 	 * @name read
 	 * @access public
-	 * @param str service			The name of the service to call
-	 * @param str noun				The noun to call on the service
+	 * @param string service		The name of the service to call
+	 * @param string noun			The noun to call on the service
 	 * @param object data			The data to send to the service
 	 * @return xhr
 	 */
@@ -190,7 +240,7 @@ var Services = {
 	 *
 	 * @name session
 	 * @access public
-	 * @param str token				The token to store
+	 * @param string token			The token to store
 	 * @return void|str
 	 */
 	"session": function(token) {
@@ -200,22 +250,12 @@ var Services = {
 
 			// If null was passed, delete the session
 			if(token == null) {
-
-				// Delete from localStorage
-				delete localStorage['_session'];
-
-				// Delete the cookie
-				Cookies.remove('_session', '.' + window.location.hostname, '/');
+				_clear();
 			}
 
 			// Else, set the session
 			else {
-
-				// Set the session in localStorage
-				localStorage['_session'] = token
-
-				// Set the session in a cookie
-				Cookies.set('_session', token, 86400, '.' + window.location.hostname, '/');
+				_store(token);
 			}
 		}
 
@@ -234,8 +274,8 @@ var Services = {
 	 *
 	 * @name update
 	 * @access public
-	 * @param str service			The name of the service to call
-	 * @param str noun				The noun to call on the service
+	 * @param string service		The name of the service to call
+	 * @param string noun			The noun to call on the service
 	 * @param object data			The data to send to the service
 	 * @return xhr
 	 */

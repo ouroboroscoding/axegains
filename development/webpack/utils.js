@@ -4,13 +4,21 @@
  * Shared utilities
  */
 
+// External modules
+var moment = require('moment');
+
 // Generic modules
-var Events = require('events');
+var Events = require('./generic/events.js');
 
 /**
  * Utils
  */
 var Utils = {
+
+	date: function(ts) {
+		var d = moment.unix(ts);
+		return d.format('YYYY/MM/DD');
+	},
 
 	errorTree: function(errors) {
 

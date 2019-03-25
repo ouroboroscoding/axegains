@@ -164,17 +164,19 @@ class Natf(Services.Service):
 		# Fetch all records
 		lRecs = Practice.get(
 			data['thrower'], index='thrower',
-			raw=['clutches', 'points', 'throws']
+			raw=['_created', 'clutches', 'points', 'throws'],
+			orderby='_created'
 		)
 
 		# Init the return data
 		dRet = {
 			"total": {
-				"averages": {},
+				"average": {},
 				"clutches": {"attempts": 0, "hits": 0},
 				"points": {"total": 0, "target": 0},
-				"rates": {},
-				"throws": {"attempts": 0, "hits": 0}
+				"rate": {},
+				"throws": {"attempts": 0, "hits": 0},
+				"target": {}
 			},
 			"last": []
 		}
@@ -200,58 +202,58 @@ class Natf(Services.Service):
 			# If the record is in the last five
 			if i >= iFive:
 
+				# Target attempts / hits
+				lRecs[i]['target'] = {
+					"attempts": lRecs[i]['throws']['attempts'] - lRecs[i]['clutches']['attempts'],
+					"hits": lRecs[i]['throws']['hits'] - lRecs[i]['clutches']['hits']
+				}
+
 				# Calculate the averages
-				lRecs[i]['averages'] = {}
+				lRecs[i]['average'] = {}
 				lRecs[i]['average']['total'] = round(
-					(lRecs[i]['points']['total'] / lRecs[i]['throws']['attempts']),
+					lRecs[i]['points']['total'] / lRecs[i]['throws']['attempts'],
 					2
 				)
 				lRecs[i]['average']['target'] = round(
-					(lRecs[i]['points']['target'] / (
-						lRecs[i]['throws']['attempts'] - lRecs[i]['clutches']['attempts']
-					)),
+					lRecs[i]['points']['target'] / lRecs[i]['target']['attempts'],
 					2
 				)
 
 				# Calculate the rates
-				lRecs[i]['rates'] = {}
+				lRecs[i]['rate'] = {}
 				lRecs[i]['rate']['total'] = round(
-					(100.0 * (
-						lRecs[i]['throws']['hits'] / lRecs[i]['throws']['attempts']
-					)),
+					100.0 * (lRecs[i]['throws']['hits'] / lRecs[i]['throws']['attempts']),
 					1
 				)
 				lRecs[i]['rate']['target'] = round(
-					(100.0 * (
-						(lRecs[i]['throws']['hits'] - lRecs[i]['clutches']['hits']) /
-						(lRecs[i]['throws']['attempts'] - lRecs[i]['clutches']['attempts'])
-					)),
+					100.0 * (lRecs[i]['target']['hits'] / lRecs[i]['target']['attempts']),
 					1
 				)
 				lRecs[i]['rate']['clutch'] = round(
-					(100.0 * (
-						lRecs[i]['clutches']['hits'] / lRecs[i]['clutches']['attempts']
-					)),
+					100.0 * (lRecs[i]['clutches']['hits'] / lRecs[i]['clutches']['attempts']),
 					1
 				)
 
 				# Insert the record at the beginning of the 'last' list
 				dRet['last'].insert(0, lRecs[i])
 
+		# Target attempts / hits
+		dRet['total']['target'] = {
+			"attempts": dRet['total']['throws']['attempts'] - dRet['total']['clutches']['attempts'],
+			"hits": dRet['total']['throws']['hits'] - dRet['total']['clutches']['hits']
+		}
+
 		# Calculate the averages
 		dRet['total']['average']['total'] = round(
-			(dRet['total']['points']['total'] / dRet['total']['throws']['attempts']),
+			dRet['total']['points']['total'] / dRet['total']['throws']['attempts'],
 			2
 		)
 		dRet['total']['average']['target'] = round(
-			(dRet['total']['points']['target'] / (
-				dRet['total']['throws']['attempts'] - dRet['total']['clutches']['attempts']
-			)),
+			dRet['total']['points']['target'] / dRet['total']['target']['attempts'],
 			2
 		)
 
 		# Calculate the rates
-		dRet['total']['rates'] = {}
 		dRet['total']['rate']['total'] = round(
 			(100.0 * (
 				dRet['total']['throws']['hits'] / dRet['total']['throws']['attempts']
