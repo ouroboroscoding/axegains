@@ -1,3 +1,47 @@
+#practice {
+
+	.natf {
+
+		.points, .allPoints {
+			width: 304px;
+
+			span {
+				display: inline-block;
+				padding: 3px 0;
+				text-align: center;
+				width: 30px;
+			}
+
+			span.clutch {
+				background-color: green;
+				color: white;
+			}
+		}
+
+		.points {
+			border: 2px solid black;
+			margin: 5px 0;
+
+			.last {
+				cursor: pointer;
+			}
+
+			.overwrite {
+				background-color: red;
+				color: white;
+			}
+		}
+
+		.averages {
+			margin: 10px 0 0 0;
+		}
+
+		.reset, .save {
+			cursor: pointer;
+		}
+	}
+}
+
 .natf {
 
 	.board {
@@ -95,46 +139,5 @@
 
 	.board.active {
 		background-color: grey;
-	}
-
-	.practice {
-
-		.points, .allPoints {
-			width: 304px;
-
-			span {
-				display: inline-block;
-				padding: 3px 0;
-				text-align: center;
-				width: 30px;
-			}
-
-			span.clutch {
-				background-color: green;
-				color: white;
-			}
-		}
-
-		.points {
-			border: 2px solid black;
-			margin: 5px 0;
-
-			.last {
-				cursor: pointer;
-			}
-
-			.overwrite {
-				background-color: red;
-				color: white;
-			}
-		}
-
-		.averages {
-			margin: 10px 0 0 0;
-		}
-
-		.reset, .save {
-			cursor: pointer;
-		}
 	}
 }

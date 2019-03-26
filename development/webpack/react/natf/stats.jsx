@@ -3,6 +3,7 @@ var React = require('react');
 
 // Generic modules
 var Events = require('../../generic/events.js');
+var Loader = require('../../generic/loader.js');
 var Services = require('../../generic/services.js');
 
 // Site modules
@@ -38,8 +39,11 @@ class Stats extends React.Component {
 
 	matchStats() {
 
+		// Save this
+		var self = this;
+
 		// Show the loader
-		Events.trigger('loader', true);
+		Loader.show();
 
 		// Fetch the match stats
 		Services.read('natf', 'match/stats', {}).done(res => {
@@ -65,7 +69,7 @@ class Stats extends React.Component {
 
 		}).always(() => {
 			// Hide the loader
-			Events.trigger('loader', false);
+			Loader.hide();
 		});
 	}
 
@@ -75,7 +79,7 @@ class Stats extends React.Component {
 		var self = this;
 
 		// Show the loader
-		Events.trigger('loader', true);
+		Loader.show();
 
 		// Fetch the practice stats
 		Services.read('natf', 'practice/stats', {}).done(res => {
@@ -101,7 +105,7 @@ class Stats extends React.Component {
 
 		}).always(() => {
 			// Hide the loader
-			Events.trigger('loader', false);
+			Loader.hide();
 		});
 	}
 
@@ -119,7 +123,8 @@ class Stats extends React.Component {
 									<tr>
 										<th rowSpan="2"> </th>
 										<th rowSpan="2">Points</th>
-										<th colSpan="2">Point Averages</th>
+										<th rowSpan="2">Throws</th>
+										<th colSpan="2">Average Points</th>
 										<th colSpan="3">Hit Rates</th>
 									</tr>
 									<tr>
@@ -134,6 +139,7 @@ class Stats extends React.Component {
 									<tr>
 										<td>Overall</td>
 										<td>{practice.total.points.total}</td>
+										<td>{practice.total.throws.attempts}</td>
 										<td>{practice.total.average.total}</td>
 										<td>{practice.total.average.target}</td>
 										<td>{practice.total.rate.total}%</td>
@@ -145,6 +151,7 @@ class Stats extends React.Component {
 											<tr key={i}>
 												<td>{Utils.date(o._created)}</td>
 												<td>{o.points.total}</td>
+												<td>{o.throws.attempts}</td>
 												<td>{o.average.total}</td>
 												<td>{o.average.target}</td>
 												<td>{o.rate.total}%</td>

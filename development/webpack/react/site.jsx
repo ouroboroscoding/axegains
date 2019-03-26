@@ -3,15 +3,15 @@ var React = require('react');
 
 // Generic modules
 var Events = require('../generic/events.js');
+var Hash = require('../generic/hash.js');
 
 // Generic components
-var Loader = require('./elements/loader.jsx');
 var {Menu, Item} = require('./elements/menu.jsx');
 var Messages = require ('./elements/messages.jsx');
 
 // Site components
 var Header = require('./header.jsx');
-var NatfPractice = require('./natf/practice.jsx');
+var Practice = require('./practice.jsx');
 
 // Site component
 class Site extends React.Component {
@@ -21,50 +21,57 @@ class Site extends React.Component {
 		// Call the parent constructor
 		super(props);
 
+		// Init the hash module and watch for page changes
+		Hash.init();
+		Hash.watch('page', this.hashChange.bind(this))
+
 		// Initialise the state
 		this.state = {
-			"primary": "practice",
-			"secondary": "natf",
+			"page": Hash.get('page', 'practice'),
 			"thrower": props.thrower ? props.thrower : false
 		};
 
 		// Bind methods
-		this.primaryChange = this.primaryChange.bind(this);
-		this.secondaryChange = this.secondaryChange.bind(this);
+		this.pageChange = this.pageChange.bind(this);
 	}
 
-	primaryChange(name) {
-		this.setState({"primary": name})
+	hashChange(page) {
+		// If the page has changed
+		if(page != this.state.page) {
+			this.setState({"page": page})
+		}
+	}
+
+	pageChange(name) {
+		Hash.set("page", name);
 	}
 
 	render() {
 		var self = this;
+
+		// Stupid react
+		var items = [
+			<Item key={0} name="games">Games</Item>,
+			<Item key={1} name="practice">Practice</Item>
+		];
+		if(this.state.thrower) {
+			items.push(<Item key={2} name="match">Match</Item>);
+			items.push(<Item key={3} name="league">League</Item>);
+			items.push(<Item key={4} name="stats">Stats</Item>);
+		}
+
 		return (
 			<div id="site">
 				<Header thrower={self.state.thrower} />
-				<Menu className="menu primary" selected={self.state.primary} onChange={self.primaryChange}>
-					<Item name="games">Games</Item>
-					<Item name="practice">Practice</Item>
-					<Item name="match">Match</Item>
-					<Item name="league">League</Item>
+				<Menu className="menu primary" selected={self.state.page} onChange={self.pageChange}>
+					{items}
 				</Menu>
-				<Menu className="menu secondary" selected={self.state.secondary} onChange={self.secondaryChange}>
-					<Item name="natf">NATF</Item>
-					<Item name="watl">WATL</Item>
-				</Menu>
-				<div id="content">
-					<div id="centered">
-						{self.state.primary == 'practice' && self.state.secondary == 'natf' && <NatfPractice thrower={self.state.thrower} />}
-					</div>
-				</div>
+				{self.state.page == 'practice' &&
+					<Practice thrower={self.state.thrower} />
+				}
 				<Messages />
-				<Loader />
 			</div>
 		);
-	}
-
-	secondaryChange(name) {
-		this.setState({"secondary": name})
 	}
 }
 

@@ -8,6 +8,7 @@ var Thrower = require('./thrower.jsx');
 
 // Generic modules
 var Events = require('../generic/events.js');
+var Loader = require('../generic/loader.js');
 var Services = require('../generic/services.js');
 
 // Site modules
@@ -110,7 +111,7 @@ class Header extends React.Component {
 		var self = this;
 
 		// Show loader
-		Events.trigger('loader', true);
+		Loader.show();
 
 		// Store the alias
 		var alias = this.refs.alias.value;
@@ -164,7 +165,7 @@ class Header extends React.Component {
 
 		}).always(() => {
 			// Hide loader
-			Events.trigger('loader', false);
+			Loader.hide();
 		});
 	}
 
@@ -187,7 +188,7 @@ class Header extends React.Component {
 		var self = this;
 
 		// Show loader
-		Events.trigger('loader', true);
+		Loader.show();
 
 		// Call the signout
 		Services.create('auth', 'signout', {}).done(res => {
@@ -213,7 +214,7 @@ class Header extends React.Component {
 			}
 		}).always(() => {
 			// Hide loader
-			Events.trigger('loader', false);
+			Loader.hide();
 		});
 	}
 
@@ -239,7 +240,7 @@ class Header extends React.Component {
 		var self = this;
 
 		// Show loader
-		Events.trigger('loader', true);
+		Loader.show();
 
 		// Init the data
 		var oData = {
@@ -310,7 +311,7 @@ class Header extends React.Component {
 
 		}).always(() => {
 			// Hide loader
-			Events.trigger('loader', false);
+			Loader.hide();
 		});
 	}
 

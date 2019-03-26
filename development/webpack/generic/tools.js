@@ -109,6 +109,44 @@ var Tools = {
 	},
 
 	/**
+	 * Empty
+	 *
+	 * Returns true if the value type is empty
+	 *
+	 * @name empty
+	 * @access public
+	 * @param mixed m				The value to check, can be object, array, string, etc
+	 * @return bool
+	 */
+	empty: function(m) {
+
+		// If it's an object
+		if(Tools.isObject(m)) {
+			for(var p in m) {
+				return false;
+			}
+			return true;
+		}
+
+		// Else if it's an array or a string
+		else if(Array.isArray(m) || typeof m == 'string') {
+			return m.length > 0 ? true : false;
+		}
+
+		// Else
+		else {
+
+			// If it's null or undefined
+			if(typeof m == 'undefined' || m == null) {
+				return true;
+			}
+
+			// Else return false
+			return false;
+		}
+	},
+
+	/**
 	 * Is Decimal
 	 *
 	 * Returns true if the variable is a number

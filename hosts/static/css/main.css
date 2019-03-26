@@ -415,6 +415,32 @@ button.large:active {
           margin-left: 10px; }
 
 /* natf */
+#practice .natf .points, #practice .natf .allPoints {
+  width: 304px; }
+  #practice .natf .points span, #practice .natf .allPoints span {
+    display: inline-block;
+    padding: 3px 0;
+    text-align: center;
+    width: 30px; }
+  #practice .natf .points span.clutch, #practice .natf .allPoints span.clutch {
+    background-color: green;
+    color: white; }
+
+#practice .natf .points {
+  border: 2px solid black;
+  margin: 5px 0; }
+  #practice .natf .points .last {
+    cursor: pointer; }
+  #practice .natf .points .overwrite {
+    background-color: red;
+    color: white; }
+
+#practice .natf .averages {
+  margin: 10px 0 0 0; }
+
+#practice .natf .reset, #practice .natf .save {
+  cursor: pointer; }
+
 .natf .board {
   background-color: white;
   height: 350px;
@@ -483,32 +509,6 @@ button.large:active {
 
 .natf .board.active {
   background-color: grey; }
-
-.natf .practice .points, .natf .practice .allPoints {
-  width: 304px; }
-  .natf .practice .points span, .natf .practice .allPoints span {
-    display: inline-block;
-    padding: 3px 0;
-    text-align: center;
-    width: 30px; }
-  .natf .practice .points span.clutch, .natf .practice .allPoints span.clutch {
-    background-color: green;
-    color: white; }
-
-.natf .practice .points {
-  border: 2px solid black;
-  margin: 5px 0; }
-  .natf .practice .points .last {
-    cursor: pointer; }
-  .natf .practice .points .overwrite {
-    background-color: red;
-    color: white; }
-
-.natf .practice .averages {
-  margin: 10px 0 0 0; }
-
-.natf .practice .reset, .natf .practice .save {
-  cursor: pointer; }
 
 /* site */
 html, body {

@@ -4,6 +4,7 @@ var ReactDOM = require('react-dom');
 
 // Generic
 var Events = require('./generic/events.js');
+var Loader = require('./generic/loader.js');
 var Services = require('./generic/services.js');
 
 // Components
@@ -27,6 +28,9 @@ var Site = require('./react/site.jsx');
 		}),
 		document.getElementById('react')
 	);
+
+	// Hide the loader
+	Loader.hide();
 })();
 
 // Export

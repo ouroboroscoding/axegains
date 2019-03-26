@@ -3,6 +3,7 @@ var React = require('react');
 
 // Generic modules
 var Events = require('../../generic/events.js');
+var Loader = require('../../generic/loader.js');
 var Services = require('../../generic/services.js');
 
 // Site modules
@@ -189,13 +190,17 @@ class Practice extends React.Component {
 		var self = this;
 
 		return (
-			<div className="natf">
-				<div className="practice">
-					{self.state.mode == null ?
-						self.returnSelectPractice()
-					:
-						self.returnBoard()
-					}
+			<div id="content">
+				<div id="centered">
+					<div className="natf">
+						<div className="practice">
+							{self.state.mode == null ?
+								self.returnSelectPractice()
+							:
+								self.returnBoard()
+							}
+						</div>
+					</div>
 				</div>
 			</div>
 		);
@@ -303,7 +308,7 @@ class Practice extends React.Component {
 		var self = this;
 
 		// Show loader
-		Events.trigger('loader', true);
+		Loader.show();
 
 		// Send the practice to the NATF service
 		Services.create('natf', 'practice', {
@@ -339,7 +344,7 @@ class Practice extends React.Component {
 
 		}).always(() => {
 			// Hide loader
-			Events.trigger('loader', false);
+			Loader.hide();
 		});
 	}
 
