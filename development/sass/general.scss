@@ -18,7 +18,6 @@ i.far, i.fas {
 }
 
 dl.select {
-
 	margin: 5px 0;
 
 	dt {
@@ -78,22 +77,21 @@ table {
 	}
 }
 
-form {
-	margin-bottom: 10px;
-}
+div.form {
 
-input[type=text], input[type=password], select, textarea {
-	width: 100%;
-}
+	input[type=text], input[type=password], select, textarea {
+		width: 100%;
+	}
 
-input.error::placeholder {
-	color: white;
-}
+	input.error::placeholder {
+		color: white;
+	}
 
-input.error, select.error {
-	background-color: $color-error;
-	border-color: red;
-	color: white;
+	input.error, select.error {
+		background-color: $color-error;
+		border-color: red;
+		color: white;
+	}
 }
 
 @import 'buttons';

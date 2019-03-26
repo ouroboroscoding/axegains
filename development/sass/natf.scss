@@ -2,8 +2,10 @@
 
 	.natf {
 
+		margin: 0 auto;
+		width: 304px;
+
 		.points, .allPoints {
-			width: 304px;
 
 			span {
 				display: inline-block;
@@ -32,6 +34,10 @@
 			}
 		}
 
+		.allPoints {
+			width: 300px;
+		}
+
 		.averages {
 			margin: 10px 0 0 0;
 		}
@@ -42,11 +48,25 @@
 	}
 }
 
+#stats {
+
+	.natf {
+		margin: 5px auto;
+		overflow: auto;
+		width: 95%;
+
+		table {
+			min-width: 700px;
+		}
+	}
+}
+
 .natf {
 
 	.board {
 		background-color: white;
 		height: 350px;
+		margin: 0 auto;
 		width: 300px;
 
 		.clutch {

@@ -80,7 +80,7 @@ class Header extends React.Component {
 					<div id="signin" className="form">
 						<p><input ref="alias" type="text" title="alias" placeholder="alias" onClick={Forms.errorFocus} /></p>
 						<p><input ref="passwd" type="password" title="password" placeholder="password" onClick={Forms.errorFocus} /></p>
-						<p><button onClick={self.signin}>sign in</button></p>
+						<p className="aright"><button onClick={self.signin}>sign in</button></p>
 					</div>
 				}
 				{self.state.modal == 'signup' &&
@@ -89,7 +89,7 @@ class Header extends React.Component {
 						<p><input ref="email" type="text" title="email" placeholder="email (not required)" onClick={Forms.errorFocus} /></p>
 						<p><input ref="signup_passwd" type="password" title="password" placeholder="password" onClick={Forms.errorFocus} /></p>
 						<p><input ref="repeat_passwd" type="password" title="repeat password" placeholder="repeat password" onClick={Forms.errorFocus} /></p>
-						<p><button onClick={self.signup}>sign up</button></p>
+						<p className="aright"><button onClick={self.signup}>sign up</button></p>
 					</div>
 				}
 				{self.state.modal == 'account' &&

@@ -114,62 +114,60 @@ class Stats extends React.Component {
 		var practice = this.state.practice;
 		return (
 			<div className="natf">
-				<div className="stats">
-					{this.state.practice &&
-						<div className="practice">
-							<h2>Practice</h2>
-							<table>
-								<thead>
-									<tr>
-										<th rowSpan="2"> </th>
-										<th rowSpan="2">Points</th>
-										<th rowSpan="2">Throws</th>
-										<th colSpan="2">Average Points</th>
-										<th colSpan="3">Hit Rates</th>
-									</tr>
-									<tr>
-										<th>Total</th>
-										<th>Target</th>
-										<th>Total</th>
-										<th>Target</th>
-										<th>Clutch</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>Overall</td>
-										<td>{practice.total.points.total}</td>
-										<td>{practice.total.throws.attempts}</td>
-										<td>{practice.total.average.total}</td>
-										<td>{practice.total.average.target}</td>
-										<td>{practice.total.rate.total}%</td>
-										<td>{practice.total.rate.target}%</td>
-										<td>{practice.total.rate.clutch}%</td>
-									</tr>
-									{practice.last.map(function(o, i) {
-										return (
-											<tr key={i}>
-												<td>{Utils.date(o._created)}</td>
-												<td>{o.points.total}</td>
-												<td>{o.throws.attempts}</td>
-												<td>{o.average.total}</td>
-												<td>{o.average.target}</td>
-												<td>{o.rate.total}%</td>
-												<td>{o.rate.target}%</td>
-												<td>{o.rate.clutch}%</td>
-											</tr>
-										);
-									})}
-								</tbody>
-							</table>
-						</div>
-					}
-					{this.state.match &&
-						<div className="match">
+				{this.state.practice &&
+					<React.Fragment>
+						<h2>Practice</h2>
+						<table>
+							<thead>
+								<tr>
+									<th rowSpan="2"> </th>
+									<th rowSpan="2">Points</th>
+									<th rowSpan="2">Throws</th>
+									<th colSpan="2">Average Points</th>
+									<th colSpan="3">Hit Rates</th>
+								</tr>
+								<tr>
+									<th>Total</th>
+									<th>Target</th>
+									<th>Total</th>
+									<th>Target</th>
+									<th>Clutch</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Overall</td>
+									<td>{practice.total.points.total}</td>
+									<td>{practice.total.throws.attempts}</td>
+									<td>{practice.total.average.total}</td>
+									<td>{practice.total.average.target}</td>
+									<td>{practice.total.rate.total}%</td>
+									<td>{practice.total.rate.target}%</td>
+									<td>{practice.total.rate.clutch}%</td>
+								</tr>
+								{practice.last.map(function(o, i) {
+									return (
+										<tr key={i}>
+											<td>{Utils.date(o._created)}</td>
+											<td>{o.points.total}</td>
+											<td>{o.throws.attempts}</td>
+											<td>{o.average.total}</td>
+											<td>{o.average.target}</td>
+											<td>{o.rate.total}%</td>
+											<td>{o.rate.target}%</td>
+											<td>{o.rate.clutch}%</td>
+										</tr>
+									);
+								})}
+							</tbody>
+						</table>
+					</React.Fragment>
+				}
+				{this.state.match &&
+					<React.Fragment>
 
-						</div>
-					}
-				</div>
+					</React.Fragment>
+				}
 			</div>
 		);
 	}

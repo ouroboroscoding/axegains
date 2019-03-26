@@ -52,7 +52,9 @@ class Practice extends React.Component {
 
 		// If we have data in local storage
 		if('natf_practice' in localStorage) {
-			this.setState(JSON.parse(localStorage['natf_practice']), function() {
+			var new_state = JSON.parse(localStorage['natf_practice']);
+			new_state.thrower = this.state.thrower;
+			this.setState(new_state, function() {
 				if(this.state.mode == 'supernatural') {
 					if(this.state.points.length % 5 == 4) {
 						this.refs.board.clutchMode = 'expected';
@@ -189,18 +191,67 @@ class Practice extends React.Component {
 	render() {
 		var self = this;
 
+		// If we have points
+		if(this.state.points.length) {
+
+			// Init the last index
+			var last = 28;
+
+			// If we have less than 29
+			if(this.state.points.length < 29) {
+				last = this.state.points.length - 1;
+			}
+		}
+
 		return (
-			<div id="content">
-				<div id="centered">
-					<div className="natf">
-						<div className="practice">
-							{self.state.mode == null ?
-								self.returnSelectPractice()
-							:
-								self.returnBoard()
-							}
-						</div>
-					</div>
+			<div className="natf">
+				<dl className="select" style={{"display": self.state.mode == null ? 'block':'none'}}>
+					<dt data-mode="free" onClick={this.modeSelect}>Free Practice</dt>
+					<dd>In free practice any points are available at any time. You must select the clutch first if you wish to try for it.</dd>
+					<dt data-mode="supernatural" onClick={this.modeSelect}>Supernatural</dt>
+					<dd>In supernatural practice every fifth throw is for clutch, and it will be pre-selected for you on those turns.</dd>
+					<dt data-mode="clutch" onClick={this.modeSelect}>Clutch</dt>
+					<dd>In clutch practice every throw is for the clutch, and it will be pre-selected every turn.</dd>
+				</dl>
+				<div style={{"display": self.state.mode == null ? 'none':'block'}}>
+					<Board ref="board" clutchMode={self.state.mode} onPoints={self.points} />
+					{self.state.points.length > 0 &&
+						<React.Fragment>
+							<div className="averages">
+								<span className="clutches fright"><b>Clutch %: </b><span>{self.state.clutchAttempts == 0 ? "0.0" : ((self.state.clutchHits / self.state.clutchAttempts) * 100.0).toFixed(1)}</span></span>
+								<span className="average fleft"><b>Avg Throw: </b><span>{(self.state.totalPoints / self.state.points.length).toFixed(2)}</span></span>
+								<br />
+							</div>
+							<div className="points">
+								{self.state.points.length > 29 &&
+									<span key={-1} onClick={self.pointsShow}>...</span>
+								}
+								{self.state.points.slice(-29).map(function(p, i) {
+									if(i == last) {
+										return <span key={i} className={"last " + (self.state.overwrite ? 'overwrite' : (p[0] ? 'clutch' : ''))} onClick={self.overwrite}>{p[1]}</span>
+									} else {
+										return <span key={i} className={p[0] ? 'clutch':''}>{p[1]}</span>
+									}
+								})}
+							</div>
+						</React.Fragment>
+					}
+					<div className="reset fright" onClick={self.reset}>Reset</div>
+					{(this.state.thrower && this.state.points.length > 0) &&
+						<div className="save fleft" onClick={self.save}>Save & Reset</div>
+					}
+					{self.state.showPoints &&
+						<Modal
+							title="All points this practice"
+							close={self.pointsHide}
+						>
+							<div className="allPoints">
+								{self.state.points.map(function(p, i) {
+									return <span key={i} className={p[0] ? 'clutch':''}>{p[1]}</span>
+								})}
+							</div>
+						</Modal>
+					}
 				</div>
 			</div>
 		);
@@ -228,78 +279,6 @@ class Practice extends React.Component {
 				"totalPoints": 0
 			});
 		}
-	}
-
-	returnSelectPractice() {
-		return (
-			<dl className="select">
-				<dt data-mode="free" onClick={this.modeSelect}>Free Practice</dt>
-				<dd>In free practice any points are available at any time. You must select the clutch first if you wish to try for it.</dd>
-				<dt data-mode="supernatural" onClick={this.modeSelect}>Supernatural</dt>
-				<dd>In supernatural practice every fifth throw is for clutch, and it will be pre-selected for you on those turns.</dd>
-				<dt data-mode="clutch" onClick={this.modeSelect}>Clutch</dt>
-				<dd>In clutch practice every throw is for the clutch, and it will be pre-selected every turn.</dd>
-			</dl>
-		);
-	}
-
-	returnBoard() {
-		var self = this;
-
-		// If we have points
-		if(this.state.points.length) {
-
-			// Init the last index
-			var last = 28;
-
-			// If we have less than 29
-			if(this.state.points.length < 29) {
-				last = this.state.points.length - 1;
-			}
-		}
-
-		return (
-			<React.Fragment>
-				<Board ref="board" clutchMode={self.state.mode} onPoints={self.points} />
-				{self.state.points.length > 0 &&
-					<React.Fragment>
-						<div className="averages">
-							<span className="clutches fright"><b>Clutch %: </b><span>{self.state.clutchAttempts == 0 ? "0.0" : ((self.state.clutchHits / self.state.clutchAttempts) * 100.0).toFixed(1)}</span></span>
-							<span className="average fleft"><b>Avg Throw: </b><span>{(self.state.totalPoints / self.state.points.length).toFixed(2)}</span></span>
-							<br />
-						</div>
-						<div className="points">
-							{self.state.points.length > 29 &&
-								<span key={-1} onClick={self.pointsShow}>...</span>
-							}
-							{self.state.points.slice(-29).map(function(p, i) {
-								if(i == last) {
-									return <span key={i} className={"last " + (self.state.overwrite ? 'overwrite' : (p[0] ? 'clutch' : ''))} onClick={self.overwrite}>{p[1]}</span>
-								} else {
-									return <span key={i} className={p[0] ? 'clutch':''}>{p[1]}</span>
-								}
-							})}
-						</div>
-					</React.Fragment>
-				}
-				<div className="reset fright" onClick={self.reset}>Reset</div>
-				{(this.state.thrower && this.state.points.length > 0) &&
-					<div className="save fleft" onClick={self.save}>Save & Reset</div>
-				}
-				{self.state.showPoints &&
-					<Modal
-						title="All points this practice"
-						close={self.pointsHide}
-					>
-						<div className="allPoints">
-							{self.state.points.map(function(p, i) {
-								return <span key={i} className={p[0] ? 'clutch':''}>{p[1]}</span>
-							})}
-						</div>
-					</Modal>
-				}
-			</React.Fragment>
-		);
 	}
 
 	save(ev) {

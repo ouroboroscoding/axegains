@@ -11,7 +11,9 @@ var Messages = require ('./elements/messages.jsx');
 
 // Site components
 var Header = require('./header.jsx');
+var Match = require('./match.jsx');
 var Practice = require('./practice.jsx');
+var Stats = require('./stats.jsx');
 
 // Site component
 class Site extends React.Component {
@@ -25,9 +27,13 @@ class Site extends React.Component {
 		Hash.init();
 		Hash.watch('page', this.hashChange.bind(this))
 
+		// Track any signin/signout events
+		Events.add('signin', this.signin.bind(this));
+		Events.add('signout', this.signout.bind(this));
+
 		// Initialise the state
 		this.state = {
-			"page": Hash.get('page', 'practice'),
+			"page": Hash.get('page', 'games'),
 			"thrower": props.thrower ? props.thrower : false
 		};
 
@@ -39,6 +45,7 @@ class Site extends React.Component {
 		// If the page has changed
 		if(page != this.state.page) {
 			this.setState({"page": page})
+			this.refs.menu.selected = page;
 		}
 	}
 
@@ -63,15 +70,36 @@ class Site extends React.Component {
 		return (
 			<div id="site">
 				<Header thrower={self.state.thrower} />
-				<Menu className="menu primary" selected={self.state.page} onChange={self.pageChange}>
+				<Menu ref="menu" className="menu primary" selected={self.state.page} onChange={self.pageChange}>
 					{items}
 				</Menu>
 				{self.state.page == 'practice' &&
 					<Practice thrower={self.state.thrower} />
 				}
+				{self.state.page == 'match' &&
+					<Match thrower={self.state.thrower} />
+				}
+				{self.state.page == 'stats' &&
+					<Stats />
+				}
 				<Messages />
 			</div>
 		);
+	}
+
+	signin() {
+		this.setState({"thrower": true});
+	}
+
+	signout() {
+
+		// If the page needs to be signed in
+		if(['games', 'practice'].indexOf(this.state.page) == -1) {
+			Hash.set('page', 'games');
+		}
+
+		// Remove the thrower flag
+		this.setState({"thrower": false});
 	}
 }
 

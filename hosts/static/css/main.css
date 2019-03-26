@@ -163,16 +163,13 @@ table {
     text-align: center;
     width: 22px; }
 
-form {
-  margin-bottom: 10px; }
-
-input[type=text], input[type=password], select, textarea {
+div.form input[type=text], div.form input[type=password], div.form select, div.form textarea {
   width: 100%; }
 
-input.error::placeholder {
+div.form input.error::placeholder {
   color: white; }
 
-input.error, select.error {
+div.form input.error, div.form select.error {
   background-color: #E24E28;
   border-color: red;
   color: white; }
@@ -323,15 +320,15 @@ button.large:active {
   height: 100%;
   width: 100%;
   z-index: 20; }
-  #loader .cell {
+  #loader div {
     height: 100%;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center; }
-  #loader .content {
-    margin: 0 auto;
-    text-align: center; }
+    #loader div div {
+      margin: 0 auto;
+      text-align: center; }
 
 #messages {
   position: fixed;
@@ -415,7 +412,8 @@ button.large:active {
           margin-left: 10px; }
 
 /* natf */
-#practice .natf .points, #practice .natf .allPoints {
+#practice .natf {
+  margin: 0 auto;
   width: 304px; }
   #practice .natf .points span, #practice .natf .allPoints span {
     display: inline-block;
@@ -425,25 +423,32 @@ button.large:active {
   #practice .natf .points span.clutch, #practice .natf .allPoints span.clutch {
     background-color: green;
     color: white; }
-
-#practice .natf .points {
-  border: 2px solid black;
-  margin: 5px 0; }
-  #practice .natf .points .last {
+  #practice .natf .points {
+    border: 2px solid black;
+    margin: 5px 0; }
+    #practice .natf .points .last {
+      cursor: pointer; }
+    #practice .natf .points .overwrite {
+      background-color: red;
+      color: white; }
+  #practice .natf .allPoints {
+    width: 300px; }
+  #practice .natf .averages {
+    margin: 10px 0 0 0; }
+  #practice .natf .reset, #practice .natf .save {
     cursor: pointer; }
-  #practice .natf .points .overwrite {
-    background-color: red;
-    color: white; }
 
-#practice .natf .averages {
-  margin: 10px 0 0 0; }
-
-#practice .natf .reset, #practice .natf .save {
-  cursor: pointer; }
+#stats .natf {
+  margin: 5px auto;
+  overflow: auto;
+  width: 95%; }
+  #stats .natf table {
+    min-width: 700px; }
 
 .natf .board {
   background-color: white;
   height: 350px;
+  margin: 0 auto;
   width: 300px; }
   .natf .board .clutch {
     background-color: green;
@@ -553,7 +558,7 @@ header {
     cursor: pointer;
     display: inline-block;
     border-radius: 10px;
-    margin: 3px 10px;
+    margin: 3px 5px;
     padding: 3px 7px; }
   .menu span:hover {
     padding: 5px; }
@@ -582,8 +587,6 @@ header {
     border-right: 2px solid #E8B15A; }
 
 #content {
-  left: 50%;
-  position: absolute; }
-  #content #centered {
-    left: -50%;
-    position: relative; }
+  width: 100%; }
+  #content > div {
+    margin: 0 auto; }

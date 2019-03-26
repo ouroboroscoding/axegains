@@ -4,9 +4,6 @@ var React = require('react');
 // Generic modules
 var Events = require('../generic/events.js');
 
-// Natf components
-var NatfStats = require('./natf/stats.jsx');
-
 // Thrower component
 class Thrower extends React.Component {
 
@@ -20,7 +17,7 @@ class Thrower extends React.Component {
 	}
 
 	render() {
-		return <NatfStats />
+		return <div />
 	}
 }
 

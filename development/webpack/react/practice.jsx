@@ -57,11 +57,14 @@ class Practice extends React.Component {
 			<div id="practice">
 				<Menu className="menu secondary" selected={self.state.org} onChange={self.menuChange}>
 					<Item name="natf">NATF</Item>
-					<Item name="watl">WATL</Item>
 				</Menu>
-				{self.state.org == 'natf' &&
-					<Natf thrower={self.state.thrower} />
-				}
+				<div id="content">
+					<div>
+						{self.state.org == 'natf' &&
+							<Natf thrower={self.state.thrower} />
+						}
+					</div>
+				</div>
 			</div>
 		);
 	}
