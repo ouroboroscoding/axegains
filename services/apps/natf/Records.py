@@ -20,11 +20,37 @@ from FormatOC import Tree
 # Import local modules
 from RestOC import Conf, Record_ReDB
 
-# Practice structure and config
-_mdPracticeConf = Record_ReDB.Record.generateConfig(
-	Tree.fromFile('../json/definitions/natf_practice.json'),
+# Match structure and config
+_mdMatchConf = Record_ReDB.Record.generateConfig(
+	Tree.fromFile('../json/definitions/natf/match.json'),
 	'rethinkdb', Conf.get(("rethinkdb", "axegains"))
 )
+
+# Practice structure and config
+_mdPracticeConf = Record_ReDB.Record.generateConfig(
+	Tree.fromFile('../json/definitions/natf/practice.json'),
+	'rethinkdb', Conf.get(("rethinkdb", "axegains"))
+)
+
+# Match class
+class Match(Record_ReDB.Record):
+	"""Match
+
+	Represents a single uploaded consent form
+
+	Extends: RestOC.Record_ReDB.Record
+	"""
+
+	@classmethod
+	def config(cls):
+		"""Config
+
+		Returns the configuration data associated with the record type
+
+		Returns:
+			dict
+		"""
+		return _mdMatchConf
 
 # Practice class
 class Practice(Record_ReDB.Record):

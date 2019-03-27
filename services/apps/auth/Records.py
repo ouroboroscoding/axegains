@@ -27,11 +27,133 @@ from RestOC import Conf, StrHelper, Record_ReDB
 # Valid mime types
 validMimes = ['image/jpeg', 'image/png']
 
-# Thrower structure and config
-_mdThrowerConf = Record_ReDB.Record.generateConfig(
-	Tree.fromFile('../json/definitions/thrower.json'),
+# Favourites structure and config
+_mdFavouritesConf = Record_ReDB.Record.generateConfig(
+	Tree.fromFile('../json/definitions/auth/favourites.json'),
 	'rethinkdb', Conf.get(("rethinkdb", "axegains"))
 )
+
+# Match Request structure and config
+_mdMatchRequestConf = Record_ReDB.Record.generateConfig(
+	Tree.fromFile('../json/definitions/auth/match_request.json'),
+	'rethinkdb', Conf.get(("rethinkdb", "axegains"))
+)
+
+# Thrower structure and config
+_mdThrowerConf = Record_ReDB.Record.generateConfig(
+	Tree.fromFile('../json/definitions/auth/thrower.json'),
+	'rethinkdb', Conf.get(("rethinkdb", "axegains"))
+)
+
+# Favourites class
+class Favourites(Record_ReDB.Record):
+	"""Favourites
+
+	Represents a single uploaded consent form
+
+	Extends: RestOC.Record_ReDB.Record
+	"""
+
+	@classmethod
+	def add(cls, thrower, favourite):
+		"""Add
+
+		Adds a favourite to a thrower
+
+		Arguments:
+			thrower {str} -- The UUID of the thrower
+			favourite {str} -- The UUID of the favourite
+
+		Returns:
+			bool
+		"""
+
+		# Get the structure
+		dStruct = cls.struct()
+
+		# Get a connection to the host
+		with Record_ReDB._with(dStruct['host']) as oCon:
+
+			# Up to the table
+			t = Record_ReDB.r.db(dStruct['db']).table(dStruct['table'])
+
+			# Generate the rethink query
+			dRes = Record_ReDB.r.branch(
+				t.get(thrower).ne(null),
+				t.get(thrower).update(lambda t: {
+					"ids": t['ids'].setInsert(favourite)
+				}).run(oCon),
+				t.insert({
+					"_thrower": thrower,
+					"ids": [favourite]
+				})) \
+				.run(oCon)
+
+			# Return True if a record was changed
+			return dRes['replaced'] == 1
+
+	@classmethod
+	def config(cls):
+		"""Config
+
+		Returns the configuration data associated with the record type
+
+		Returns:
+			dict
+		"""
+		return _mdFavouritesConf
+
+	@classmethod
+	def remove(cls, thrower, favourite):
+		"""Remove
+
+		Removes a favourite from a thrower
+
+		Arguments:
+			thrower {str} -- The UUID of the thrower
+			favourite {str} -- The UUID of the favourite
+
+		Returns:
+			bool
+		"""
+
+		# Get the structure
+		dStruct = cls.struct()
+
+		# Get a connection to the host
+		with Record_ReDB._with(dStruct['host']) as oCon:
+
+			# Generate the rethink query
+			dRes = Record_ReDB.r \
+				.db(dStruct['db']) \
+				.table(dStruct['table']) \
+				.get(thrower) \
+				.update(lambda t: {
+					"ids": t['ids'].filter(lambda f: f != favourite)
+				}).run(oCon)
+
+			# Return True if a record was changed
+			return dRes['replaced'] == 1
+
+# Match Request class
+class MatchRequest(Record_ReDB.Record):
+	"""Match Request
+
+	Represents a single uploaded consent form
+
+	Extends: RestOC.Record_ReDB.Record
+	"""
+
+	@classmethod
+	def config(cls):
+		"""Config
+
+		Returns the configuration data associated with the record type
+
+		Returns:
+			dict
+		"""
+		return _mdMatchRequestConf
 
 # Thrower class
 class Thrower(Record_ReDB.Record):
@@ -41,6 +163,17 @@ class Thrower(Record_ReDB.Record):
 
 	Extends: RestOC.Record_ReDB.Record
 	"""
+
+	@classmethod
+	def config(cls):
+		"""Config
+
+		Returns the configuration data associated with the record type
+
+		Returns:
+			dict
+		"""
+		return _mdThrowerConf
 
 	@staticmethod
 	def passwordHash(passwd):
@@ -110,13 +243,33 @@ class Thrower(Record_ReDB.Record):
 		# Return OK if the rehashed password matches
 		return sHash == sha1(sSalt.encode('utf-8') + passwd.encode('utf-8')).hexdigest()
 
-	@classmethod
-	def config(cls):
-		"""Config
+	def search(self, q):
+		"""Search
 
-		Returns the configuration data associated with the record type
+		Searches for throwers based on alias
+
+		Arguments:
+			q string -- The query to search
 
 		Returns:
-			dict
+			list
 		"""
-		return _mdThrowerConf
+
+		# Get the structure
+		dStruct = cls.struct()
+
+		# Get a connection to the host
+		with Record_ReDB._with(dStruct['host']) as oCon:
+
+			# Generate the rethink query
+			itRes = Record_ReDB.r \
+				.db(dStruct['db']) \
+				.table(dStruct['table']) \
+				.filter(lambda thrower: (thrower['_id'] == q) |
+					(thrower['name'].match("(?i)" + q))
+				) \
+				.pluck("_id", "alias") \
+				.default(None) \
+				.run(oCon)
+
+			return [d for d in itRes]

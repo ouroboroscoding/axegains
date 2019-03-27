@@ -11,6 +11,7 @@ var Utils = require('../../utils.js');
 
 // React components
 var Board = require('./board.jsx');
+var Opponents = require('../opponent.jsx');
 
 // Match Component
 class Match extends React.Component {
@@ -22,7 +23,8 @@ class Match extends React.Component {
 
 		// Initialise the state
 		this.state = {
-			"thrower": props.thrower
+			"opponent": null,
+			"thrower": props.thrower,
 		};
 
 		// Bind methods
@@ -52,7 +54,13 @@ class Match extends React.Component {
 	render() {
 		var self = this;
 		return (
-			<div className="natf"></div>
+			<div className="natf">
+				{!this.state.opponent ?
+					<Opponents />
+				:
+					<div />
+				}
+			</div>
 		);
 	}
 

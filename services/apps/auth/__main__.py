@@ -44,18 +44,20 @@ oRestConf = REST.Config(Conf.get("rest"))
 if 'AXE_VERBOSE' in os.environ and os.environ['AXE_VERBOSE'] == '1':
 	Services.verbose()
 
-# Create a list of all available services, override Auth
-dServices = {k:None for k in Conf.get(('rest', 'services'))}
-dServices['auth'] = Auth()
-
-# Register all services
-Services.register(dServices, oRestConf, Conf.get(('services', 'salt')))
+# Register all necessary services
+Services.register({
+	"auth": Auth(),
+	"communications": None
+}, oRestConf, Conf.get(('services', 'salt')))
 
 # Init Templates
 Templates.init('../templates')
 
 # Create the HTTP server and map requests to service
 REST.Server({
+	"/favourite": {"method": REST.CREATE | REST.DELETE, "session": True},
+	"/favourites": {"method": REST.READ, "session": True},
+
 	"/passwd/forgot": {"methods": REST.CREATE | REST.UPDATE},
 
 	"/signin": {"methods": REST.POST},

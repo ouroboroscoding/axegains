@@ -26,7 +26,7 @@ from RestOC import Conf, DictHelper, Record_ReDB, Services, \
 from shared import SSS
 
 # Service imports
-from .Records import Thrower
+from .Records import Favourites, Thrower
 
 # Regex for validating email
 _emailRegex = re.compile(r"[^@\s]+@[^@\s]+\.[a-zA-Z0-9]{2,}$")
@@ -41,6 +41,82 @@ class Auth(Services.Service):
 
 	_install = [Thrower]
 	"""Record types called in install"""
+
+	def favouriteCreate(self, data, sesh):
+		"""Favourite (Create)
+
+		Adds a favourite to the logged in thrower
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- The session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['id'])
+		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+
+		# Make sure the thrower exists
+		if not Thrower.exists(data['id']):
+			return Services.Effect(error=(104, data['id']))
+
+		# Add the thrower to the logged in thrower's favourites and return the
+		#	result
+		return Services.Effect(
+			Favourites.add(sesh['thrower']['_id'], data['id'])
+		)
+
+	def favouriteDelete(self, data, sesh):
+		"""Favourite (Delete)
+
+		Removes a favourite from the logged in thrower
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- The session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['id'])
+		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+
+		# Remove the thrower from the logged in thrower's favourites and return
+		#	the result
+		return Services.Effect(
+			Favourites.remove(sesh['thrower']['_id'], data['id'])
+		)
+
+	def favouritesRead(self, data, sesh):
+		"""Favourites
+
+		Returns all favourites for the logged in thrower
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- The session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Fetch the favourites for the thrower
+		lFavourites = Favourites.get(sesh['thrower']['_id'], raw=['ids'])
+
+		# If there's none
+		if not lFavourites:
+			return Services.Effect([])
+
+		# Look up all the throwers using the IDs
+		lThrowers = Thrower.get(lFavourites['ids'], raw=['_id', 'alias'])
+
+		# Return what's found
+		return Services.Effect(lThrowers)
 
 	@classmethod
 	def install(cls):
