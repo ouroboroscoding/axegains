@@ -40,8 +40,8 @@
 		"__optional__": true,
 		"target": {
 			"__array__": "duplicates",
-			"i": {"__type__": "bool", "__optional__"},
-			"o": {"__type__": "bool", "__optional__"}
+			"i": {"__type__": "bool", "__optional__": true},
+			"o": {"__type__": "bool", "__optional__": true}
 		},
 		"points": {
 			"__array__": "duplicates",
