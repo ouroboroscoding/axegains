@@ -146,10 +146,10 @@ table {
     background-color: #5AA6E8;
     border: 1px solid black; }
   table tbody tr {
-    background-color: #ffffff;
+    background-color: #7CC3FF;
     border-bottom: 1px solid black; }
   table tbody tr:nth-child(odd) {
-    background-color: #7CC3FF; }
+    background-color: #ffffff; }
   table td, table th {
     font-weight: 300;
     max-width: 0;
@@ -444,6 +444,10 @@ button.large:active {
   width: 95%; }
   #stats .natf table {
     min-width: 700px; }
+
+#match .natf {
+  margin: 5px auto;
+  width: 95%; }
 
 .natf .board {
   background-color: white;

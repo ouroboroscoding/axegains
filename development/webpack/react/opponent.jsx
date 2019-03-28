@@ -33,9 +33,13 @@ class OpponentRow extends React.Component {
 		// Bind method
 		this.add = this.add.bind(this);
 		this.remove = this.remove.bind(this);
+		this.selected = this.selected.bind(this);
 	}
 
 	add() {
+
+		// Stop any further events
+		ev.stopPropagation();
 
 		// Store this
 		var self = this;
@@ -48,13 +52,31 @@ class OpponentRow extends React.Component {
 			"id": this.state.thrower._id
 		}).done(res => {
 
+			// If there's an error
+			if(res.error && !Utils.serviceError(res.error)) {
+				Events.trigger('error', JSON.stringify(res.error));
+			}
+
+			// If there's a warning
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If there's data
+			if(res.data) {
+				self.setState({"favourite": true});
+			}
+
 		}).always(() => {
 			// Hide the loader
 			Loader.hide();
 		});
 	}
 
-	remove() {
+	remove(ev) {
+
+		// Stop any further events
+		ev.stopPropagation();
 
 		// Store this
 		var self = this;
@@ -67,6 +89,21 @@ class OpponentRow extends React.Component {
 			"id": this.state.thrower._id
 		}).done(res => {
 
+			// If there's an error
+			if(res.error && !Utils.serviceError(res.error)) {
+				Events.trigger('error', JSON.stringify(res.error));
+			}
+
+			// If there's a warning
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If there's data
+			if(res.data) {
+				self.setState({"favourite": false});
+			}
+
 		}).always(() => {
 			// Hide the loader
 			Loader.hide();
@@ -75,17 +112,22 @@ class OpponentRow extends React.Component {
 
 	render() {
 		return (
-			<tr>
+			<tr onClick={this.selected}>
 				<td>{this.state.thrower.alias}</td>
 				<td>
 					{this.state.favourite ?
-						<i className="fas fa-user-times" style={{color: "red"}} onClick={this.add}></i>
+						<i className="fas fa-user-times" style={{color: "red"}} onClick={this.remove}></i>
 					:
-						<i className="fas fa-user-plus" style={{color: "green"}} onClick={this.remove}></i>
+						<i className="fas fa-user-plus" style={{color: "green"}} onClick={this.add}></i>
 					}
 				</td>
 			</tr>
 		)
+	}
+
+	selected(ev) {
+		ev.stopPropagation();
+		this.props.selected(this.state.thrower._id);
 	}
 }
 
@@ -169,7 +211,9 @@ class Opponent extends React.Component {
 							<span className="link" onClick={this.favouriteShow}>Favourites</span> |
 							<span>Search</span>
 						</div>
-						<InputEnter onEnter={this.search} />
+						<div className="form">
+							<InputEnter onEnter={this.search} />
+						</div>
 					</React.Fragment>
 				}
 				<table>
@@ -179,11 +223,11 @@ class Opponent extends React.Component {
 					<tbody>
 						{this.state.mode == 'favourites' ?
 							this.state.favourites.map(function(t, i) {
-								return <OpponentRow key={i} thrower={t} favourite={true} />
+								return <OpponentRow key={i} thrower={t} favourite={true} selected={this.selected} />
 							})
 						:
 							this.state.search.map(function(t, i) {
-								return <OpponentRow key={i} thrower={t} favourite={false} />
+								return <OpponentRow key={i} thrower={t} favourite={false} selected={this.selected} />
 							})
 						}
 					</tbody>
@@ -205,6 +249,26 @@ class Opponent extends React.Component {
 			"q": q
 		}).done(res => {
 
+			// If there's an error
+			if(res.error && !Utils.serviceError(res.error)) {
+				Events.trigger('error', JSON.stringify(res.error));
+			}
+
+			// If there's a warning
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If there's data
+			if(res.data) {
+
+				// Sort the data
+				res.data.sort(aliasSort);
+
+				// Store the favourites
+				self.setState({"search": res.data});
+			}
+
 		}).always(() => {
 			// Hide the loader
 			Loader.hide();
@@ -215,6 +279,11 @@ class Opponent extends React.Component {
 		this.setState({"mode": "search"})
 	}
 
+	selected(id) {
+		if(typeof this.props.onSelect == 'function') {
+			this.props.onSelect(id);
+		}
+	}
 }
 
 // Export the component

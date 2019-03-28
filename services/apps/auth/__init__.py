@@ -59,6 +59,10 @@ class Auth(Services.Service):
 		try: DictHelper.eval(data, ['id'])
 		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
 
+		# If someone tries to add themselves
+		if data['id'] == sesh['thrower']['_id']:
+			return Services.Effect(False);
+
 		# Make sure the thrower exists
 		if not Thrower.exists(data['id']):
 			return Services.Effect(error=(104, data['id']))
@@ -226,6 +230,28 @@ class Auth(Services.Service):
 
 		# Return OK
 		return Services.Effect(True)
+
+	def searchRead(self, data, sesh):
+		"""Search
+
+		Looks up throwers by alias
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- The session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['q'])
+		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+
+		# Run a search and return the results
+		return Services.Effect(
+			Thrower.search(data['q'])
+		)
 
 	def signinCreate(self, data):
 		"""Signin

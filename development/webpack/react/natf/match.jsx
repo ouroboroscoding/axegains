@@ -29,6 +29,7 @@ class Match extends React.Component {
 
 		// Bind methods
 		this.overwrite = this.overwrite.bind(this);
+		this.setOpponent = this.setOpponent.bind(this);
 		this.signin = this.signin.bind(this);
 		this.signout = this.signout.bind(this);
 	}
@@ -56,12 +57,16 @@ class Match extends React.Component {
 		return (
 			<div className="natf">
 				{!this.state.opponent ?
-					<Opponents />
+					<Opponents onSelect={this.setOpponent} />
 				:
 					<div />
 				}
 			</div>
 		);
+	}
+
+	setOpponent(id) {
+
 	}
 
 	signin() {

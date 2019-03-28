@@ -79,9 +79,9 @@ class Favourites(Record_ReDB.Record):
 
 			# Generate the rethink query
 			dRes = Record_ReDB.r.branch(
-				t.get(thrower).ne(null),
+				t.get(thrower).ne(None),
 				t.get(thrower).update(lambda t: {
-					"ids": t['ids'].setInsert(favourite)
+					"ids": t['ids'].set_insert(favourite)
 				}).run(oCon),
 				t.insert({
 					"_thrower": thrower,
@@ -243,7 +243,8 @@ class Thrower(Record_ReDB.Record):
 		# Return OK if the rehashed password matches
 		return sHash == sha1(sSalt.encode('utf-8') + passwd.encode('utf-8')).hexdigest()
 
-	def search(self, q):
+	@classmethod
+	def search(cls, q):
 		"""Search
 
 		Searches for throwers based on alias
@@ -266,7 +267,7 @@ class Thrower(Record_ReDB.Record):
 				.db(dStruct['db']) \
 				.table(dStruct['table']) \
 				.filter(lambda thrower: (thrower['_id'] == q) |
-					(thrower['name'].match("(?i)" + q))
+					(thrower['alias'].match("(?i)" + q))
 				) \
 				.pluck("_id", "alias") \
 				.default(None) \

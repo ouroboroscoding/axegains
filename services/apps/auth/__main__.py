@@ -60,6 +60,8 @@ REST.Server({
 
 	"/passwd/forgot": {"methods": REST.CREATE | REST.UPDATE},
 
+	"/search": {"methods": REST.READ, "session": True},
+
 	"/signin": {"methods": REST.POST},
 	"/signout": {"methods": REST.POST, "session": True},
 	"/signup": {"methods": REST.POST},

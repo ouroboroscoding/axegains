@@ -58,12 +58,12 @@ class Site extends React.Component {
 
 		// Stupid react
 		var items = [
-			<Item key={0} name="games">Games</Item>,
+			/*<Item key={0} name="games">Games</Item>,*/
 			<Item key={1} name="practice">Practice</Item>
 		];
 		if(this.state.thrower) {
-			items.push(<Item key={2} name="match">Match</Item>);
-			items.push(<Item key={3} name="league">League</Item>);
+			//items.push(<Item key={2} name="match">Match</Item>);
+			//items.push(<Item key={3} name="league">League</Item>);
 			items.push(<Item key={4} name="stats">Stats</Item>);
 		}
 
