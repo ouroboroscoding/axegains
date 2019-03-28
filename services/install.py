@@ -11,7 +11,7 @@ import os, platform
 from RestOC import Conf, Record_ReDB
 
 # Services
-from apps import auth
+from apps import auth, natf
 
 # Load the config
 Conf.load('../config.json')
@@ -27,3 +27,4 @@ Record_ReDB.dbCreate(Conf.get(("rethinkdb", "db"), "axegains"))
 
 # Install
 auth.Auth.install()
+natf.Natf.install()
