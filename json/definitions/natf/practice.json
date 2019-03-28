@@ -29,6 +29,7 @@
 	"thrower": "uuid",
 	"throws": {
 		"attempts": "uint",
+		"drops": "uint",
 		"hits": "uint"
 	}
 }
