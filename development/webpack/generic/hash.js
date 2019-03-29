@@ -170,8 +170,14 @@ var Hash = {
 		// Store the old hash
 		var old = Tools.clone(_hash);
 
-		// Set the name
-		_hash[name] = value;
+		// If we have a value
+		if(value) {
+			// Set the name
+			_hash[name] = value;
+		} else {
+			// Delete the name
+			delete _hash[name];
+		}
 
 		// Check anyone watching this value
 		_checkWatches(old);

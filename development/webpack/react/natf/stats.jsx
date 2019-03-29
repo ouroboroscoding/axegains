@@ -9,6 +9,9 @@ var Services = require('../../generic/services.js');
 // Site modules
 var Utils = require('../../utils.js');
 
+// Components
+var Modal = require('../elements/modal.jsx');
+
 // Stats component
 class Stats extends React.Component {
 
@@ -20,12 +23,17 @@ class Stats extends React.Component {
 		// Initialise the state
 		this.state = {
 			"match": null,
-			"practice": null
+			"practice": null,
+			"practice_all": false,
+			"practice_data": false
 		};
 
 		// Bind methods
 		this.matchStats = this.matchStats.bind(this);
+		this.practiceData = this.practiceData.bind(this);
+		this.practiceDataHide = this.practiceDataHide.bind(this);
 		this.practiceStats = this.practiceStats.bind(this);
+		this.practiceStatsAll = this.practiceStatsAll.bind(this);
 	}
 
 	componentWillMount() {
@@ -73,7 +81,7 @@ class Stats extends React.Component {
 		});
 	}
 
-	practiceStats() {
+	practiceData(ev) {
 
 		// Save this
 		var self = this;
@@ -81,8 +89,10 @@ class Stats extends React.Component {
 		// Show the loader
 		Loader.show();
 
-		// Fetch the practice stats
-		Services.read('natf', 'practice/stats', {}).done(res => {
+		// Fetch the practice data
+		Services.read('natf', 'practice/data', {
+			"id": ev.currentTarget.dataset.id
+		}).done(res => {
 
 			// If there's an error
 			if(res.error && !Utils.serviceError(res.error)) {
@@ -99,7 +109,7 @@ class Stats extends React.Component {
 
 				// Add the stats to the state
 				this.setState({
-					"practice": res.data
+					"practice_data": res.data
 				});
 			}
 
@@ -107,6 +117,58 @@ class Stats extends React.Component {
 			// Hide the loader
 			Loader.hide();
 		});
+	}
+
+	practiceDataHide() {
+		this.setState({"practice_data": false});
+	}
+
+	practiceStats(all) {
+
+		// If All is not passed
+		if(typeof all == 'undefined') {
+			all = false
+		}
+
+		// Save this
+		var self = this;
+
+		// Show the loader
+		Loader.show();
+
+		// Fetch the practice stats
+		Services.read('natf', 'practice/stats', {
+			"all": all
+		}).done(res => {
+
+			// If there's an error
+			if(res.error && !Utils.serviceError(res.error)) {
+				Events.trigger('error', JSON.stringify(res.error));
+			}
+
+			// If there's a warning
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If there's data
+			if(res.data) {
+
+				// Add the stats to the state
+				this.setState({
+					"practice": res.data,
+					"practice_all": all
+				});
+			}
+
+		}).always(() => {
+			// Hide the loader
+			Loader.hide();
+		});
+	}
+
+	practiceStatsAll() {
+		this.practiceStats(true);
 	}
 
 	render() {
@@ -117,22 +179,22 @@ class Stats extends React.Component {
 				{this.state.practice &&
 					<React.Fragment>
 						<h2>Practice</h2>
-						<table>
+						<table className="practice">
 							<thead>
 								<tr>
-									<th rowSpan="2"> </th>
-									<th rowSpan="2">Points</th>
-									<th rowSpan="2">Throws</th>
-									<th rowSpan="2">Drops</th>
+									<th rowSpan="2" className="date"> </th>
+									<th rowSpan="2" className="points">Points</th>
+									<th rowSpan="2" className="throws">Throws</th>
+									<th rowSpan="2" className="drops">Drops</th>
 									<th colSpan="2">Average Points</th>
 									<th colSpan="3">Hit Rates</th>
 								</tr>
 								<tr>
-									<th>Total</th>
-									<th>Target</th>
-									<th>Total</th>
-									<th>Target</th>
-									<th>Clutch</th>
+									<th className="average">Total</th>
+									<th className="average">Target</th>
+									<th className="rate">Total</th>
+									<th className="rate">Target</th>
+									<th className="rate">Clutch</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -149,7 +211,7 @@ class Stats extends React.Component {
 								</tr>
 								{practice.last.map(function(o, i) {
 									return (
-										<tr key={i}>
+										<tr key={i} data-id={o._id} className="session" onClick={self.practiceData}>
 											<td>{Utils.date(o._created)}</td>
 											<td>{o.points.total}</td>
 											<td>{o.throws.attempts}</td>
@@ -164,6 +226,21 @@ class Stats extends React.Component {
 								})}
 							</tbody>
 						</table>
+						{!this.state.practice_all &&
+							<p className="link" onClick={this.practiceStatsAll}>Fetch All</p>
+						}
+						{this.state.practice_data &&
+							<Modal
+								title="Practice Data"
+								close={self.practiceDataHide}
+							>
+								<div className="allPoints">
+									{self.state.practice_data.map(function(p, i) {
+										return <span key={i} className={p[0] ? 'clutch':''}>{"" + p[1]}</span>
+									})}
+								</div>
+							</Modal>
+						}
 					</React.Fragment>
 				}
 				{this.state.match &&

@@ -8,6 +8,7 @@ var Thrower = require('./thrower.jsx');
 
 // Generic modules
 var Events = require('../generic/events.js');
+var Hash = require('../generic/hash.js');
 var Loader = require('../generic/loader.js');
 var Services = require('../generic/services.js');
 
@@ -30,6 +31,7 @@ class Header extends React.Component {
 
 		// Bind methods
 		this.accountShow = this.accountShow.bind(this);
+		this.home = this.home.bind(this);
 		this.signin = this.signin.bind(this);
 		this.signinShow = this.signinShow.bind(this);
 		this.signinTrigger = this.signinTrigger.bind(this);
@@ -57,6 +59,10 @@ class Header extends React.Component {
 		Events.remove('signout', this.signoutTrigger);
 	}
 
+	home() {
+		Hash.set("page", null);
+	}
+
 	render() {
 		var self = this;
 		return (
@@ -75,7 +81,7 @@ class Header extends React.Component {
 					}
 					<br />
 				</div>
-				<h1>AxeGains.com</h1>
+				<h1 style={{"cursor": "pointer"}} onClick={this.home}>AxeGains.com</h1>
 				{self.state.modal == 'signin' &&
 					<div id="signin" className="form">
 						<p><input ref="alias" type="text" title="alias" placeholder="alias" onClick={Forms.errorFocus} /></p>

@@ -149,6 +149,33 @@ class Natf(Services.Service):
 		# Return OK
 		return Services.Effect(True)
 
+	def practiceDataRead(self, data, sesh):
+		"""Practice Data
+
+		Returns all the data points associated with a practice session
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['id'])
+		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+
+		# Fetch the practice data
+		dPractice = Practice.get(data['id'], raw=['data'])
+		if not dPractice:
+			return Services.Effect(error=(104, data['id']))
+
+		# Return the data
+		return Services.Effect(
+			[[d['clutch'], d['value']] for d in dPractice['data']]
+		)
+
 	def practiceStatsRead(self, data, sesh):
 		"""Practice Stats
 
@@ -169,8 +196,8 @@ class Natf(Services.Service):
 		# Fetch all records
 		lRecs = Practice.get(
 			data['thrower'], index='thrower',
-			raw=['_created', 'clutches', 'points', 'throws'],
-			orderby='_created'
+			raw=['_id', '_created', 'clutches', 'points', 'throws'],
+			orderby='!_created'
 		)
 
 		# Init the return data
@@ -185,9 +212,6 @@ class Natf(Services.Service):
 			},
 			"last": []
 		}
-
-		# Get the point where we're at the last five
-		iFive = len(lRecs) - 5
 
 		# Go through the indexes of the records
 		for i in range(len(lRecs)):
@@ -206,7 +230,7 @@ class Natf(Services.Service):
 			dRet['total']['throws']['hits'] += lRecs[i]['throws']['hits']
 
 			# If the record is in the last five
-			if i >= iFive:
+			if i < 5 or ('all' in data and data['all']):
 
 				# Target attempts / hits
 				lRecs[i]['target'] = {
@@ -251,7 +275,7 @@ class Natf(Services.Service):
 					0.0)
 
 				# Insert the record at the beginning of the 'last' list
-				dRet['last'].insert(0, lRecs[i])
+				dRet['last'].append(lRecs[i])
 
 		# Target attempts / hits
 		dRet['total']['target'] = {
