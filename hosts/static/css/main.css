@@ -122,6 +122,9 @@ input, select {
   cursor: pointer;
   color: #2C689B; }
 
+i.far, i.fas {
+  cursor: pointer; }
+
 dl.select {
   margin: 5px 0; }
   dl.select dt {
@@ -136,6 +139,224 @@ dl.select {
     border-top: 0;
     padding: 5px;
     margin: 0 0 10px 10px; }
+
+table {
+  width: 100%; }
+  table thead tr {
+    background-color: #5AA6E8;
+    border: 1px solid black; }
+  table tbody tr {
+    background-color: #7CC3FF;
+    border-bottom: 1px solid black; }
+  table tbody tr:nth-child(odd) {
+    background-color: #ffffff; }
+  table td, table th {
+    font-weight: 300;
+    max-width: 0;
+    overflow: hidden;
+    padding: 3px 5px;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap; }
+  table td.check, table th.check {
+    padding: 0;
+    text-align: center;
+    width: 22px; }
+
+div.form input[type=text], div.form input[type=password], div.form select, div.form textarea {
+  width: 100%; }
+
+div.form input.error::placeholder {
+  color: white; }
+
+div.form input.error, div.form select.error {
+  background-color: #E24E28;
+  border-color: red;
+  color: white; }
+
+button::-moz-focus-inner {
+  border: 0;
+  padding: 0; }
+
+button {
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+  padding: 6px 20px;
+  margin: 0;
+  cursor: pointer;
+  border: 1px solid #bbb;
+  overflow: visible;
+  font: bold 13px arial, helvetica, sans-serif;
+  text-decoration: none;
+  white-space: nowrap;
+  color: #2C689B;
+  background-color: #E8B15A;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(rgba(255, 255, 255, 0)));
+  background-image: -webkit-linear-gradient(top, white, rgba(255, 255, 255, 0));
+  background-image: -moz-linear-gradient(top, white, rgba(255, 255, 255, 0));
+  background-image: -ms-linear-gradient(top, white, rgba(255, 255, 255, 0));
+  background-image: -o-linear-gradient(top, white, rgba(255, 255, 255, 0));
+  background-image: linear-gradient(top, white, rgba(255, 255, 255, 0));
+  -webkit-transition: background-color .2s ease-out;
+  -moz-transition: background-color .2s ease-out;
+  -ms-transition: background-color .2s ease-out;
+  -o-transition: background-color .2s ease-out;
+  transition: background-color .2s ease-out;
+  background-clip: padding-box;
+  /* Fix bleeding */
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 2px 2px -1px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(155, 107, 29, 0.3) inset;
+  -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 2px 2px -1px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(155, 107, 29, 0.3) inset;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 2px 2px -1px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(155, 107, 29, 0.3) inset;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+
+button:hover {
+  background-color: #eee;
+  color: #555; }
+
+button:active {
+  background: #e9e9e9;
+  position: relative;
+  top: 1px;
+  text-shadow: none;
+  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3) inset;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3) inset;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3) inset; }
+
+button[disabled], .button[disabled]:hover, .button[disabled]:active {
+  border-color: #eaeaea;
+  background: #fafafa;
+  cursor: default;
+  position: static;
+  color: #999;
+  /* Usually, !important should be avoided but here it's really needed :) */
+  -moz-box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important; }
+
+/* Smaller buttons styles */
+button.small {
+  padding: 4px 12px; }
+
+/* Larger buttons styles */
+button.large {
+  padding: 12px 30px;
+  text-transform: uppercase; }
+
+button.large:active {
+  top: 2px; }
+
+/* Group buttons */
+.button-group,
+.button-group li {
+  display: inline-block;
+  *display: inline;
+  zoom: 1; }
+
+.button-group {
+  font-size: 0;
+  /* Inline block elements gap - fix */
+  margin: 0;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 7px;
+  -moz-border-radius: 7px;
+  -webkit-border-radius: 7px;
+  border-radius: 7px; }
+
+.button-group li {
+  margin-right: -1px;
+  /* Overlap each right button border */ }
+
+.button-group .button {
+  font-size: 13px;
+  /* Set the font size, different from inherited 0 */
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  border-radius: 0; }
+
+.button-group .button:active {
+  -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, 5px 0 5px -3px rgba(0, 0, 0, 0.2) inset, -5px 0 5px -3px rgba(0, 0, 0, 0.2) inset;
+  -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, 5px 0 5px -3px rgba(0, 0, 0, 0.2) inset, -5px 0 5px -3px rgba(0, 0, 0, 0.2) inset;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, 5px 0 5px -3px rgba(0, 0, 0, 0.2) inset, -5px 0 5px -3px rgba(0, 0, 0, 0.2) inset; }
+
+.button-group li:first-child .button {
+  -moz-border-radius: 3px 0 0 3px;
+  -webkit-border-radius: 3px 0 0 3px;
+  border-radius: 3px 0 0 3px; }
+
+.button-group li:first-child .button:active {
+  -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, -5px 0 5px -3px rgba(0, 0, 0, 0.2) inset;
+  -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, -5px 0 5px -3px rgba(0, 0, 0, 0.2) inset;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, -5px 0 5px -3px rgba(0, 0, 0, 0.2) inset; }
+
+.button-group li:last-child .button {
+  -moz-border-radius: 0 3px 3px 0;
+  -webkit-border-radius: 0 3px 3px 0;
+  border-radius: 0 3px 3px 0; }
+
+.button-group li:last-child .button:active {
+  -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, 5px 0 5px -3px rgba(0, 0, 0, 0.2) inset;
+  -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, 5px 0 5px -3px rgba(0, 0, 0, 0.2) inset;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, 5px 0 5px -3px rgba(0, 0, 0, 0.2) inset; }
+
+#loader {
+  background-color: rgba(0, 0, 0, 0.33);
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 20; }
+  #loader div {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center; }
+    #loader div div {
+      margin: 0 auto;
+      text-align: center; }
+
+#messages {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  max-width: 400px;
+  width: 100%;
+  z-index: 30; }
+  #messages div {
+    border: 3px solid black;
+    border-radius: 15px;
+    background-color: #fff;
+    font-weight: bold;
+    padding: 10px;
+    margin: 5px 5px 0;
+    text-align: center; }
+    #messages div i {
+      float: left; }
+  #messages div.error {
+    border-color: #E24E28;
+    color: #E24E28; }
+  #messages div.success {
+    border-color: #4EE8B5;
+    color: #4EE8B5; }
+  #messages div.warning {
+    border-color: #E8E24C;
+    color: #E8E24C; }
 
 .modal {
   background-color: rgba(10, 10, 10, 0.33);
@@ -159,6 +380,7 @@ dl.select {
       display: flex;
       flex-direction: column;
       max-width: 95%;
+      max-height: 95%;
       margin: 0;
       overflow: hidden;
       padding: 0;
@@ -167,11 +389,9 @@ dl.select {
         background-color: #2C689B;
         color: #E8B15A;
         margin: 0px;
-        padding: 10px;
-        text-align: center; }
+        padding: 10px; }
         .modal .cell .container .header span {
-          font-weight: 600;
-          text-transform: uppercase; }
+          font-weight: 600; }
         .modal .cell .container .header i {
           position: absolute;
           right: 7px;
@@ -192,9 +412,47 @@ dl.select {
           margin-left: 10px; }
 
 /* natf */
+#practice .natf {
+  margin: 0 auto;
+  width: 304px; }
+  #practice .natf .points span, #practice .natf .allPoints span {
+    display: inline-block;
+    padding: 3px 0;
+    text-align: center;
+    width: 30px; }
+  #practice .natf .points span.clutch, #practice .natf .allPoints span.clutch {
+    background-color: green;
+    color: white; }
+  #practice .natf .points {
+    border: 2px solid black;
+    margin: 5px 0; }
+    #practice .natf .points .last {
+      cursor: pointer; }
+    #practice .natf .points .overwrite {
+      background-color: red;
+      color: white; }
+  #practice .natf .allPoints {
+    width: 300px; }
+  #practice .natf .averages {
+    margin: 10px 0 0 0; }
+  #practice .natf .reset, #practice .natf .save {
+    cursor: pointer; }
+
+#stats .natf {
+  margin: 5px auto;
+  overflow: auto;
+  width: 95%; }
+  #stats .natf table {
+    min-width: 700px; }
+
+#match .natf {
+  margin: 5px auto;
+  width: 95%; }
+
 .natf .board {
   background-color: white;
   height: 350px;
+  margin: 0 auto;
   width: 300px; }
   .natf .board .clutch {
     background-color: green;
@@ -261,70 +519,10 @@ dl.select {
 .natf .board.active {
   background-color: grey; }
 
-.natf .practice .allPoints {
-  background-color: white;
-  border: 2px solid black;
-  left: 0;
-  margin: 0 auto;
-  position: absolute;
-  right: 0;
-  top: 10px;
-  width: 304px; }
-  .natf .practice .allPoints .header {
-    border-bottom: 1px solid black;
-    padding: 10px;
-    width: 300px; }
-    .natf .practice .allPoints .header i {
-      float: right; }
-
-.natf .practice .points, .natf .practice .allPoints .content {
-  width: 300px; }
-  .natf .practice .points span, .natf .practice .allPoints .content span {
-    display: inline-block;
-    padding: 3px 0;
-    text-align: center;
-    width: 30px; }
-  .natf .practice .points span.clutch, .natf .practice .allPoints .content span.clutch {
-    background-color: green;
-    color: white; }
-
-.natf .practice .points {
-  border: 2px solid black;
-  margin-top: 10px;
-  width: 304px; }
-
-.natf .practice .averages {
-  margin: 10px 0 0 0; }
-
-.natf .practice .reset {
-  cursor: pointer; }
-
 /* site */
 html, body {
   height: 100%;
   width: 100%; }
-
-/* alignment */
-.acenter {
-  text-align: center; }
-
-.aleft {
-  text-align: left; }
-
-.aright {
-  text-align: right; }
-
-/* floating */
-.fleft {
-  float: left; }
-
-.fright {
-  float: right; }
-
-/* types */
-.link {
-  cursor: pointer;
-  color: #2C689B; }
 
 header {
   background: #2C689B;
@@ -336,6 +534,26 @@ header {
     margin-left: 10px;
     margin-bottom: 10px; }
 
+#signin {
+  background-color: #7CC3FF;
+  border: 2px solid #2C689B;
+  padding: 10px;
+  position: absolute;
+  right: 4px;
+  top: 30px;
+  width: 250px;
+  z-index: 10; }
+
+#signup {
+  background-color: #7CC3FF;
+  border: 2px solid #2C689B;
+  padding: 10px;
+  position: absolute;
+  right: 32px;
+  top: 30px;
+  width: 250px;
+  z-index: 10; }
+
 .menu {
   margin: 0;
   text-align: center;
@@ -344,7 +562,7 @@ header {
     cursor: pointer;
     display: inline-block;
     border-radius: 10px;
-    margin: 3px 10px;
+    margin: 3px 5px;
     padding: 3px 7px; }
   .menu span:hover {
     padding: 5px; }
@@ -373,8 +591,6 @@ header {
     border-right: 2px solid #E8B15A; }
 
 #content {
-  left: 50%;
-  position: absolute; }
-  #content #centered {
-    left: -50%;
-    position: relative; }
+  width: 100%; }
+  #content > div {
+    margin: 0 auto; }

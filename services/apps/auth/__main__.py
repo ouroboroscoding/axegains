@@ -1,7 +1,7 @@
 # coding=utf8
-""" Consent Forms Service
+""" Auth Service
 
-Handles adding consent forms and allowing patients to sign them
+Handles adding throwers and letting them sign in/out
 """
 
 # Import future
@@ -44,19 +44,23 @@ oRestConf = REST.Config(Conf.get("rest"))
 if 'AXE_VERBOSE' in os.environ and os.environ['AXE_VERBOSE'] == '1':
 	Services.verbose()
 
-# Create a list of all available services, override Auth
-dServices = {k:None for k in Conf.get(('rest', 'services'))}
-dServices['auth'] = Auth()
-
-# Register all services
-Services.register(dServices, oRestConf, Conf.get(('services', 'salt')))
+# Register all necessary services
+Services.register({
+	"auth": Auth(),
+	"communications": None
+}, oRestConf, Conf.get(('services', 'salt')))
 
 # Init Templates
 Templates.init('../templates')
 
 # Create the HTTP server and map requests to service
 REST.Server({
+	"/favourite": {"method": REST.CREATE | REST.DELETE, "session": True},
+	"/favourites": {"method": REST.READ, "session": True},
+
 	"/passwd/forgot": {"methods": REST.CREATE | REST.UPDATE},
+
+	"/search": {"methods": REST.READ, "session": True},
 
 	"/signin": {"methods": REST.POST},
 	"/signout": {"methods": REST.POST, "session": True},
@@ -66,7 +70,7 @@ REST.Server({
 	"/thrower/email": {"methods": REST.UPDATE, "session": True},
 	"/thrower/verify": {"methods": REST.UPDATE}
 
-}, 'auth', "https?://.*\\.%s" % Conf.get(("domain","primary")).replace('.', '\\.')).run(
+}, 'auth', "https?://%s" % Conf.get(("domain","primary")).replace('.', '\\.')).run(
 	host=oRestConf['auth']['host'],
 	port=oRestConf['auth']['port'],
 	workers=oRestConf['auth']['workers']

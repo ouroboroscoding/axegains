@@ -67,21 +67,21 @@ class Modal extends React.PureComponent
 
 		// Return the HTML
 		return (
-			<div class="modal">
-				<div class="cell">
-					<div class="container" style={styles}>
-						<div class="header">
-							<i class="fas fa-window-close" onClick={this.props.close}></i>
+			<div className="modal">
+				<div className="cell">
+					<div className="container" style={styles}>
+						<div className="header">
+							<i className="fas fa-window-close" onClick={this.props.close}></i>
 							<span>{this.props.title}</span>
 						</div>
-						<div class="content">
+						<div className="content">
 							{this.props.children}
 						</div>
 						{this.props.buttons &&
-							<div class="footer">
+							<div className="footer">
 								{this.props.buttons.map(function(btn, i) {
 									return (
-										<button data-index={i} class="small" onClick={self.buttonClick} disabled={btn['disabled']}>{btn['name']}</button>
+										<button data-index={i} className="small" onClick={self.buttonClick} disabled={btn['disabled']}>{btn['name']}</button>
 									)
 								})}
 							</div>

@@ -4,21 +4,6 @@ html, body {
 	width: 100%;
 }
 
-/* alignment */
-.acenter {text-align: center;}
-.aleft {text-align: left;}
-.aright {text-align: right;}
-
-/* floating */
-.fleft {float: left;}
-.fright {float: right;}
-
-/* types */
-.link {
-	cursor: pointer;
-	color: $color-1;
-}
-
 header {
 	background: $color-1;
 	color: $color-5;
@@ -36,6 +21,28 @@ header {
 	}
 }
 
+#signin {
+	background-color: $color-2;
+	border: 2px solid $color-1;
+	padding: 10px;
+	position: absolute;
+	right: 4px;
+	top: 30px;
+	width: 250px;
+	z-index: 10;
+}
+
+#signup {
+	background-color: $color-2;
+	border: 2px solid $color-1;
+	padding: 10px;
+	position: absolute;
+	right: 32px;
+	top: 30px;
+	width: 250px;
+	z-index: 10;
+}
+
 .menu {
 	margin: 0;
 	text-align: center;
@@ -45,7 +52,7 @@ header {
 		cursor: pointer;
 		display: inline-block;
 		border-radius: 10px;
-		margin: 3px 10px;
+		margin: 3px 5px;
 		padding: 3px 7px;
 	}
 
@@ -90,11 +97,9 @@ header {
 }
 
 #content {
-	left: 50%;
-	position: absolute;
+	width: 100%;
 
-	#centered {
-		left: -50%;
-		position: relative;
+	> div {
+		margin: 0 auto;
 	}
 }

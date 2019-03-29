@@ -47,6 +47,7 @@
 			"auth": {"port":2, "workers": 5},
 			"communications": {"port":3},
 			"external": {"port": 4},
+			"natf": {"port": 5},
 			"websocket": {"port": 1}
 		}
 	},

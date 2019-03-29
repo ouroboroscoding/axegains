@@ -1,0 +1,16 @@
+{
+	"__rethinkdb__": {
+		"auto_primary": false,
+		"db": "axegains",
+		"host": "primary",
+		"indexes": {},
+		"primary": "_thrower",
+		"table": "favourites"
+	},
+	"__name__": "Favourites",
+	"_thrower": {"__type__":"uuid", "__optional__":true},
+	"ids": {
+		"__array__": "unique",
+		"__type__": "uuid"
+	}
+}
