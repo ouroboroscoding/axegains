@@ -311,6 +311,9 @@ class Header extends React.Component {
 
 				// Greet thrower
 				Events.trigger('success', "Welcome to AxeGains " + oData.alias);
+
+				// Trigger the signin event
+				Events.trigger('signin');
 			}
 
 		}).always(() => {
