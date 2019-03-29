@@ -250,7 +250,7 @@ class Header extends React.Component {
 
 		// If there's an e-mail
 		if(this.refs.email.value) {
-			var email = this.refs.email.value.strip();
+			var email = this.refs.email.value.trim();
 			if(email) {
 				oData['email'] = email;
 			}
@@ -281,6 +281,10 @@ class Header extends React.Component {
 					case 404:
 						Forms.errorAdd(self.refs['signup_passwd']);
 						Events.trigger('error', 'Password not strong enough');
+						break;
+					case 406:
+						Forms.errorAdd(self.refs['email']);
+						Events.trigger('error', 'E-Mail already in use');
 						break;
 					default:
 						Events.trigger('error', JSON.stringify(res.error));
