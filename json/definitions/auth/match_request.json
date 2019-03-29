@@ -13,5 +13,5 @@
 	"_created": "timestamp",
 	"intiator": "uuid",
 	"opponent": "uuid",
-	"type": {"__type__": "string", "__options__": ["natf"]}
+	"type": {"__type__": "string", "__options__": ["natf", "watl"]}
 }

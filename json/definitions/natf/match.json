@@ -10,6 +10,7 @@
 	"__name__": "NATF_Match",
 	"_id": {"__type__":"uuid", "__optional__":true},
 	"_created": "timestamp",
+	"finished": "bool",
 	"intiator": "uuid",
 	"opponent": "uuid",
 	"games": {

@@ -14,14 +14,12 @@ __maintainer__	= "Chris Nasr"
 __email__		= "chris@fuelforthefire.ca"
 __created__		= "2018-09-09"
 
-# Import python modules
+# Python imports
 from hashlib import sha1
 import re
 
-# Import pip modules
+# Pip imports
 from FormatOC import Tree
-
-# Import local modules
 from RestOC import Conf, StrHelper, Record_ReDB
 
 # Valid mime types

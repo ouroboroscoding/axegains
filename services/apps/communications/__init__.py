@@ -12,7 +12,7 @@ __created__ = "2018-11-17"
 # Python imports
 from hashlib import md5
 
-# Rest imports
+# Pip imports
 from RestOC import Conf, DictHelper, Services, SMTP, StrHelper
 
 class Service(Services.Service):

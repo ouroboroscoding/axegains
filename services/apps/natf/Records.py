@@ -14,10 +14,8 @@ __maintainer__	= "Chris Nasr"
 __email__		= "chris@fuelforthefire.ca"
 __created__		= "2019-03-24"
 
-# Import pip modules
+# Pip imports
 from FormatOC import Tree
-
-# Import local modules
 from RestOC import Conf, Record_ReDB
 
 # Match structure and config

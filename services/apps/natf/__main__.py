@@ -17,7 +17,7 @@ __created__		= "2019-03-24"
 # Python imports
 import os, platform
 
-# Framework imports
+# Pip imports
 from RestOC import Conf, Record_Base, Record_ReDB, REST, \
 					Services, Sesh
 

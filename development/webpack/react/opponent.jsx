@@ -127,7 +127,7 @@ class OpponentRow extends React.Component {
 
 	selected(ev) {
 		ev.stopPropagation();
-		this.props.selected(this.state.thrower._id);
+		this.props.selected(this.state.thrower);
 	}
 }
 
@@ -279,9 +279,9 @@ class Opponent extends React.Component {
 		this.setState({"mode": "search"})
 	}
 
-	selected(id) {
+	selected(thrower) {
 		if(typeof this.props.onSelect == 'function') {
-			this.props.onSelect(id);
+			this.props.onSelect(thrower);
 		}
 	}
 }

@@ -18,12 +18,12 @@ __created__		= "2018-09-09"
 import re
 from time import time
 
-# Framework imports
+# Pip imports
 from RestOC import Conf, DictHelper, Record_ReDB, Services, \
 					Sesh, StrHelper, Templates
 
-# Shared imports
-from shared import SSS
+# Project imports
+from shared import SSS, Sync
 
 # Service imports
 from .Records import Favourites, Thrower
@@ -121,6 +121,22 @@ class Auth(Services.Service):
 
 		# Return what's found
 		return Services.Effect(lThrowers)
+
+	def initialise(self):
+		"""Initialise
+
+		Initialises the instance and returns itself for chaining
+
+		Returns:
+			Auth
+		"""
+
+		# Init the sync module
+		Sync.init(Conf.get(('redis', 'sync'), {
+			"host": "localhost",
+			"port": 6379,
+			"db": 1
+		}))
 
 	@classmethod
 	def install(cls):

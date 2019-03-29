@@ -15,7 +15,7 @@ __email__		= "chris@fuelforthefire.ca"
 __created__		= "2017-06-26"
 
 # Import python modules
-from Cookie import SimpleCookie
+from http.cookies import SimpleCookie
 import json
 import time
 
@@ -25,15 +25,13 @@ import gevent
 from geventwebsocket import WebSocketApplication, WebSocketError
 from redis import StrictRedis
 from redis.exceptions import ConnectionError
-
-# Import local modules
-from shared import Config
+from RestOC import Conf
 
 # Init the global  vars
-_r			= None
-_r_pubsub	= None
-_r_clients	= {}
-_verbose	= False
+_r = None
+_r_pubsub = None
+_r_clients = {}
+_verbose = False
 
 # Init function
 def Init(verbose=False):
@@ -50,20 +48,20 @@ def Init(verbose=False):
 	global _r, _r_pubsub, _verbose
 
 	# Create a new Redis instance
-	_r	= StrictRedis(**Config.get(('redis', 'sync'), {
-		"host":	"localhost",
-		"port":	6380,
-		"db":	1
+	_r = StrictRedis(**Conf.get(('redis', 'sync'), {
+		"host": "localhost",
+		"port": 6379,
+		"db": 1
 	}))
 
 	# Get the pubsub instance
-	_r_pubsub	= _r.pubsub()
+	_r_pubsub = _r.pubsub()
 
 	# Subscribe to an empty channel just to get things started
 	_r_pubsub.subscribe('sync')
 
 	# Set the verbose flag
-	_verbose	= verbose and True or False
+	_verbose = verbose and True or False
 
 # Redis thread
 def RedisThread():
@@ -113,7 +111,7 @@ class SyncApplication(WebSocketApplication):
 			None
 		"""
 
-		self.ws.send('{"error":{"code":%d,"msg":"%s"},"data":null}' % (code, msg))
+		self.ws.send('{"error":{"code":%d,"msg":"%s"}}' % (code, msg))
 		self.ws.close()
 
 	# on close method
@@ -156,7 +154,7 @@ class SyncApplication(WebSocketApplication):
 
 			# Convert the JSON data
 			try:
-				messages	= json.loads(message)
+				messages = json.loads(message)
 			except ValueError as e:
 				if _verbose: print('Failed to decode JSON: "%s"' % message)
 				return self._fail(1, 'Failed to decode JSON: "%s"' % message)
@@ -194,20 +192,20 @@ class SyncApplication(WebSocketApplication):
 
 					# Convert the JSON data
 					try:
-						dConnect	= json.loads(sConnect)
+						dConnect = json.loads(sConnect)
 					except ValueError as e:
 						if _verbose: print('Failed to decode JSON: "%s"' % sConnect)
 						return self._fail(5, 'Failed to decode JSON: "%s"' % sConnect)
 
 					# If the session ID doesn't exist
-					if 'phpsid' not in dConnect:
+					if 'session' not in dConnect:
 						if _verbose: print('Session ID missing: "%s"', sConnect)
 						return self._fail(6, 'Session ID missing: "%s"' % sConnect)
 
 					# If the PHP session ID doesn't match
-					if dConnect['phpsid'] != self.phpsid:
-						if _verbose: print('Session IDs don\'t match: "%s" != "%s"' % (dConnect['phpsid'], self.phpsid))
-						return self._fail(7, 'Session IDs don\'t match: "%s" != "%s"' % (dConnect['phpsid'], self.phpsid))
+					if dConnect['session'] != self.token:
+						if _verbose: print('Session IDs don\'t match: "%s" != "%s"' % (dConnect['session'], self.token))
+						return self._fail(7, 'Session IDs don\'t match: "%s" != "%s"' % (dConnect['session'], self.token))
 
 					# Allow further messages
 					self.authorized = True
@@ -258,7 +256,6 @@ class SyncApplication(WebSocketApplication):
 
 					self.ws.send(json.dumps('pong'))
 
-
 				# Else this is an invalid message
 				else:
 					if _verbose: print('Invalid message type: "%s"' % str(data['_type']))
@@ -292,12 +289,12 @@ class SyncApplication(WebSocketApplication):
 		oCookies = SimpleCookie()
 		oCookies.load(self.ws.environ['HTTP_COOKIE'])
 		dCookies = {k:v.value for k,v in oCookies.items()}
-		if 'PHPSESSID' not in dCookies:
-			if _verbose: print('PHPSESSID not in cookies')
-			return self._fail(12, 'PHPSESSID not in cookies')
+		if '_session' not in dCookies:
+			if _verbose: print('_session not in cookies')
+			return self._fail(12, '_session not in cookies')
 
 		# Store the session ID
-		self.phpsid	= dCookies['PHPSESSID']
+		self.token = dCookies['_session']
 		self.authorized = False
 		self.tracking = []
 

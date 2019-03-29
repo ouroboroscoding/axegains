@@ -14,8 +14,6 @@ import os, platform
 
 # Pip imports
 import bottle
-
-# Rest imports
 from RestOC import Conf, REST, Services
 
 # Load the config

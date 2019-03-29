@@ -11,7 +11,7 @@ var Utils = require('../../utils.js');
 
 // React components
 var Board = require('./board.jsx');
-var Opponents = require('../opponent.jsx');
+var Opponent = require('../opponent.jsx');
 
 // Match Component
 class Match extends React.Component {
@@ -23,6 +23,7 @@ class Match extends React.Component {
 
 		// Initialise the state
 		this.state = {
+			"match": null,
 			"opponent": null,
 			"thrower": props.thrower,
 		};
@@ -57,7 +58,7 @@ class Match extends React.Component {
 		return (
 			<div className="natf">
 				{!this.state.opponent ?
-					<Opponents onSelect={this.setOpponent} />
+					<Opponent onSelect={this.setOpponent} />
 				:
 					<div />
 				}
@@ -65,8 +66,8 @@ class Match extends React.Component {
 		);
 	}
 
-	setOpponent(id) {
-
+	setOpponent(opponent) {
+		this.setState({"opponent": opponent});
 	}
 
 	signin() {
