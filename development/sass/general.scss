@@ -13,11 +13,19 @@
 	color: $color-1;
 }
 
+.bold {
+	font-weight: bold;
+}
+
+p {
+	margin: 5px 0;
+}
+
 i.far, i.fas {
 	cursor: pointer;
 }
 
-dl.select {
+dl {
 	margin: 5px 0;
 
 	dt {
@@ -34,6 +42,12 @@ dl.select {
 		border-top: 0;
 		padding: 5px;
 		margin: 0 0 10px 10px;
+	}
+}
+
+dl.select {
+	dt {
+		cursor: pointer;
 	}
 }
 

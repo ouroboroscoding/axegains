@@ -122,23 +122,32 @@ input, select {
   cursor: pointer;
   color: #2C689B; }
 
+.bold {
+  font-weight: bold; }
+
+p {
+  margin: 5px 0; }
+
 i.far, i.fas {
   cursor: pointer; }
 
-dl.select {
+dl {
   margin: 5px 0; }
-  dl.select dt {
+  dl dt {
     background-color: #2C689B;
     border: 1px solid black;
     color: #E8B15A;
     cursor: pointer;
     font-weight: bold;
     padding: 5px; }
-  dl.select dd {
+  dl dd {
     border: 1px solid black;
     border-top: 0;
     padding: 5px;
     margin: 0 0 10px 10px; }
+
+dl.select dt {
+  cursor: pointer; }
 
 table {
   width: 100%; }
@@ -415,14 +424,6 @@ button.large:active {
 #practice .natf {
   margin: 0 auto;
   width: 304px; }
-  #practice .natf .points span, #practice .natf .allPoints span {
-    display: inline-block;
-    padding: 3px 0;
-    text-align: center;
-    width: 30px; }
-  #practice .natf .points span.clutch, #practice .natf .allPoints span.clutch {
-    background-color: green;
-    color: white; }
   #practice .natf .points {
     border: 2px solid black;
     margin: 5px 0; }
@@ -443,7 +444,19 @@ button.large:active {
   overflow: auto;
   width: 95%; }
   #stats .natf table {
-    min-width: 700px; }
+    width: 630px; }
+    #stats .natf table th.date {
+      width: 100px; }
+    #stats .natf table th.points, #stats .natf table th.throws, #stats .natf table th.drops {
+      width: 60px; }
+    #stats .natf table th.average {
+      width: 70px; }
+    #stats .natf table th.rate {
+      width: 70px; }
+    #stats .natf table tr.session {
+      cursor: pointer; }
+  #stats .natf .allPoints {
+    width: 300px; }
 
 #match .natf {
   margin: 5px auto;
@@ -518,6 +531,16 @@ button.large:active {
 
 .natf .board.active {
   background-color: grey; }
+
+.natf .points span, .natf .allPoints span {
+  display: inline-block;
+  padding: 3px 0;
+  text-align: center;
+  width: 30px; }
+
+.natf .points span.clutch, .natf .allPoints span.clutch {
+  background-color: green;
+  color: white; }
 
 /* site */
 html, body {
@@ -594,3 +617,7 @@ header {
   width: 100%; }
   #content > div {
     margin: 0 auto; }
+
+#home {
+  margin: 10px auto;
+  width: 80%; }
