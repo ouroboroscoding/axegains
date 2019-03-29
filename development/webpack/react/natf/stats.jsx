@@ -123,6 +123,7 @@ class Stats extends React.Component {
 									<th rowSpan="2"> </th>
 									<th rowSpan="2">Points</th>
 									<th rowSpan="2">Throws</th>
+									<th rowSpan="2">Drops</th>
 									<th colSpan="2">Average Points</th>
 									<th colSpan="3">Hit Rates</th>
 								</tr>
@@ -139,6 +140,7 @@ class Stats extends React.Component {
 									<td>Overall</td>
 									<td>{practice.total.points.total}</td>
 									<td>{practice.total.throws.attempts}</td>
+									<td>{practice.total.throws.drops}</td>
 									<td>{practice.total.average.total}</td>
 									<td>{practice.total.average.target}</td>
 									<td>{practice.total.rate.total}%</td>
@@ -151,6 +153,7 @@ class Stats extends React.Component {
 											<td>{Utils.date(o._created)}</td>
 											<td>{o.points.total}</td>
 											<td>{o.throws.attempts}</td>
+											<td>{o.throws.drops}</td>
 											<td>{o.average.total}</td>
 											<td>{o.average.target}</td>
 											<td>{o.rate.total}%</td>

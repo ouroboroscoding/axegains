@@ -39,7 +39,7 @@ class Auth(Services.Service):
 	Extends: shared.Services.Service
 	"""
 
-	_install = [Thrower]
+	_install = [Favourites, Thrower]
 	"""Record types called in install"""
 
 	def favouriteCreate(self, data, sesh):
