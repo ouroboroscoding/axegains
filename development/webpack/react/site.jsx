@@ -33,7 +33,7 @@ class Site extends React.Component {
 
 		// Initialise the state
 		this.state = {
-			"page": Hash.get('page', 'games'),
+			"page": Hash.get('page', 'home'),
 			"thrower": props.thrower ? props.thrower : false
 		};
 
@@ -44,7 +44,7 @@ class Site extends React.Component {
 	hashChange(page) {
 		// If the page has changed
 		if(page != this.state.page) {
-			this.setState({"page": page})
+			this.setState({"page": page ? page : "home"})
 			this.refs.menu.selected = page;
 		}
 	}
@@ -73,6 +73,30 @@ class Site extends React.Component {
 				<Menu ref="menu" className="menu primary" selected={self.state.page} onChange={self.pageChange}>
 					{items}
 				</Menu>
+				{self.state.page == 'home' &&
+					<div className="content">
+						<div>
+							<dl id="home">
+								<dt>v1.1.0</dt>
+								<dd>
+									<ul className="fa-ul">
+										<li><i className="fa-li fas fa-angle-double-right"></i>Can now fetch all practice stats instead of just the last five.</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Clicking on any row in stats will bring up all throws in that practice session.</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Fixed a bug that didn't allow you to sign up with an e-mail.</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Fixed a bug that caused sign in not to be recognised after sign up.</li>
+									</ul>
+								</dd>
+								<dt>v1.0.0</dt>
+								<dd>
+									<ul className="fa-ul">
+										<li><i className="fa-li fas fa-angle-double-right"></i>NATF practice is available, no sign in required.</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>With an account you can save your practice session and keep track of your over all progress in the Stats menu.</li>
+									</ul>
+								</dd>
+							</dl>
+						</div>
+					</div>
+				}
 				{self.state.page == 'practice' &&
 					<Practice thrower={self.state.thrower} />
 				}
@@ -94,8 +118,8 @@ class Site extends React.Component {
 	signout() {
 
 		// If the page needs to be signed in
-		if(['games', 'practice'].indexOf(this.state.page) == -1) {
-			Hash.set('page', 'games');
+		if(['practice'].indexOf(this.state.page) == -1) {
+			Hash.set('page', null);
 		}
 
 		// Remove the thrower flag

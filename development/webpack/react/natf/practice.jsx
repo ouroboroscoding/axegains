@@ -224,7 +224,7 @@ class Practice extends React.Component {
 							</div>
 							<div className="points">
 								{self.state.points.length > 29 &&
-									<span key={-1} onClick={self.pointsShow}>...</span>
+									<span key={-1} className="link bold" onClick={self.pointsShow}>...</span>
 								}
 								{self.state.points.slice(-29).map(function(p, i) {
 									if(i == last) {
