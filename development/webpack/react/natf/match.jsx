@@ -7,6 +7,7 @@ var Loader = require('../../generic/loader.js');
 var Services = require('../../generic/services.js');
 
 // Site modules
+var TwoWay = require('../../twoway.js');
 var Utils = require('../../utils.js');
 
 // React components

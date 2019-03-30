@@ -210,6 +210,20 @@ class SyncApplication(WebSocketApplication):
 					# Allow further messages
 					self.authorized = True
 
+				# Else if it's a message to ping
+				elif data['_type'] == 'ping':
+
+					# Make sure we are authorized
+					if not self.authorized:
+						if _verbose: print('Received ping message before authorization')
+						self._fail(8, 'Received ping message before authorization')
+
+					# Ping redis
+					_r.ping()
+
+					# Respond to the request
+					self.ws.send(json.dumps('pong'))
+
 				# Else if it's a message to track something new
 				elif data['_type'] == 'track':
 
@@ -244,17 +258,44 @@ class SyncApplication(WebSocketApplication):
 					if _verbose: print('Successfully started tracking: "%s"' % track)
 					self.tracking.append(track)
 
-				# Else if it's a message to ping
-				elif data['_type'] == 'ping':
+				# Else if it's a message to stop tracking something
+				elif data['_type'] == 'untrack':
 
-					# Make sure we are authorized
+					# Make sure we are authorized or else fuck off
 					if not self.authorized:
-						if _verbose: print('Received ping message before authorization')
-						self._fail(8, 'Received ping message before authorization')
+						if _verbose: print('Received untrack message before authorization')
+						self._fail(8, 'Received untrack message before authorization')
 
-					_r.ping()
+					# Check for an object and key
+					for s in ['service', 'key']:
 
-					self.ws.send(json.dumps('pong'))
+						# If the data is missing
+						if s not in data:
+							if _verbose: print('Missing `%s` in message: ""' % (s, message))
+							return self._fail(9, 'Missing `%s` in message: ""' % (s, message))
+
+						# Make sure the data is a string
+						if not isinstance(data[s], basestring):
+							data[s] = str(data[s])
+
+						# Combine the two
+						track = "%s%s" % (data['service'], data['key'])
+
+						# If the key exists in the clients
+						if track in _r_clients:
+
+							# If the socket exists, delete it
+							if self in _r_clients[track]:
+								_r_clients[track].remove(sock)
+
+							# If there's no nore clients
+							if not len(_r_clients[track]):
+								del _r_clients[track]
+								_r_pubsub.unsubscribe(track)
+
+					# Remove the list on this socket
+					if _verbose: print('Successfully stopped tracking: "%s"' % track)
+					self.tracking.remove(track)
 
 				# Else this is an invalid message
 				else:

@@ -118,7 +118,7 @@ class WebPoll(Services.Service):
 		# Return OK
 		return Services.Effect(True)
 
-	def pullRead(self, session, data):
+	def pullRead(self, data, sesh):
 		"""Pull
 
 		A client is requesting an update on anything they might be looking at
@@ -154,7 +154,7 @@ class WebPoll(Services.Service):
 		# Return whatever was found
 		return Services.Effect(lRet)
 
-	def websocketRead(self, session, data):
+	def websocketRead(self, data, sesh):
 		"""WebSocket
 
 		Generates a unique key for the client that it can use to authorize a
@@ -168,16 +168,12 @@ class WebPoll(Services.Service):
 			Services.Effect
 		"""
 
-		# Verify fields
-		try: DictHelper.eval(data, ['session'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
-
 		# Generate a random key
 		sKey = StrHelper.random(32, ['aZ', '10', '!'])
 
 		# Store the key in the sync cache
 		Sync.socket(sKey, {
-			"session": data['session']
+			"session": sesh.id()
 		})
 
 		# Return the key
