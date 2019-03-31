@@ -241,7 +241,7 @@ class SyncApplication(WebSocketApplication):
 							return self._fail(9, 'Missing `%s` in message: ""' % (s, message))
 
 						# Make sure the data is a string
-						if not isinstance(data[s], basestring):
+						if not isinstance(data[s], str):
 							data[s] = str(data[s])
 
 					# Combine the two
@@ -275,7 +275,7 @@ class SyncApplication(WebSocketApplication):
 							return self._fail(9, 'Missing `%s` in message: ""' % (s, message))
 
 						# Make sure the data is a string
-						if not isinstance(data[s], basestring):
+						if not isinstance(data[s], str):
 							data[s] = str(data[s])
 
 						# Combine the two
@@ -286,7 +286,7 @@ class SyncApplication(WebSocketApplication):
 
 							# If the socket exists, delete it
 							if self in _r_clients[track]:
-								_r_clients[track].remove(sock)
+								_r_clients[track].remove(self)
 
 							# If there's no nore clients
 							if not len(_r_clients[track]):

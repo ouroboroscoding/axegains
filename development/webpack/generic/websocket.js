@@ -32,7 +32,7 @@ module.exports = function(url, conf) {
 	var oSock = new WebSocket(url);
 
 	// Add the URL to the instance
-	oSocket.url = url;
+	oSock.url = url;
 
 	// Set the open callback
 	oSock.onopen = function() {

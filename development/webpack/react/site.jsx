@@ -7,7 +7,8 @@ var Hash = require('../generic/hash.js');
 
 // Generic components
 var {Menu, Item} = require('./elements/menu.jsx');
-var Messages = require ('./elements/messages.jsx');
+var Messages = require('./elements/messages.jsx');
+var Popups = require ('./elements/popups.jsx');
 
 // Site components
 var Header = require('./header.jsx');
@@ -106,7 +107,7 @@ class Site extends React.Component {
 				{self.state.page == 'stats' &&
 					<Stats />
 				}
-				<Messages />
+				<Popups />
 			</div>
 		);
 	}

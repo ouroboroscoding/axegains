@@ -203,23 +203,21 @@ class Opponent extends React.Component {
 			<React.Fragment>
 				{self.state.mode == 'favourites' ?
 					<div className="acenter">
-							<span>Favourites</span> |
-							<span className="link" onClick={self.searchShow}>Search</span>
+							<span>Favorites</span> | <span className="link" onClick={self.searchShow}>Search</span>
 					</div>
 				:
 					<React.Fragment>
 						<div className="acenter">
-							<span className="link" onClick={self.favouriteShow}>Favourites</span> |
-							<span>Search</span>
+							<span className="link" onClick={self.favouriteShow}>Favorites</span> | <span>Search</span>
 						</div>
 						<div className="form">
-							<InputEnter onEnter={self.search} />
+							<p><InputEnter onEnter={self.search} placeholder="Search by alias" /></p>
 						</div>
 					</React.Fragment>
 				}
 				<table>
 					<thead>
-						<tr><th>Alias</th><th>Favourite</th></tr>
+						<tr><th>Alias</th><th>Favorite</th></tr>
 					</thead>
 					<tbody>
 						{self.state.mode == 'favourites' ?

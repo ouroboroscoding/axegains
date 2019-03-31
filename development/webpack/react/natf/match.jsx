@@ -27,14 +27,65 @@ class Match extends React.Component {
 			"id": false,
 			"mode": "opponent",
 			"thrower": props.thrower,
+			"opponent": false
 		};
 
 		// Bind methods
+		this.cancelRequest = this.cancelRequest.bind(this);
 		this.overwrite = this.overwrite.bind(this);
 		this.setOpponent = this.setOpponent.bind(this);
 		this.signin = this.signin.bind(this);
 		this.signout = this.signout.bind(this);
 		this.requestCallback = this.requestCallback.bind(this);
+	}
+
+	cancelRequest() {
+		if(this.state.mode == 'request') {
+
+			// Store this
+			var self = this;
+
+			// Show the loader
+			Loader.show();
+
+			// Cancel the match request
+			Services.delete('auth', 'match/request', {
+				"id": this.state.id
+			}).done(res => {
+
+				// If there's an error
+				if(res.error && !Utils.serviceError(res.error)) {
+					Events.trigger('error', JSON.stringify(res.error));
+				}
+
+				// If there's a warning
+				if(res.warning) {
+					Events.trigger('warning', JSON.stringify(res.warning));
+				}
+
+				// If there's data
+				if(res.data) {
+
+					// Stop listening for an update on the request
+					TwoWay.untrack(
+						'auth',
+						'request-' + self.state.id,
+						this.requestCallback
+					);
+
+					// Change the mode
+					self.setState({
+						"id": false,
+						"mode": "opponent",
+						"opponent": false
+					});
+				}
+
+			}).always(() => {
+				// Hide the loader
+				Loader.hide()
+			})
+		}
 	}
 
 	componentWillMount() {
@@ -55,7 +106,6 @@ class Match extends React.Component {
 
 			// Stop tracking the request
 			TwoWay.untrack(
-				'/ws',
 				'auth',
 				'request-' + this.state.id,
 				this.requestCallback
@@ -75,7 +125,10 @@ class Match extends React.Component {
 					<Opponent onSelect={this.setOpponent} />
 				}
 				{this.state.mode == 'request' &&
-					<div></div>
+					<div className="acenter">
+						<p>Waiting for {self.state.opponent.alias} to accept your match request</p>
+						<button onClick={self.cancelRequest}>Cancel Request</button>
+					</div>
 				}
 				{this.state.mode == 'match' &&
 					<div></div>
@@ -117,13 +170,13 @@ class Match extends React.Component {
 
 				// Change the mode
 				self.setState({
+					"id": res.data,
 					"mode": "request",
-					"id": res.data
-				})
+					"opponent": opponent
+				});
 
 				// Listen for an update on the request
 				TwoWay.track(
-					'/ws',
 					'auth',
 					'request-' + res.data,
 					this.requestCallback

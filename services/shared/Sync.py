@@ -53,8 +53,8 @@ def clear(auth, service, key, count):
 	"""
 
 	# Make sure the service and key are strings
-	if not isinstance(service, basestring): service	= str(service)
-	if not isinstance(key, basestring): key	= str(key)
+	if not isinstance(service, str): service = str(service)
+	if not isinstance(key, str): key = str(key)
 
 	# Generate the key name
 	sKey = '%s-%s%s' % (auth, service, key)
@@ -83,8 +83,8 @@ def join(auth, service, key):
 	"""
 
 	# Make sure the service and key are strings
-	if not isinstance(service, basestring): service	= str(service)
-	if not isinstance(key, basestring): key	= str(key)
+	if not isinstance(service, str): service = str(service)
+	if not isinstance(key, str): key = str(key)
 
 	# Add the key to the set and extend the ttl
 	p = _moRedis.pipeline()
@@ -107,7 +107,7 @@ def leave(auth, service, key):
 	"""
 
 	# Make sure the key is a string
-	if not isinstance(key, basestring):	key	= str(key)
+	if not isinstance(key, str): key = str(key)
 
 	# Remove the key from the set
 	_moRedis.srem('%s%s' % (service, key), "%s-%s%s" % (auth, service, key))
@@ -129,8 +129,8 @@ def pull(auth, service, key):
 	"""
 
 	# Make sure the service and key are strings
-	if not isinstance(service, basestring): service	= str(service)
-	if not isinstance(key, basestring): key	= str(key)
+	if not isinstance(service, str): service = str(service)
+	if not isinstance(key, str): key = str(key)
 
 	# Generate the key name
 	sKey = '%s-%s%s' % (auth, service, key)
@@ -177,8 +177,8 @@ def push(service, key, data):
 	"""
 
 	# Make sure the service and key are strings
-	if not isinstance(service, basestring): service	= str(service)
-	if not isinstance(key, basestring): key	= str(key)
+	if not isinstance(service, str): service = str(service)
+	if not isinstance(key, str): key = str(key)
 
 	# Generate the JSON
 	sJSON = JSON.encode({
@@ -223,7 +223,7 @@ def socket(key, data):
 	"""
 
 	# Make sure the service and key are strings
-	if not isinstance(key, basestring): key	= str(key)
+	if not isinstance(key, str): key = str(key)
 
 	# Create the key and make it expire in 10 seconds
 	_moRedis.setex(key, 10, JSON.encode(data))

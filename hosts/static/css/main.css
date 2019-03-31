@@ -95,7 +95,7 @@ input, select {
   color: #E24E28; }
 
 .color-success {
-  color: #4EE8B5; }
+  color: #2C689B; }
 
 .color-warning {
   color: #E8E24C; }
@@ -339,7 +339,7 @@ button.large:active {
       margin: 0 auto;
       text-align: center; }
 
-#messages {
+#popups {
   position: fixed;
   top: 0;
   left: 0;
@@ -347,7 +347,7 @@ button.large:active {
   max-width: 400px;
   width: 100%;
   z-index: 30; }
-  #messages div {
+  #popups div {
     border: 3px solid black;
     border-radius: 15px;
     background-color: #fff;
@@ -355,15 +355,15 @@ button.large:active {
     padding: 10px;
     margin: 5px 5px 0;
     text-align: center; }
-    #messages div i {
+    #popups div i {
       float: left; }
-  #messages div.error {
+  #popups div.error {
     border-color: #E24E28;
     color: #E24E28; }
-  #messages div.success {
-    border-color: #4EE8B5;
-    color: #4EE8B5; }
-  #messages div.warning {
+  #popups div.success {
+    border-color: #2C689B;
+    color: #2C689B; }
+  #popups div.warning {
     border-color: #E8E24C;
     color: #E8E24C; }
 
