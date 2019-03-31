@@ -1,12 +1,18 @@
 /* html5doctor reset */
 @import '3rd/reset';
 
-/* reusable */
+/* variables */
 @import 'colours';
+@import 'zindex';
+
+/* generic */
 @import 'general';
+
+/* elements */
 @import 'loader';
-@import 'popups';
+@import 'messages';
 @import 'modal';
+@import 'popups';
 
 /* natf */
 @import 'natf';

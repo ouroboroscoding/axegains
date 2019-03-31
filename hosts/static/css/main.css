@@ -90,7 +90,7 @@ input, select {
   box-sizing: border-box;
   vertical-align: middle; }
 
-/* reusable */
+/* variables */
 .color-error {
   color: #E24E28; }
 
@@ -100,6 +100,7 @@ input, select {
 .color-warning {
   color: #E8E24C; }
 
+/* generic */
 /* alignment */
 .acenter {
   text-align: center; }
@@ -320,6 +321,7 @@ button.large:active {
   -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, 5px 0 5px -3px rgba(0, 0, 0, 0.2) inset;
   box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, 5px 0 5px -3px rgba(0, 0, 0, 0.2) inset; }
 
+/* elements */
 #loader {
   background-color: rgba(0, 0, 0, 0.33);
   position: fixed;
@@ -328,7 +330,7 @@ button.large:active {
   margin: 0;
   height: 100%;
   width: 100%;
-  z-index: 20; }
+  z-index: 40; }
   #loader div {
     height: 100%;
     width: 100%;
@@ -339,33 +341,22 @@ button.large:active {
       margin: 0 auto;
       text-align: center; }
 
-#popups {
+#messages {
   position: fixed;
   top: 0;
   left: 0;
   margin: 0;
-  max-width: 400px;
   width: 100%;
-  z-index: 30; }
-  #popups div {
+  z-index: 10; }
+  #messages div.message {
     border: 3px solid black;
-    border-radius: 15px;
     background-color: #fff;
-    font-weight: bold;
     padding: 10px;
-    margin: 5px 5px 0;
-    text-align: center; }
-    #popups div i {
-      float: left; }
-  #popups div.error {
-    border-color: #E24E28;
-    color: #E24E28; }
-  #popups div.success {
-    border-color: #2C689B;
-    color: #2C689B; }
-  #popups div.warning {
-    border-color: #E8E24C;
-    color: #E8E24C; }
+    margin: 5px 5px 0; }
+    #messages div.message div.buttons {
+      text-align: right; }
+      #messages div.message div.buttons button {
+        margin-left: 15px; }
 
 .modal {
   background-color: rgba(10, 10, 10, 0.33);
@@ -375,7 +366,7 @@ button.large:active {
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 10; }
+  z-index: 20; }
   .modal .cell {
     height: 100%;
     width: 100%;
@@ -419,6 +410,34 @@ button.large:active {
         text-align: right; }
         .modal .cell .container .footer button {
           margin-left: 10px; }
+
+#popups {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  max-width: 400px;
+  width: 100%;
+  z-index: 30; }
+  #popups div {
+    border: 3px solid black;
+    border-radius: 15px;
+    background-color: #fff;
+    font-weight: bold;
+    padding: 10px;
+    margin: 5px 5px 0;
+    text-align: center; }
+    #popups div i {
+      float: left; }
+  #popups div.error {
+    border-color: #E24E28;
+    color: #E24E28; }
+  #popups div.success {
+    border-color: #2C689B;
+    color: #2C689B; }
+  #popups div.warning {
+    border-color: #E8E24C;
+    color: #E8E24C; }
 
 /* natf */
 #practice .natf {
@@ -565,7 +584,7 @@ header {
   right: 4px;
   top: 30px;
   width: 250px;
-  z-index: 10; }
+  z-index: 1; }
 
 #signup {
   background-color: #7CC3FF;
@@ -575,7 +594,7 @@ header {
   right: 32px;
   top: 30px;
   width: 250px;
-  z-index: 10; }
+  z-index: 1; }
 
 .menu {
   margin: 0;

@@ -7,10 +7,22 @@ var Events = require('./generic/events.js');
 var Loader = require('./generic/loader.js');
 var Services = require('./generic/services.js');
 
+// Site specific
+var Requests = require('./requests.js');
+
 // Components
 var Site = require('./react/site.jsx');
 
 (function() {
+
+	// Render the LoginComponent
+	ReactDOM.render(
+		React.createElement(Site, {}),
+		document.getElementById('react')
+	);
+
+	// Init the requests
+	Requests.init();
 
 	// Init the services
 	Services.init("services", function(xhr) {
@@ -21,16 +33,21 @@ var Site = require('./react/site.jsx');
 		}
 	});
 
-	// Render the LoginComponent
-	ReactDOM.render(
-		React.createElement(Site, {
-			"thrower": Services.session() ? true : false
-		}),
-		document.getElementById('react')
-	);
+	// If we have a session, fetch the thrower
+	if(Services.session()) {
+		Loader.show();
+		Services.read('auth', 'session', {}).done(res => {
+			Events.trigger('signin', res.data);
+		}).always(() => {
+			Loader.hide();
+		});
+	}
 
 	// Hide the loader
 	Loader.hide();
+
+	// Make Events available from console
+	window.Events = Events;
 })();
 
 // Export

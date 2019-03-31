@@ -26,7 +26,7 @@ class Header extends React.Component {
 		// Initialise the state
 		this.state = {
 			"modal": false,
-			"thrower": props.thrower ? props.thrower : false
+			"thrower": false
 		};
 
 		// Bind methods
@@ -160,13 +160,13 @@ class Header extends React.Component {
 			if(res.data) {
 
 				// Set the session with the service
-				Services.session(res.data);
+				Services.session(res.data.session);
 
 				// Greet thrower
 				Events.trigger('success', "Welcome back to AxeGains " + alias);
 
 				// Trigger the signin event
-				Events.trigger('signin');
+				Events.trigger('signin', res.data.thrower);
 			}
 
 		}).always(() => {

@@ -35,7 +35,7 @@ class Site extends React.Component {
 		// Initialise the state
 		this.state = {
 			"page": Hash.get('page', 'home'),
-			"thrower": props.thrower ? props.thrower : false
+			"thrower": false
 		};
 
 		// Bind methods
@@ -70,7 +70,7 @@ class Site extends React.Component {
 
 		return (
 			<div id="site">
-				<Header thrower={self.state.thrower} />
+				<Header />
 				<Menu ref="menu" className="menu primary" selected={self.state.page} onChange={self.pageChange}>
 					{items}
 				</Menu>
@@ -108,6 +108,7 @@ class Site extends React.Component {
 					<Stats />
 				}
 				<Popups />
+				<Messages />
 			</div>
 		);
 	}

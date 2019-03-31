@@ -66,6 +66,8 @@ REST.Server({
 
 	"/search": {"methods": REST.READ, "session": True},
 
+	"/session": {"methods": REST.READ, "session": True},
+
 	"/signin": {"methods": REST.POST},
 	"/signout": {"methods": REST.POST, "session": True},
 	"/signup": {"methods": REST.POST},

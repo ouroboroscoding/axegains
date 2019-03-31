@@ -1,0 +1,23 @@
+#messages {
+	position: fixed;
+	top: 0;
+	left: 0;
+	margin: 0;
+	width: 100%;
+	z-index: $zi_messages;
+
+	div.message {
+		border: 3px solid black;
+		background-color: #fff;
+		padding: 10px;
+		margin: 5px 5px 0;
+
+		div.buttons {
+			text-align: right;
+
+			button {
+				margin-left: 15px;
+			}
+		}
+	}
+}

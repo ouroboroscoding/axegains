@@ -194,7 +194,7 @@ class Auth(Services.Service):
 			return Services.Effect(error=300)
 
 		# Sync the data for anyone listening
-		Sync.push('auth', 'thrower-%s' % data['opponent'], {
+		Sync.push('auth', 'requests-%s' % data['opponent'], {
 			"type": 'match_request',
 			"thrower": sesh['thrower']['_id'],
 			"alias": dOpponent['alias'],
@@ -239,7 +239,7 @@ class Auth(Services.Service):
 		if sesh['thrower']['_id'] == oRequest['initiator']:
 
 			# Let the opponent know
-			Sync.push('auth', 'thrower-%s' % oRequest['opponent'], {
+			Sync.push('auth', 'requests-%s' % oRequest['opponent'], {
 				"type": "match_request_delete",
 				"id": data['id']
 			})
@@ -274,13 +274,13 @@ class Auth(Services.Service):
 		# Find all the requests the thrower initiated
 		dRet['initiator'] = MatchRequest.get(
 			sesh['thrower']['_id'], index='initiator',
-			raw=['_id', 'opponent']
+			raw=['_id', 'opponent', 'org']
 		)
 
 		# Find all the requests in which the thrower is the opponent
 		dRet['opponent'] = MatchRequest.get(
 			sesh['thrower']['_id'], index='opponent',
-			raw=['_id', 'initiator']
+			raw=['_id', 'initiator', 'org']
 		)
 
 		# Get all the thrower IDs
@@ -292,7 +292,7 @@ class Auth(Services.Service):
 
 		# Get all the thrower aliases
 		dAliases = dThrowers and \
-			{d['_id']:d['alias'] for d in Throwers.get(dThrowers, raw=['_id', 'alias'])} or \
+			{d['_id']:d['alias'] for d in Thrower.get(dThrowers, raw=['_id', 'alias'])} or \
 			{}
 
 		# Add the alias to each record
@@ -302,7 +302,7 @@ class Auth(Services.Service):
 			d['alias'] = d['initiator'] in dAliases and dAliases[d['initiator']] or 'N/A'
 
 		# Return all the records
-		Services.Effect(dRet)
+		return Services.Effect(dRet)
 
 	def matchRequestUpdate(self, data, sesh):
 		"""Match Request (Update)
@@ -332,7 +332,7 @@ class Auth(Services.Service):
 			return Services.Effect(error=208)
 
 		# Create a new match in the proper service
-		oEffect = Services.create(oRequest['org'], 'match', {
+		oEffect = Services.create(oRequest['org'].lower(), 'match', {
 			"_internal_": Services.internalKey(),
 			"initiator": oRequest['initiator'],
 			"opponent": oRequest['opponent']
@@ -462,6 +462,20 @@ class Auth(Services.Service):
 			Thrower.search(data['q'])
 		)
 
+	def sessionRead(self, data, sesh):
+		"""Session
+
+		Returns the ID of the thrower logged into the current session
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- The session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+		return Services.Effect(sesh['thrower']['_id'])
+
 	def signinCreate(self, data):
 		"""Signin
 
@@ -497,7 +511,10 @@ class Auth(Services.Service):
 		oSesh.save()
 
 		# Return the session ID and primary thrower data
-		return Services.Effect(oSesh.id())
+		return Services.Effect({
+			"session": oSesh.id(),
+			"thrower": oSesh['thrower']['_id']
+		})
 
 	def signoutCreate(self, data, sesh):
 		"""Signout

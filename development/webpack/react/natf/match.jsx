@@ -152,7 +152,7 @@ class Match extends React.Component {
 		// Make a match request for this opponent
 		Services.create('auth', 'match/request', {
 			"opponent": opponent._id,
-			"org": "natf"
+			"org": "NATF"
 		}).done(res => {
 
 			// If there's an error

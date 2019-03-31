@@ -29,7 +29,7 @@ header {
 	right: 4px;
 	top: 30px;
 	width: 250px;
-	z-index: 10;
+	z-index: $zi_primary + 1;
 }
 
 #signup {
@@ -40,7 +40,7 @@ header {
 	right: 32px;
 	top: 30px;
 	width: 250px;
-	z-index: 10;
+	z-index: $zi_primary + 1;
 }
 
 .menu {
