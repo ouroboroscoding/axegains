@@ -20,35 +20,6 @@ from datetime import datetime
 from decimal import Decimal
 import os
 
-# _byteify function
-def _byteify(input_):
-	"""Byteify
-
-	Turns unicode strings into utf-8
-
-	Args:
-		input_ (str|dict|list): The object or string to byteify
-
-	Returns:
-		mixed
-	"""
-
-	# If we were passed a dictionary
-	if isinstance(input_, dict):
-		return {_byteify(key):_byteify(value) for key,value in input_.iteritems()}
-
-	# Else if we were passed a list
-	elif isinstance(input_, (list,tuple)):
-		return [_byteify(element) for element in input_]
-
-	# Else if we have a unicode string
-	elif isinstance(input_, unicode):
-		return input_.encode('utf8')
-
-	# Else, return as is
-	else:
-		return input_
-
 # decode function
 def decode(s):
 	"""Decode
@@ -61,8 +32,7 @@ def decode(s):
 	Returns:
 		mixed
 	"""
-	oJSON	= json.loads(s, parse_float=Decimal, encoding='utf8')
-	return _byteify(oJSON)
+	return json.loads(s, parse_float=Decimal, encoding='utf8')
 
 # decodef function
 def decodef(f):
@@ -77,8 +47,7 @@ def decodef(f):
 	Returns:
 		mixed
 	"""
-	oJSON	= json.load(f, parse_float=Decimal, encoding='utf8')
-	return _byteify(oJSON)
+	return json.load(f, parse_float=Decimal, encoding='utf8')
 
 # encode function
 def encode(o):
@@ -92,8 +61,7 @@ def encode(o):
 	Returns:
 		str
 	"""
-	s	= json.dumps(o, cls=CEncoder)
-	return s
+	return json.dumps(o, cls=CEncoder)
 
 # encodef function
 def encodef(o, f):

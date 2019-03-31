@@ -235,6 +235,13 @@ class Header extends React.Component {
 
 	signup(ev) {
 
+		// If the alias is not long enough
+		if(this.refs.signup_alias.trim().length < 3) {
+			Forms.errorAdd(this.refs.signup_alias);
+			Events.trigger('error', 'Alias must be at least 3 characters');
+			return;
+		}
+
 		// If the passwords don't match
 		if(this.refs.signup_passwd.value != this.refs.repeat_passwd.value) {
 			Forms.errorAdd(this.refs.repeat_passwd);
@@ -250,7 +257,7 @@ class Header extends React.Component {
 
 		// Init the data
 		var oData = {
-			"alias": this.refs.signup_alias.value,
+			"alias": this.refs.signup_alias.value.trim(),
 			"passwd": this.refs.signup_passwd.value
 		}
 

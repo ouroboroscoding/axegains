@@ -15,6 +15,7 @@
 	"205": "Service has no such noun",
 	"206": "Invalid internal key",
 	"207": "No profile in session",
+	"208": "No rights to request",
 
 	"_": "DB Errors",
 	"300": "Failed to store record",
@@ -23,6 +24,8 @@
 	"303": "Failed to drop DB",
 	"304": "Failed to create Table",
 	"305": "Failed to drop Table",
+	"306": "Failed to delete record",
+	"307": "Failed to update record",
 
 	"_": "Thrower Errors",
 	"400": "Alias already in use",

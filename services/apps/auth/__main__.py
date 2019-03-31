@@ -44,11 +44,12 @@ oRestConf = REST.Config(Conf.get("rest"))
 if 'AXE_VERBOSE' in os.environ and os.environ['AXE_VERBOSE'] == '1':
 	Services.verbose()
 
-# Register all necessary services
-Services.register({
-	"auth": Auth(),
-	"communications": None
-}, oRestConf, Conf.get(('services', 'salt')))
+# Get all the services
+dServices = {k:None for k in Conf.get(('rest', 'services'))}
+dServices['auth'] = Auth()
+
+# Register all services
+Services.register(dServices, oRestConf, Conf.get(('services', 'salt')))
 
 # Init Templates
 Templates.init('../templates')
@@ -57,6 +58,9 @@ Templates.init('../templates')
 REST.Server({
 	"/favourite": {"method": REST.CREATE | REST.DELETE, "session": True},
 	"/favourites": {"method": REST.READ, "session": True},
+
+	"/match/request": {"methods": REST.CREATE | REST.UPDATE | REST.DELETE, "session": True},
+	"/match/requests": {"methods": REST.READ, "session": True},
 
 	"/passwd/forgot": {"methods": REST.CREATE | REST.UPDATE},
 

@@ -4,6 +4,7 @@ config.*.json
 *.sublime-project
 *.sublime-workspace
 install.log
+_upgrade.log
 
 # Folders
 __pycache__

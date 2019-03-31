@@ -24,8 +24,8 @@ class Match extends React.Component {
 
 		// Initialise the state
 		this.state = {
-			"match": null,
-			"opponent": null,
+			"id": false,
+			"mode": "opponent",
 			"thrower": props.thrower,
 		};
 
@@ -34,6 +34,7 @@ class Match extends React.Component {
 		this.setOpponent = this.setOpponent.bind(this);
 		this.signin = this.signin.bind(this);
 		this.signout = this.signout.bind(this);
+		this.requestCallback = this.requestCallback.bind(this);
 	}
 
 	componentWillMount() {
@@ -48,6 +49,18 @@ class Match extends React.Component {
 		// Stop tracking any signin/signout events
 		Events.remove('signin', this.signin);
 		Events.remove('signout', this.signout);
+
+		// If we're in request mode
+		if(this.state.mode == 'request') {
+
+			// Stop tracking the request
+			TwoWay.untrack(
+				'/ws',
+				'auth',
+				'request-' + this.state.id,
+				this.requestCallback
+			)
+		}
 	}
 
 	overwrite(ev) {
@@ -58,17 +71,69 @@ class Match extends React.Component {
 		var self = this;
 		return (
 			<div className="natf">
-				{!this.state.opponent ?
+				{this.state.mode == 'opponent' &&
 					<Opponent onSelect={this.setOpponent} />
-				:
-					<div />
+				}
+				{this.state.mode == 'request' &&
+					<div></div>
+				}
+				{this.state.mode == 'match' &&
+					<div></div>
 				}
 			</div>
 		);
 	}
 
+	requestCallback(msg) {
+		console.log(msg);
+	}
+
 	setOpponent(opponent) {
-		this.setState({"opponent": opponent});
+
+		// Store this
+		var self = this;
+
+		// Show the loader
+		Loader.show();
+
+		// Make a match request for this opponent
+		Services.create('auth', 'match/request', {
+			"opponent": opponent._id,
+			"org": "natf"
+		}).done(res => {
+
+			// If there's an error
+			if(res.error && !Utils.serviceError(res.error)) {
+				Events.trigger('error', JSON.stringify(res.error));
+			}
+
+			// If there's a warning
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If there's data
+			if(res.data) {
+
+				// Change the mode
+				self.setState({
+					"mode": "request",
+					"id": res.data
+				})
+
+				// Listen for an update on the request
+				TwoWay.track(
+					'/ws',
+					'auth',
+					'request-' + res.data,
+					this.requestCallback
+				);
+			}
+
+		}).always(() => {
+			// Hide the loader
+			Loader.hide();
+		});
 	}
 
 	signin() {

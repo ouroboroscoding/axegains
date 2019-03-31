@@ -153,6 +153,7 @@ class Opponent extends React.Component {
 		this.favouriteShow = this.favouriteShow.bind(this);
 		this.search = this.search.bind(this);
 		this.searchShow = this.searchShow.bind(this);
+		this.selected = this.selected.bind(this);
 	}
 
 	favourites() {
@@ -200,19 +201,19 @@ class Opponent extends React.Component {
 		var self = this;
 		return (
 			<React.Fragment>
-				{this.state.mode == 'favourites' ?
+				{self.state.mode == 'favourites' ?
 					<div className="acenter">
 							<span>Favourites</span> |
-							<span className="link" onClick={this.searchShow}>Search</span>
+							<span className="link" onClick={self.searchShow}>Search</span>
 					</div>
 				:
 					<React.Fragment>
 						<div className="acenter">
-							<span className="link" onClick={this.favouriteShow}>Favourites</span> |
+							<span className="link" onClick={self.favouriteShow}>Favourites</span> |
 							<span>Search</span>
 						</div>
 						<div className="form">
-							<InputEnter onEnter={this.search} />
+							<InputEnter onEnter={self.search} />
 						</div>
 					</React.Fragment>
 				}
@@ -221,13 +222,13 @@ class Opponent extends React.Component {
 						<tr><th>Alias</th><th>Favourite</th></tr>
 					</thead>
 					<tbody>
-						{this.state.mode == 'favourites' ?
-							this.state.favourites.map(function(t, i) {
-								return <OpponentRow key={i} thrower={t} favourite={true} selected={this.selected} />
+						{self.state.mode == 'favourites' ?
+							self.state.favourites.map(function(t, i) {
+								return <OpponentRow key={i} thrower={t} favourite={true} selected={self.selected} />
 							})
 						:
-							this.state.search.map(function(t, i) {
-								return <OpponentRow key={i} thrower={t} favourite={false} selected={this.selected} />
+							self.state.search.map(function(t, i) {
+								return <OpponentRow key={i} thrower={t} favourite={false} selected={self.selected} />
 							})
 						}
 					</tbody>

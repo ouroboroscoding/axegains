@@ -26,7 +26,7 @@ from RestOC import Conf, DictHelper, Record_ReDB, Services, \
 from shared import SSS, Sync
 
 # Service imports
-from .Records import Favourites, Thrower
+from .Records import Favourites, MatchRequest, Thrower
 
 # Regex for validating email
 _emailRegex = re.compile(r"[^@\s]+@[^@\s]+\.[a-zA-Z0-9]{2,}$")
@@ -39,7 +39,7 @@ class Auth(Services.Service):
 	Extends: shared.Services.Service
 	"""
 
-	_install = [Favourites, Thrower]
+	_install = [Favourites, MatchRequest, Thrower]
 	"""Record types called in install"""
 
 	def favouriteCreate(self, data, sesh):
@@ -155,6 +155,199 @@ class Auth(Services.Service):
 			# Install the table
 			if not o.tableCreate():
 				print("Failed to create `%s` table" % o.tableName())
+
+	def matchRequestCreate(self, data, sesh):
+		"""Match Request (Create)
+
+		Creates a new match request and notifies the opponent
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- The session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['opponent', 'org'])
+		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+
+		# Find opponent
+		dOpponent = Thrower.get(data['opponent'], raw=['alias'])
+		if not dOpponent:
+			return Services.Effect(error=(104, 'thrower:%s' % data['opponent']))
+
+		# Create a new request
+		try:
+			oRequest = MatchRequest({
+				"_created": int(time()),
+				"initiator": sesh['thrower']['_id'],
+				"opponent": data['opponent'],
+				"org": data['org']
+			})
+		except ValueError as e:
+			return Services.Effect(error=(103, e.args[0]))
+
+		# Store the instance
+		if not oRequest.create():
+			return Services.Effect(error=300)
+
+		# Sync the data for anyone listening
+		Sync.push('auth', 'thrower-%s' % data['opponent'], {
+			"type": 'match_request',
+			"thrower": sesh['thrower']['_id'],
+			"alias": dOpponent['alias'],
+			"org": data['org']
+		})
+
+		# Return the ID of the new request
+		return Services.Effect(oRequest['_id'])
+
+	def matchRequestDelete(self, data, sesh):
+		"""Match Request (Delete)
+
+		Refuses a match request and deletes it
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- The session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['id'])
+		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+
+		# Find the request
+		oRequest = MatchRequest.get(data['id'])
+		if not oRequest:
+			return Services.Effect(error=(104, 'match_request:%s' % data['id']))
+
+		# If the deleter is not the initiator or opponent
+		if sesh['thrower']['_id'] != oRequest['initiator'] and \
+			sesh['thrower']['_id'] != oRequest['opponent']:
+			return Services.Effect(error=208)
+
+		# Delete it
+		if not oRequest.delete():
+			return Services.Effect(error=306)
+
+		# If the initiator retracted their request
+		if sesh['thrower']['_id'] == oRequest['initiator']:
+
+			# Let the opponent know
+			Sync.push('auth', 'thrower-%s' % oRequest['opponent'], {
+				"type": "match_request_delete",
+				"id": data['id']
+			})
+
+		# Else the opponent rejected the request
+		else:
+
+			# Let the initiator know
+			Sync.push('auth', 'request-%s' % data['id'], {
+				"type": "rejected"
+			})
+
+		# Return OK
+		return Services.Effect(True)
+
+	def matchRequestsRead(self, data, sesh):
+		"""Match Requests
+
+		Returns all open match requests regardless of initiator or opponent
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- The session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Init the return
+		dRet = {}
+
+		# Find all the requests the thrower initiated
+		dRet['initiator'] = MatchRequest.get(
+			sesh['thrower']['_id'], index='initiator',
+			raw=['_id', 'opponent']
+		)
+
+		# Find all the requests in which the thrower is the opponent
+		dRet['opponent'] = MatchRequest.get(
+			sesh['thrower']['_id'], index='opponent',
+			raw=['_id', 'initiator']
+		)
+
+		# Get all the thrower IDs
+		dThrowers = []
+		for d in dRet['initiator']:
+			dThrowers.append(d['opponent'])
+		for d in dRet['opponent']:
+			dThrowers.append(d['initiator'])
+
+		# Get all the thrower aliases
+		dAliases = dThrowers and \
+			{d['_id']:d['alias'] for d in Throwers.get(dThrowers, raw=['_id', 'alias'])} or \
+			{}
+
+		# Add the alias to each record
+		for d in dRet['initiator']:
+			d['alias'] = d['opponent'] in dAliases and dAliases[d['opponent']] or 'N/A'
+		for d in dRet['opponent']:
+			d['alias'] = d['initiator'] in dAliases and dAliases[d['initiator']] or 'N/A'
+
+		# Return all the records
+		Services.Effect(dRet)
+
+	def matchRequestUpdate(self, data, sesh):
+		"""Match Request (Update)
+
+		Accepts a match request and creates the match with the proper service,
+		then notifies both throwers of the ID of the new match
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- The session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['id'])
+		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+
+		# Find the request
+		oRequest = MatchRequest.get(data['id'])
+		if not oRequest:
+			return Services.Effect(error=(104, 'match_request:%s' % data['id']))
+
+		# If the accepter is not the opponent
+		if sesh['thrower']['_id'] != oRequest['opponent']:
+			return Services.Effect(error=208)
+
+		# Create a new match in the proper service
+		oEffect = Services.create(oRequest['org'], 'match', {
+			"_internal_": Services.internalKey(),
+			"initiator": oRequest['initiator'],
+			"opponent": oRequest['opponent']
+		})
+		if oEffect.errorExists():
+			return oEffect
+
+		# Notify the initiator of the new match
+		Sync.push('auth', 'request-%s' % data['id'], {
+			"type": "accepted",
+			"match": oEffect.data
+		})
+
+		# Return the ID of the new match
+		return Services.Effect(oEffect.data)
 
 	def passwdForgotCreate(self, data):
 		"""Password Forgot (Generate)

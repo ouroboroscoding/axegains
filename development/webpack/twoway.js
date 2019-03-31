@@ -20,7 +20,7 @@ var WSHelper = require('./generic/websocket.js');
  * will contain a string for the URL, pointing to an object of key types with
  * callbacks for those keys, e.g. {
  *	"https://somedomain.com/ws": {
- *		"socket": socket_instance,
+ *		"socket": socket,
  *		"services" : {
  *			"service1": {
  *				"key1": [function1, function2],
