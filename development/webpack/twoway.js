@@ -84,26 +84,32 @@ function _addTrack(service, key, callback) {
  *
  * @name _handleMessage
  * @param WebSocket sock		The socket the message came on
- * @param string data			The JSON data sent with the message
+ * @param MessageEvent ev		The event message received
  * @return void
  */
-function _handleMessage(sock, data) {
+function _handleMessage(sock, ev) {
 
-	// Parse the data
-	oMsg = JSON.parse(data);
+	// Screw you javascript
+	var r = new FileReader();
+	r.addEventListener("loadend", function() {
 
-	// If we have the service
-	if(oMsg.service in _services) {
+		// Parse the data
+		oMsg = JSON.parse(r.result);
 
-		// If we have the key
-		if(key in _services[oMsg.service]) {
+		// If we have the service
+		if(oMsg.service in _services) {
 
-			// Call each callback
-			for(var f of _services[oMsg.service]) {
-				f(oMsg.data);
+			// If we have the key
+			if(oMsg.key in _services[oMsg.service]) {
+
+				// Call each callback
+				for(var f of _services[oMsg.service][oMsg.key]) {
+					f(oMsg.data);
+				}
 			}
 		}
-	}
+	});
+	r.readAsText(ev.data);
 }
 
 /**

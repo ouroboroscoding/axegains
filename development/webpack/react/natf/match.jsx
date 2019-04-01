@@ -3,6 +3,7 @@ var React = require('react');
 
 // Generic modules
 var Events = require('../../generic/events.js');
+var Hash = require('../../generic/hash.js');
 var Loader = require('../../generic/loader.js');
 var Services = require('../../generic/services.js');
 
@@ -30,8 +31,16 @@ class Match extends React.Component {
 			"opponent": false
 		};
 
+		// If there's an ID in the hash
+		var id = Hash.get('id');
+		if(id) {
+			this.idCallback(id);
+		}
+
 		// Bind methods
 		this.cancelRequest = this.cancelRequest.bind(this);
+		this.idCallback = this.idCallback.bind(this);
+		this.matchCallback = this.matchCallback.bind(this);
 		this.overwrite = this.overwrite.bind(this);
 		this.setOpponent = this.setOpponent.bind(this);
 		this.signin = this.signin.bind(this);
@@ -73,6 +82,9 @@ class Match extends React.Component {
 						this.requestCallback
 					);
 
+					// Remove the ID from the hash
+					Hash.set('id', null);
+
 					// Change the mode
 					self.setState({
 						"id": false,
@@ -93,6 +105,9 @@ class Match extends React.Component {
 		// Track any signin/signout events
 		Events.add('signin', this.signin);
 		Events.add('signout', this.signout);
+
+		// Track ID in hash
+		Hash.watch('id', this.idCallback);
 	}
 
 	componentWillUnmount() {
@@ -101,16 +116,75 @@ class Match extends React.Component {
 		Events.remove('signin', this.signin);
 		Events.remove('signout', this.signout);
 
+		// Stop tracking ID in hash
+		Hash.unwatch('id', this.idCallback);
+
 		// If we're in request mode
 		if(this.state.mode == 'request') {
 
 			// Stop tracking the request
 			TwoWay.untrack(
-				'auth',
-				'request-' + this.state.id,
+				'auth', 'request-' + this.state.id,
 				this.requestCallback
 			)
 		}
+
+		else if(this.state.mode == 'match') {
+
+			// Stop tracking the match
+			TwoWay.untrack(
+				'natf', 'match-' + this.state.id,
+				this.matchCallback
+			)
+		}
+	}
+
+	idCallback(id) {
+
+		// If there's an ID
+		if(id) {
+
+			// Split the ID
+			id = id.split('|');
+
+			// If it's a request
+			if(id[0] == 'r') {
+
+				// Change the mode
+				this.setState({
+					"id": id[1],
+					"mode": "request",
+					"opponent": {"alias": id[2]}
+				});
+
+				// Listen for an update on the request
+				TwoWay.track(
+					'auth', 'request-' + id[1],
+					this.requestCallback
+				);
+			}
+
+			// Else if it's a match
+			else if(id[0] == 'm') {
+
+				// Change the mode
+				this.setState({
+					"id": id[1],
+					"mode": "match",
+					"opponent": {"alias": id[2]}
+				})
+
+				// List for an update on the match
+				TwoWay.track(
+					'natf', 'match-' + id[1],
+					this.matchCallback
+				)
+			}
+		}
+	}
+
+	matchCallback(msg) {
+		console.log(msg);
 	}
 
 	overwrite(ev) {
@@ -122,7 +196,7 @@ class Match extends React.Component {
 		return (
 			<div className="natf">
 				{this.state.mode == 'opponent' &&
-					<Opponent onSelect={this.setOpponent} />
+					<Opponent thrower={this.state.thrower} onSelect={this.setOpponent} />
 				}
 				{this.state.mode == 'request' &&
 					<div className="acenter">
@@ -168,19 +242,8 @@ class Match extends React.Component {
 			// If there's data
 			if(res.data) {
 
-				// Change the mode
-				self.setState({
-					"id": res.data,
-					"mode": "request",
-					"opponent": opponent
-				});
-
-				// Listen for an update on the request
-				TwoWay.track(
-					'auth',
-					'request-' + res.data,
-					this.requestCallback
-				);
+				// Set the hash
+				Hash.set('id', 'r|' + res.data + '|' + opponent.alias)
 			}
 
 		}).always(() => {

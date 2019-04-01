@@ -78,6 +78,9 @@ def RedisThread():
 			# If the message is real data and not subscribe/ubsubscribe
 			if d['type'] == 'message':
 
+				# Convert the channel to a unicode string
+				d['channel'] = d['channel'].decode('utf-8')
+
 				# If we have the channel
 				if d['channel'] in _r_clients:
 

@@ -196,7 +196,8 @@ class Auth(Services.Service):
 		# Sync the data for anyone listening
 		Sync.push('auth', 'requests-%s' % data['opponent'], {
 			"type": 'match_request',
-			"thrower": sesh['thrower']['_id'],
+			"_id": oRequest['_id'],
+			"initiator": sesh['thrower']['_id'],
 			"alias": dOpponent['alias'],
 			"org": data['org']
 		})

@@ -144,16 +144,28 @@ class Opponent extends React.Component {
 			"favourites": [],
 			"mode": "favourites",
 			"search": [],
+			"thrower": props.thrower
 		};
 
 		// Fetch the favourites
-		this.favourites();
+		if(props.thrower) {
+			this.favourites();
+		}
 
 		// Bind methods
 		this.favouriteShow = this.favouriteShow.bind(this);
 		this.search = this.search.bind(this);
 		this.searchShow = this.searchShow.bind(this);
 		this.selected = this.selected.bind(this);
+		this.signin = this.signin.bind(this);
+	}
+
+	componentWillMount() {
+		Events.add('signin', this.signin);
+	}
+
+	componentWillUnmount() {
+		Events.remove('signin', this.signin);
 	}
 
 	favourites() {
@@ -282,6 +294,10 @@ class Opponent extends React.Component {
 		if(typeof this.props.onSelect == 'function') {
 			this.props.onSelect(thrower);
 		}
+	}
+
+	signin(thrower) {
+		this.favourites();
 	}
 }
 

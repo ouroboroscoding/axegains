@@ -157,26 +157,45 @@ var Hash = {
 	 * @name set
 	 * @access public
 	 * @static
-	 * @param str name			The name to set
+	 * @param str|object name	The name to set, or an object of name/value pairs
 	 * @param str value			The value to set the name to
 	 */
 	"set": function(name, value) {
 
-		// If the name is invalid
-		if(!_nameRE.test(name)) {
-			throw 'Invalid Hash name';
+		// If the name is not an object
+		if(!Tools.isObject(name)) {
+
+			// If the value is not defined
+			if(typeof value == 'undefined') {
+				value = null;
+			}
+
+			// JavaScript is dumb and thinks {name: value} is the same as
+			//	{"name": value}
+			var temp = name;
+			name = {};
+			name[temp] = value;
 		}
 
 		// Store the old hash
 		var old = Tools.clone(_hash);
 
-		// If we have a value
-		if(value) {
-			// Set the name
-			_hash[name] = value;
-		} else {
-			// Delete the name
-			delete _hash[name];
+		// Go through each name
+		for(var n in name) {
+
+			// If the name is invalid
+			if(!_nameRE.test(n)) {
+				throw 'Invalid Hash name: ' + n;
+			}
+
+			// If we got null, delete the name
+			if(name[n] == null) {
+				delete _hash[n];
+			}
+			// Else, set the new value
+			else {
+				_hash[n] = name[n];
+			}
 		}
 
 		// Check anyone watching this value
