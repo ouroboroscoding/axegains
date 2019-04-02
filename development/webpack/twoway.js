@@ -14,8 +14,14 @@ var Services = require('./generic/services.js');
 var Tools = require('./generic/tools.js');
 var WSHelper = require('./generic/websocket.js');
 
+// The ping timer
+var __ping = null;
+
+// The valid close flag
+var __close = false;
+
 // The websocket
-var _socket = null;
+var __socket = null;
 
 /**
  * The service callbacks
@@ -31,7 +37,7 @@ var _socket = null;
  *	}
  * }
  */
-var _services = {};
+var __services = {};
 
 /**
  * Add Track
@@ -47,32 +53,85 @@ var _services = {};
 function _addTrack(service, key, callback) {
 
 	// If the URL doesn't exist
-	if(!_socket) {
+	if(!__socket) {
 		console.error('twoway: something went wrong, no socket found');
 		return;
 	}
 
 	// Send the tracking message through the websocket
-	_socket.send(JSON.stringify({
+	__socket.send(JSON.stringify({
 		"_type": "track",
 		"service": service,
 		"key": key
 	}));
 
 	// If we don't have the service, add it
-	if(!(service in _services)) {
-		_services[service] = {}
+	if(!(service in __services)) {
+		__services[service] = {}
 	}
 
 	// If we don't have the key for the given service, add the list with
 	//	the callback
-	if(!(key in _services[service])) {
-		_services[service][key] = [callback]
+	if(!(key in __services[service])) {
+		__services[service][key] = [callback]
 	}
 
 	// Else, add the callback, to the given service/key
 	else {
-		_services[service][key].push(callback);
+		__services[service][key].push(callback);
+	}
+}
+
+/**
+ * Handle Close
+ *
+ * Checks if it's a legitimate closed socket, or if we need to reconnect to
+ * everything
+ *
+ * @name _handleClose
+ * @return void
+ */
+function _handleClose() {
+
+	// If it's a valid close
+	if(__close) {
+		__socket = null;
+	}
+
+	// Else, reopen the socket and re-track all events
+	else {
+
+		setTimeout(function() {
+
+			// Notify the backend of a new ws connection
+			Services.read('webpoll', 'websocket', {}).done(res => {
+
+				// Create the websocket
+				__socket = WSHelper('wss://' + window.location.hostname + '/ws', {
+					"open": function(sock) {
+
+						// Send the connect message
+						sock.send(JSON.stringify({
+							"_type": "connect",
+							"key": res.data
+						}))
+
+						// Retrack every service/key
+						for(var s in __services) {
+							for(var k in __services[s]) {
+								__socket.send(JSON.stringify({
+									"_type": "track",
+									"service": s,
+									"key": k
+								}));
+							}
+						}
+					},
+					"message": _handleMessage,
+					"close": _handleClose
+				});
+			});
+		}, 5000);
 	}
 }
 
@@ -89,6 +148,11 @@ function _addTrack(service, key, callback) {
  */
 function _handleMessage(sock, ev) {
 
+	// If it's pong
+	if(ev.data == 'pong') {
+		return;
+	}
+
 	// Screw you javascript
 	var r = new FileReader();
 	r.addEventListener("loadend", function() {
@@ -97,19 +161,35 @@ function _handleMessage(sock, ev) {
 		oMsg = JSON.parse(r.result);
 
 		// If we have the service
-		if(oMsg.service in _services) {
+		if(oMsg.service in __services) {
 
 			// If we have the key
-			if(oMsg.key in _services[oMsg.service]) {
+			if(oMsg.key in __services[oMsg.service]) {
 
 				// Call each callback
-				for(var f of _services[oMsg.service][oMsg.key]) {
+				for(var f of __services[oMsg.service][oMsg.key]) {
 					f(oMsg.data);
 				}
 			}
 		}
 	});
 	r.readAsText(ev.data);
+}
+
+/**
+ * Ping
+ *
+ * Send a ping to keep the socket alive
+ *
+ * @name _ping
+ * @return void
+ */
+function _ping() {
+
+	// Send a ping message over the socket to keep it alive
+	__socket.send(JSON.stringify({
+		"_type": "ping"
+	}));
 }
 
 /**
@@ -128,26 +208,34 @@ function _handleMessage(sock, ev) {
 function _track(service, key, callback) {
 
 	// If we don't have a socket
-	if(!_socket) {
+	if(!__socket) {
 
 		// Notify the backend of a new ws connection
 		Services.read('webpoll', 'websocket', {}).done(res => {
 
 			// Create the websocket
-			_socket = WSHelper('wss://' + window.location.hostname + '/ws', {
+			__socket = WSHelper('wss://' + window.location.hostname + '/ws', {
 				"open": function(sock) {
+
+					// Reset the close flag
+					__close = false;
+
+					// Send the connect message
 					sock.send(JSON.stringify({
 						"_type": "connect",
 						"key": res.data
 					}))
+
+					// Send the tracking message and store the callback
 					_addTrack(service, key, callback)
 				},
 				"message": _handleMessage,
-				"close": function() {
-					_socket = null;
-				}
-			})
-		})
+				"close": _handleClose
+			});
+
+			// Ping at 5 minute intervals
+			__ping = setInterval(_ping, 300000);
+		});
 
 	} else {
 		_addTrack(service, key, callback);
@@ -168,45 +256,49 @@ function _track(service, key, callback) {
 function _untrack(service, key, callback) {
 
 	// If we have the service
-	if(service in _services) {
+	if(service in __services) {
 
 		// If we have the key
-		if(key in _services[service]) {
+		if(key in __services[service]) {
 
 			// Go through each callback
-			for(var i = 0; i < _services[service][key].length; ++i) {
+			for(var i = 0; i < __services[service][key].length; ++i) {
 
 				// If the callback matches
-				if(callback == _services[service][key][i]) {
+				if(callback == __services[service][key][i]) {
 
 					// Remove the callback
-					_services[service][key].splice(i, 1);
+					__services[service][key].splice(i, 1);
 
 					// If we have no more callbacks
-					if(_services[service][key].length == 0) {
+					if(__services[service][key].length == 0) {
 
 						// Notify the websocket we aren't tracking the key
 						//	anymore
-						_socket.send(JSON.stringify({
+						__socket.send(JSON.stringify({
 							"_type": "untrack",
 							"service": service,
 							"key": key
 						}));
 
 						// Remove the key
-						delete _services[service][key];
+						delete __services[service][key];
 
 						// If we have no more keys in the service
-						if(Tools.empty(_services[service])) {
+						if(Tools.empty(__services[service])) {
 
 							// Remove the service
-							delete _services[service];
+							delete __services[service];
 
 							// If there's no more services
-							if(Tools.empty(_services)) {
+							if(Tools.empty(__services)) {
+
+								// Turn off the ping interval
+								clearInterval(__ping);
 
 								// Close the socket
-								_socket.close(1000, 'nothing else to track');
+								__close = true;
+								__socket.close(1000, 'nothing else to track');
 							}
 						}
 					}

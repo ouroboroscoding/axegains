@@ -265,7 +265,7 @@ function _requestNew(msg) {
 		__pending['opponent'].push(msg);
 
 		// Add a new message
-		Events.trigger('message', msg.id, {
+		Events.trigger('message', msg._id, {
 			"text": "You have an " + msg.org + " match request from " +
 					msg.alias + ". Do you want to start this match now?",
 			"buttons": [

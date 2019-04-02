@@ -18,6 +18,7 @@ __created__		= "2017-06-26"
 from collections import OrderedDict
 import os
 import platform
+import signal
 import threading
 
 # Import pip modules
@@ -32,20 +33,24 @@ if os.path.isfile(sConfOverride):
 	Conf.load_merge(sConfOverride)
 
 # Import service modules
-from . import Init as WSInit, SyncApplication, RedisThread
+from . import init as wsInit, redisThread, signalCatch, SyncApplication
 
 # If verbose mode is requested
 verbose	= False
 if 'AXE_VERBOSE' in os.environ and os.environ['AXE_VERBOSE'] == '1':
 	verbose	= True
 
+# Catch SIGNTERM and
+signal.signal(signal.SIGINT, signalCatch)
+signal.signal(signal.SIGTERM, signalCatch)
+
 # Init the sync application
-WSInit(verbose)
+wsInit(verbose)
 
 # Start the Redis thread
 try:
 	if verbose: print('Starting the Redis thread')
-	thread = threading.Thread(target=RedisThread)
+	thread = threading.Thread(target=redisThread)
 	thread.daemon = True
 	thread.start()
 except Exception as e:

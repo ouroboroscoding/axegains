@@ -1,6 +1,7 @@
 # Import version files
-from . import match_request
+from . import match_request, natf_match
 
 modules = [
-	match_request
+	match_request,
+	natf_match
 ]

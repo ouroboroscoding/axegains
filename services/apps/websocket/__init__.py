@@ -33,8 +33,36 @@ _r_pubsub = None
 _r_clients = {}
 _verbose = False
 
+def signalCatch(signum, frame):
+	"""Signal Catch
+
+	Called when a signal is passed to the program
+
+	Arguments:
+		signum {int} -- The signal value
+		frame {object} -- The current frame
+
+	Returns:
+		None
+	"""
+
+	print('Got %d signal' % signum)
+
+	# Go through each tracking code
+	for track in _r_clients:
+
+		# Unsubscribe
+		_r_pubsub.unsubscribe(track)
+
+		# Go through each websocket
+		for i in range(len(_r_clients[track])):
+
+			# If it's not closed, close it
+			if not _r_clients[track][i].ws.closed:
+				_r_clients[track][i].ws.close()
+
 # Init function
-def Init(verbose=False):
+def init(verbose=False):
 	"""Init
 
 	Called to initialize the service
@@ -64,7 +92,7 @@ def Init(verbose=False):
 	_verbose = verbose and True or False
 
 # Redis thread
-def RedisThread():
+def redisThread():
 
 	if _verbose: print('Threading starting')
 
@@ -225,7 +253,7 @@ class SyncApplication(WebSocketApplication):
 					_r.ping()
 
 					# Respond to the request
-					self.ws.send(json.dumps('pong'))
+					self.ws.send('pong')
 
 				# Else if it's a message to track something new
 				elif data['_type'] == 'track':

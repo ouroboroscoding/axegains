@@ -337,7 +337,7 @@ class Auth(Services.Service):
 			"_internal_": Services.internalKey(),
 			"initiator": oRequest['initiator'],
 			"opponent": oRequest['opponent']
-		})
+		}, sesh)
 		if oEffect.errorExists():
 			return oEffect
 

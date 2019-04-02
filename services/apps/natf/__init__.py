@@ -25,7 +25,7 @@ from RestOC import Conf, DictHelper, Record_ReDB, Services, Sesh
 from shared import Sync
 
 # Service imports
-from .Records import Practice
+from .Records import Match, Practice
 
 class Natf(Services.Service):
 	"""NATF Service class
@@ -71,6 +71,98 @@ class Natf(Services.Service):
 			# Install the table
 			if not o.tableCreate():
 				print("Failed to create `%s` table" % o.tableName())
+
+	def matchCreate(self, data, sesh):
+		"""Match (Create)
+
+		Creates a new match and returns its ID
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['_internal_', 'initiator', 'opponent'])
+		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+
+		# Verify the key, remove it if it's ok
+		if not Services.internalKey(data['_internal_']):
+			return Services.Effect(error=206)
+		del data['_internal_']
+
+		# Create a new match instance
+		try:
+			oMatch = Match({
+				"_created": int(time()),
+				"finished": False,
+				"initiator": data['initiator'],
+				"opponent": data['opponent'],
+				"games": {}
+			})
+		except ValueError as e:
+			return Services.Effect(error=(103, e.args[0]))
+
+		# Store the instance
+		if not oMatch.create():
+			return Services.Effect(error=300)
+
+		# Return the ID
+		return Services.Effect(oMatch['_id'])
+
+	def matchDelete(self, data, sesh):
+		"""Match (Delete)
+
+		Deletes an existing match, can only be done if it's not finished
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['id'])
+		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+
+	def matchRead(self, data, sesh):
+		"""Match (Read)
+
+		Fetches and returns the stats from an existing match
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['id'])
+		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+
+	def matchUpdate(self, data, sesh):
+		"""Match (Updates)
+
+		Updates the stats for an existing match
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['id'])
+		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
 
 	def practiceCreate(self, data, sesh):
 		"""Practice Create

@@ -30,7 +30,7 @@ class Board extends React.Component {
 		ev.stopPropagation();
 
 		// If clutches are not allowed
-		if(this.state.clutchMode == 'no') {
+		if(this.state.clutchMode == 'none') {
 
 			// Store the current target
 			var target = ev.currentTarget;
