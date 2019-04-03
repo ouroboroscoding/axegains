@@ -3,6 +3,7 @@
 		"db": "axegains",
 		"host": "primary",
 		"indexes": {
+			"finished": null,
 			"initiator": null,
 			"opponent": null
 		},

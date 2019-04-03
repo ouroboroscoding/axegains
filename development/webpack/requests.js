@@ -356,7 +356,7 @@ function _signout() {
 
 	// Delete all messages
 	for(var o in __pending) {
-		Event.trigger('message_remove', o._id);
+		Events.trigger('message_remove', o._id);
 	}
 
 	// Stop tracking the thrower

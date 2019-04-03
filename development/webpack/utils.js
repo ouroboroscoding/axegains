@@ -79,7 +79,7 @@ var Utils = {
 				return true;
 
 			// Invalid fields
-			case 103:
+			case 1001:
 
 				// Rebuild the error message
 				err.msg = Utils.errorTree(err.msg);

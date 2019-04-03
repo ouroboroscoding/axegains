@@ -132,16 +132,16 @@ class Header extends React.Component {
 			if(res.error && !Utils.serviceError(res.error)) {
 				var error = ' ';
 				switch(res.error.code) {
-					case 103:
+					case 1001:
 						// Go through each message and make the ref red
 						for(var i in res.error.msg) {
 							Forms.errorAdd(self.refs[i]);
 						}
 						break;
-					case 401:
+					case 1201:
 						Events.trigger('error', 'Alias or password invalid');
 						break;
-					case 404:
+					case 1204:
 						Forms.errorAdd(self.refs['signup_passwd']);
 						Events.trigger('error', 'Password not strong enough');
 						break;
@@ -276,7 +276,7 @@ class Header extends React.Component {
 			if(res.error && !Utils.serviceError(res.error)) {
 				var error = ' ';
 				switch(res.error.code) {
-					case 103:
+					case 1001:
 						// Go through each message and make the ref red
 						for(var i in res.error.msg) {
 							if(i == 'alias') {
@@ -287,15 +287,15 @@ class Header extends React.Component {
 							Forms.errorAdd(self.refs[i]);
 						}
 						break;
-					case 400:
+					case 1200:
 						Forms.errorAdd(self.refs['signup_alias']);
 						Events.trigger('error', 'Alias is already in use');
 						break;
-					case 404:
+					case 1204:
 						Forms.errorAdd(self.refs['signup_passwd']);
 						Events.trigger('error', 'Password not strong enough');
 						break;
-					case 406:
+					case 1206:
 						Forms.errorAdd(self.refs['email']);
 						Events.trigger('error', 'E-Mail already in use');
 						break;

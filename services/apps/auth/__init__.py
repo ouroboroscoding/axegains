@@ -19,7 +19,7 @@ import re
 from time import time
 
 # Pip imports
-from RestOC import Conf, DictHelper, Record_ReDB, Services, \
+from RestOC import Conf, DictHelper, Errors, Record_ReDB, Services, \
 					Sesh, StrHelper, Templates
 
 # Project imports
@@ -42,7 +42,7 @@ class Auth(Services.Service):
 	_install = [Favourites, MatchRequest, Thrower]
 	"""Record types called in install"""
 
-	def favouriteCreate(self, data, sesh):
+	def favourite_create(self, data, sesh):
 		"""Favourite (Create)
 
 		Adds a favourite to the logged in thrower
@@ -57,7 +57,7 @@ class Auth(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# If someone tries to add themselves
 		if data['id'] == sesh['thrower']['_id']:
@@ -65,7 +65,7 @@ class Auth(Services.Service):
 
 		# Make sure the thrower exists
 		if not Thrower.exists(data['id']):
-			return Services.Effect(error=(104, data['id']))
+			return Services.Effect(error=(1104, data['id']))
 
 		# Add the thrower to the logged in thrower's favourites and return the
 		#	result
@@ -73,7 +73,7 @@ class Auth(Services.Service):
 			Favourites.add(sesh['thrower']['_id'], data['id'])
 		)
 
-	def favouriteDelete(self, data, sesh):
+	def favourite_delete(self, data, sesh):
 		"""Favourite (Delete)
 
 		Removes a favourite from the logged in thrower
@@ -88,7 +88,7 @@ class Auth(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Remove the thrower from the logged in thrower's favourites and return
 		#	the result
@@ -96,7 +96,7 @@ class Auth(Services.Service):
 			Favourites.remove(sesh['thrower']['_id'], data['id'])
 		)
 
-	def favouritesRead(self, data, sesh):
+	def favourites_read(self, data, sesh):
 		"""Favourites
 
 		Returns all favourites for the logged in thrower
@@ -153,10 +153,10 @@ class Auth(Services.Service):
 		for o in cls._install:
 
 			# Install the table
-			if not o.tableCreate():
+			if not o.table_create():
 				print("Failed to create `%s` table" % o.tableName())
 
-	def matchRequestCreate(self, data, sesh):
+	def matchRequest_create(self, data, sesh):
 		"""Match Request (Create)
 
 		Creates a new match request and notifies the opponent
@@ -171,12 +171,12 @@ class Auth(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['opponent', 'org'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Find opponent
 		dOpponent = Thrower.get(data['opponent'], raw=['alias'])
 		if not dOpponent:
-			return Services.Effect(error=(104, 'thrower:%s' % data['opponent']))
+			return Services.Effect(error=(1104, 'thrower:%s' % data['opponent']))
 
 		# Create a new request
 		try:
@@ -187,11 +187,11 @@ class Auth(Services.Service):
 				"org": data['org']
 			})
 		except ValueError as e:
-			return Services.Effect(error=(103, e.args[0]))
+			return Services.Effect(error=(1001, e.args[0]))
 
 		# Store the instance
 		if not oRequest.create():
-			return Services.Effect(error=300)
+			return Services.Effect(error=1100)
 
 		# Sync the data for anyone listening
 		Sync.push('auth', 'requests-%s' % data['opponent'], {
@@ -205,7 +205,7 @@ class Auth(Services.Service):
 		# Return the ID of the new request
 		return Services.Effect(oRequest['_id'])
 
-	def matchRequestDelete(self, data, sesh):
+	def matchRequest_delete(self, data, sesh):
 		"""Match Request (Delete)
 
 		Refuses a match request and deletes it
@@ -220,21 +220,21 @@ class Auth(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Find the request
 		oRequest = MatchRequest.get(data['id'])
 		if not oRequest:
-			return Services.Effect(error=(104, 'match_request:%s' % data['id']))
+			return Services.Effect(error=(1104, 'match_request:%s' % data['id']))
 
 		# If the deleter is not the initiator or opponent
 		if sesh['thrower']['_id'] != oRequest['initiator'] and \
 			sesh['thrower']['_id'] != oRequest['opponent']:
-			return Services.Effect(error=208)
+			return Services.Effect(error=1000)
 
 		# Delete it
 		if not oRequest.delete():
-			return Services.Effect(error=306)
+			return Services.Effect(error=1102)
 
 		# If the initiator retracted their request
 		if sesh['thrower']['_id'] == oRequest['initiator']:
@@ -256,7 +256,52 @@ class Auth(Services.Service):
 		# Return OK
 		return Services.Effect(True)
 
-	def matchRequestsRead(self, data, sesh):
+	def matchRequest_update(self, data, sesh):
+		"""Match Request (Update)
+
+		Accepts a match request and creates the match with the proper service,
+		then notifies both throwers of the ID of the new match
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- The session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['id'])
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
+
+		# Find the request
+		oRequest = MatchRequest.get(data['id'])
+		if not oRequest:
+			return Services.Effect(error=(1104, 'match_request:%s' % data['id']))
+
+		# If the accepter is not the opponent
+		if sesh['thrower']['_id'] != oRequest['opponent']:
+			return Services.Effect(error=1000)
+
+		# Create a new match in the proper service
+		oEffect = Services.create(oRequest['org'].lower(), 'match', {
+			"_internal_": Services.internalKey(),
+			"initiator": oRequest['initiator'],
+			"opponent": oRequest['opponent']
+		}, sesh)
+		if oEffect.errorExists():
+			return oEffect
+
+		# Notify the initiator of the new match
+		Sync.push('auth', 'request-%s' % data['id'], {
+			"type": "accepted",
+			"match": oEffect.data
+		})
+
+		# Return the ID of the new match
+		return Services.Effect(oEffect.data)
+
+	def matchRequests_read(self, data, sesh):
 		"""Match Requests
 
 		Returns all open match requests regardless of initiator or opponent
@@ -285,15 +330,15 @@ class Auth(Services.Service):
 		)
 
 		# Get all the thrower IDs
-		dThrowers = []
+		lThrowers = []
 		for d in dRet['initiator']:
-			dThrowers.append(d['opponent'])
+			lThrowers.append(d['opponent'])
 		for d in dRet['opponent']:
-			dThrowers.append(d['initiator'])
+			lThrowers.append(d['initiator'])
 
 		# Get all the thrower aliases
-		dAliases = dThrowers and \
-			{d['_id']:d['alias'] for d in Thrower.get(dThrowers, raw=['_id', 'alias'])} or \
+		dAliases = lThrowers and \
+			{d['_id']:d['alias'] for d in Thrower.get(list(set(lThrowers)), raw=['_id', 'alias'])} or \
 			{}
 
 		# Add the alias to each record
@@ -305,52 +350,7 @@ class Auth(Services.Service):
 		# Return all the records
 		return Services.Effect(dRet)
 
-	def matchRequestUpdate(self, data, sesh):
-		"""Match Request (Update)
-
-		Accepts a match request and creates the match with the proper service,
-		then notifies both throwers of the ID of the new match
-
-		Arguments:
-			data {dict} -- Data sent with the request
-			sesh {Sesh._Session} -- The session associated with the request
-
-		Returns:
-			Services.Effect
-		"""
-
-		# Verify fields
-		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
-
-		# Find the request
-		oRequest = MatchRequest.get(data['id'])
-		if not oRequest:
-			return Services.Effect(error=(104, 'match_request:%s' % data['id']))
-
-		# If the accepter is not the opponent
-		if sesh['thrower']['_id'] != oRequest['opponent']:
-			return Services.Effect(error=208)
-
-		# Create a new match in the proper service
-		oEffect = Services.create(oRequest['org'].lower(), 'match', {
-			"_internal_": Services.internalKey(),
-			"initiator": oRequest['initiator'],
-			"opponent": oRequest['opponent']
-		}, sesh)
-		if oEffect.errorExists():
-			return oEffect
-
-		# Notify the initiator of the new match
-		Sync.push('auth', 'request-%s' % data['id'], {
-			"type": "accepted",
-			"match": oEffect.data
-		})
-
-		# Return the ID of the new match
-		return Services.Effect(oEffect.data)
-
-	def passwdForgotCreate(self, data):
+	def passwdForgot_create(self, data):
 		"""Password Forgot (Generate)
 
 		Creates the key that will be used to allow a user to change their
@@ -365,7 +365,7 @@ class Auth(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['email'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Look for the thrower by email
 		oThrower = Thrower.get(data['email'], index='email', limit=1)
@@ -377,7 +377,7 @@ class Auth(Services.Service):
 
 			# Is it not expired expired?
 			if oThrower['forgot']['expires'] > int(time()):
-				return Services.Effect(error=402)
+				return Services.Effect(error=1202)
 
 		# Update the thrower with a timestamp (for expiry) and the key
 		sKey = StrHelper.random(32, '_0x')
@@ -402,7 +402,7 @@ class Auth(Services.Service):
 		# Return OK
 		return Services.Effect(True)
 
-	def passwdForgotUpdate(self, data):
+	def passwdForgot_update(self, data):
 		"""Password Forgot (Change Password)
 
 		Validates the key and changes the password to the given value
@@ -416,23 +416,23 @@ class Auth(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['email', 'passwd', 'key'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Look for the thrower by email
 		oThrower = Thrower.get(data['email'], index='email', limit=1)
 		if not oThrower:
-			return Services.Effect(error=403) # Don't let people know if the email exists or not
+			return Services.Effect(error=1203) # Don't let people know if the email exists or not
 
 		# Check if we even have a forgot section, or the key has expired, or the
 		#	key is invalid
 		if 'forgot' not in oThrower or \
 			oThrower['forgot']['expires'] <= int(time()) or \
 			oThrower['forgot']['key'] != data['key']:
-			return Services.Effect(error=403)
+			return Services.Effect(error=1203)
 
 		# Make sure the new password is strong enough
 		if not Thrower.passwordStrength(data['passwd']):
-			return Services.Effect(error=404)
+			return Services.Effect(error=1204)
 
 		# Store the new password and update
 		oThrower['passwd'] = Thrower.passwordHash(data['passwd'])
@@ -441,7 +441,7 @@ class Auth(Services.Service):
 		# Return OK
 		return Services.Effect(True)
 
-	def searchRead(self, data, sesh):
+	def search_read(self, data, sesh):
 		"""Search
 
 		Looks up throwers by alias
@@ -456,14 +456,14 @@ class Auth(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['q'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Run a search and return the results
 		return Services.Effect(
 			Thrower.search(data['q'])
 		)
 
-	def sessionRead(self, data, sesh):
+	def session_read(self, data, sesh):
 		"""Session
 
 		Returns the ID of the thrower logged into the current session
@@ -477,7 +477,7 @@ class Auth(Services.Service):
 		"""
 		return Services.Effect(sesh['thrower']['_id'])
 
-	def signinCreate(self, data):
+	def signin_create(self, data):
 		"""Signin
 
 		Signs a user into the system
@@ -491,16 +491,16 @@ class Auth(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['alias', 'passwd'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Look for the thrower by alias
 		oThrower = Thrower.get(data['alias'], index='alias', limit=1)
 		if not oThrower:
-			return Services.Effect(error=401)
+			return Services.Effect(error=1201)
 
 		# Validate the password
 		if not oThrower.passwordValidate(data['passwd']):
-			return Services.Effect(error=401)
+			return Services.Effect(error=1201)
 
 		# Create a new session
 		oSesh = Sesh.create()
@@ -517,7 +517,7 @@ class Auth(Services.Service):
 			"thrower": oSesh['thrower']['_id']
 		})
 
-	def signoutCreate(self, data, sesh):
+	def signout_create(self, data, sesh):
 		"""Signout
 
 		Called to sign out a user and destroy their session
@@ -536,7 +536,7 @@ class Auth(Services.Service):
 		# Return OK
 		return Services.Effect(True)
 
-	def signupCreate(self, data):
+	def signup_create(self, data):
 		"""Signup
 
 		Creates a new user on the system
@@ -550,20 +550,20 @@ class Auth(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['alias', 'passwd'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Make sure the email is valid structurally
 		if 'email' in data and not _emailRegex.match(data['email']):
-			return Services.Effect(error=(103, [('email', 'invalid')]))
+			return Services.Effect(error=(1001, [('email', 'invalid')]))
 
 		# Make sure the password is strong enough
 		if not Thrower.passwordStrength(data['passwd']):
-			return Services.Effect(error=404)
+			return Services.Effect(error=1204)
 
 		# Look for someone else with that alias
 		dThrower = Thrower.get(data['alias'], index='alias', raw=['_id'])
 		if dThrower:
-			return Services.Effect(error=(400, data['alias']))
+			return Services.Effect(error=(1200, data['alias']))
 
 		# If an e-mail was passed
 		if 'email' in data:
@@ -571,7 +571,7 @@ class Auth(Services.Service):
 			# Look for someone else with that email
 			dThrower = Thrower.get(data['email'], index='email', raw=['_id'])
 			if dThrower:
-				return Services.Effect(error=(406, data['email']))
+				return Services.Effect(error=(1206, data['email']))
 
 		# If no language was passed
 		if 'locale' not in data:
@@ -597,11 +597,11 @@ class Auth(Services.Service):
 		try:
 			oThrower = Thrower(dThrower)
 		except ValueError as e:
-			return Services.Effect(error=(103, e.args[0]))
+			return Services.Effect(error=(1001, e.args[0]))
 
 		# Store the instance
 		if not oThrower.create(changes={"creator":"signup"}):
-			return Services.Effect(error=300)
+			return Services.Effect(error=1100)
 
 		# If there's an e-mail
 		if 'email' in data:
@@ -639,7 +639,42 @@ class Auth(Services.Service):
 		# Return the session token
 		return Services.Effect(oSesh.id())
 
-	def throwerEmailUpdate(self, data, sesh):
+	def throwerAliases_read(self, data):
+		"""Thrower Aliases
+
+		Recieves a list of thrower IDs and returns a dictionary of IDs to
+		aliases
+
+		Arguments:
+			data {dict} -- Data sent with the request
+
+		Returns:
+			Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['_internal_', 'ids'])
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
+
+		# Verify the key, remove it if it's ok
+		if not Services.internalKey(data['_internal_']):
+			return Services.Effect(error=Errors.SERVICE_INTERNAL_KEY)
+		del data['_internal_']
+
+		# If the IDs are not a list
+		if not isinstance(data['ids'], list):
+			return Services.Effect(error=(1001, [('ids', 'not a list')]))
+
+		# If the list is empty
+		if not data['ids']:
+			return Services.Effect({})
+
+		# Get and return all the thrower aliases
+		return Services.Effect({
+			d['_id']:d['alias'] for d in Thrower.get(data['ids'], raw=['_id', 'alias'])
+		})
+
+	def throwerEmail_update(self, data, sesh):
 		"""Thrower My Email
 
 		Changes the email for the current signed in user
@@ -654,32 +689,32 @@ class Auth(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['email', 'email_passwd'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Find the thrower
 		oThrower = Thrower.get(sesh['thrower']['_id'])
 		if not oThrower:
-			return Services.Effect(error=104)
+			return Services.Effect(error=1104)
 
 		# Validate the old password
 		if not oThrower.passwordValidate(data['email_passwd']):
-			return Services.Effect(error=(103, [('email_passwd', 'invalid')]))
+			return Services.Effect(error=(1001, [('email_passwd', 'invalid')]))
 
 		# Make sure the email is valid structurally
 		if not _emailRegex.match(data['email']):
-			return Services.Effect(error=(103, [('email', 'invalid')]))
+			return Services.Effect(error=(1001, [('email', 'invalid')]))
 
 		# Look for someone else with that email
 		dThrower = Thrower.get(data['email'], index='email', raw=['_id'])
 		if dThrower:
-			return Services.Effect(error=(406, data['email']))
+			return Services.Effect(error=(1206, data['email']))
 
 		# Update the email and verified fields
 		try:
 			oThrower['email'] = data['email']
 			oThrower['verified'] = StrHelper.random(32, '_0x')
 		except ValueError as e:
-			return Services.Effect(error=(103, e.args[0]))
+			return Services.Effect(error=(1001, e.args[0]))
 
 		# Update the thrower
 		oThrower.save(changes={"creator":sesh['thrower']['_id']})
@@ -705,7 +740,7 @@ class Auth(Services.Service):
 		# Return OK
 		return Services.Effect(True)
 
-	def throwerVerifyUpdate(self, data):
+	def throwerVerify_update(self, data):
 		"""Thrower Verify
 
 		Sets the thrower's email to verified if the key is valid
@@ -719,11 +754,11 @@ class Auth(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['_internal_', 'id', 'verify'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Verify the key, remove it if it's ok
 		if not Services.internalKey(data['_internal_']):
-			return Services.Effect(error=206)
+			return Services.Effect(error=Errors.SERVICE_INTERNAL_KEY)
 		del data['_internal_']
 
 		# Find the thrower
@@ -731,7 +766,7 @@ class Auth(Services.Service):
 
 		# If it doesn't exist
 		if not oThrower:
-			return Services.Effect(error=(104, data['id']))
+			return Services.Effect(error=(1104, data['id']))
 
 		# If the thrower is already verified
 		if oThrower['verified'] == True:
@@ -739,7 +774,7 @@ class Auth(Services.Service):
 
 		# If the code is not valid
 		if data['verify'] != oThrower['verified']:
-			return Services.Effect(error=405)
+			return Services.Effect(error=1205)
 
 		# Update the thrower
 		oThrower['verified'] = True

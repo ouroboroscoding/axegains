@@ -34,7 +34,7 @@ class WebPoll(Services.Service):
 	Extends: shared.Services.Service
 	"""
 
-	def clearUpdate(self, data, sesh):
+	def clear_update(self, data, sesh):
 		"""Clear
 
 		Clears the given number of messages from the sync cache
@@ -49,7 +49,7 @@ class WebPoll(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['service', 'key', 'count'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Clear the messages from the sync cache
 		Sync.clear(
@@ -62,7 +62,7 @@ class WebPoll(Services.Service):
 		# Return OK
 		return Services.Effect(True)
 
-	def joinCreate(self, data, sesh):
+	def join_create(self, data, sesh):
 		"""Join
 
 		Connects a session to an account or contact so that any messages
@@ -78,7 +78,7 @@ class WebPoll(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['service', 'key'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Update the sync cache
 		Sync.join(
@@ -90,7 +90,7 @@ class WebPoll(Services.Service):
 		# Return OK
 		return Services.Effect(True)
 
-	def leaveCreate(self, data, sesh):
+	def leave_create(self, data, sesh):
 		"""Leave
 
 		Disconnects a session from an account or contact so that messages are
@@ -106,7 +106,7 @@ class WebPoll(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['service', 'key'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Update the sync cache
 		Sync.leave(
@@ -118,7 +118,7 @@ class WebPoll(Services.Service):
 		# Return OK
 		return Services.Effect(True)
 
-	def pullRead(self, data, sesh):
+	def pull_read(self, data, sesh):
 		"""Pull
 
 		A client is requesting an update on anything they might be looking at
@@ -133,7 +133,7 @@ class WebPoll(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['service', 'key'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# If we have messages to delete
 		if 'messages' in data and data['messages']:
@@ -154,7 +154,7 @@ class WebPoll(Services.Service):
 		# Return whatever was found
 		return Services.Effect(lRet)
 
-	def websocketRead(self, data, sesh):
+	def websocket_read(self, data, sesh):
 		"""WebSocket
 
 		Generates a unique key for the client that it can use to authorize a

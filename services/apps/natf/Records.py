@@ -50,6 +50,41 @@ class Match(Record_ReDB.Record):
 		"""
 		return _mdMatchConf
 
+	@classmethod
+	def unfinished(cls, thrower):
+		"""Unfinished
+
+		Fetches all unfinished (`finished` = False) matches where thrower is
+		initiator or opponent
+
+		Arguments:
+			thrower {str} -- The UUID of the thrower
+
+		Returns:
+			list
+		"""
+
+		# Get the structure
+		dStruct = cls.struct()
+
+		# Get a connection to the host
+		with Record_ReDB._with(dStruct['host']) as oCon:
+
+			# Generate the rethink query to find all unfinished matches and
+			#	then filter them by thrower
+			itRes = Record_ReDB.r \
+					.db(dStruct['db']) \
+					.table(dStruct['table']) \
+					.get_all(False, index='finished') \
+					.filter((Record_ReDB.r.row['initiator'] == thrower) | \
+						(Record_ReDB.r.row['opponent'] == thrower)) \
+					.pluck('_id', 'initiator', 'opponent') \
+					.default(None) \
+					.run(oCon)
+
+			# Return the records found
+			return [d for d in itRes]
+
 # Practice class
 class Practice(Record_ReDB.Record):
 	"""Practice

@@ -145,10 +145,16 @@ class Match extends React.Component {
 		// Track ID in hash
 		Hash.watch('id', this.idCallback);
 
-		// If there's an ID in the hash
-		var id = Hash.get('id');
-		if(id) {
-			this.idCallback(id);
+		// If we're signed in
+		if(this.state.thrower) {
+
+			// If there's an ID in the hash
+			var id = Hash.get('id');
+			if(id) {
+				this.idCallback(id);
+			} else {
+				this.fetchExisting();
+			}
 		}
 	}
 
@@ -179,6 +185,44 @@ class Match extends React.Component {
 				this.matchCallback
 			)
 		}
+	}
+
+	fetchExisting() {
+
+		// Store this
+		var self = this;
+
+		// Show the loader
+		Loader.show();
+
+		// Find out if there's any unfinished games associated with this
+		//	thrower
+		Services.read('natf', 'match/unfinished', {}).done(res => {
+
+			// If there's an error
+			if(res.error && !Utils.serviceError(res.error)) {
+				Events.trigger('error', JSON.stringify(res.error));
+			}
+
+			// If there's a warning
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If there's data
+			if(res.data) {
+
+				// If there's any
+				if(res.data.length) {
+
+
+				}
+			}
+
+		}).always(() => {
+			// Hide the loader
+			Loader.hide();
+		})
 	}
 
 	idCallback(id) {
@@ -244,7 +288,7 @@ class Match extends React.Component {
 					if(res.error && !Utils.serviceError(res.error)) {
 
 						// If the match no longer exists
-						if(res.error.code == 104) {
+						if(res.error.code == 1104) {
 							Hash.set('id', null);
 							return;
 						}
@@ -367,7 +411,7 @@ class Match extends React.Component {
 				if(res.error && !Utils.serviceError(res.error)) {
 
 					// If it's already deleted
-					if(res.error.code != 104) {
+					if(res.error.code != 1104) {
 						self.requestReset();
 					} else {
 						Events.trigger('error', JSON.stringify(res.error));
@@ -450,11 +494,26 @@ class Match extends React.Component {
 
 
 	signin(thrower) {
+
+		// Set state
 		this.setState({"thrower": thrower});
+
+		// If there's an ID in the hash
+		var id = Hash.get('id');
+		if(id) {
+			this.idCallback(id);
+		} else {
+			this.fetchExisting();
+		}
 	}
 
 	signout() {
+
+		// Set state
 		this.setState({"thrower": false});
+
+		// Remove the ID from the hash
+		Hash.set('id', null);
 	}
 }
 

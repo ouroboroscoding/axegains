@@ -19,7 +19,7 @@ import re
 from time import time
 
 # Pip imports
-from RestOC import Conf, DictHelper, Record_ReDB, Services, Sesh
+from RestOC import Conf, DictHelper, Errors, Record_ReDB, Services, Sesh
 
 # Project imports
 from shared import Sync
@@ -72,7 +72,7 @@ class Natf(Services.Service):
 			if not o.tableCreate():
 				print("Failed to create `%s` table" % o.tableName())
 
-	def matchCreate(self, data, sesh):
+	def match_create(self, data, sesh):
 		"""Match (Create)
 
 		Creates a new match and returns its ID
@@ -87,11 +87,11 @@ class Natf(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['_internal_', 'initiator', 'opponent'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Verify the key, remove it if it's ok
 		if not Services.internalKey(data['_internal_']):
-			return Services.Effect(error=206)
+			return Services.Effect(error=Errors.SERVICE_INTERNAL_KEY)
 		del data['_internal_']
 
 		# Create a new match instance
@@ -104,16 +104,16 @@ class Natf(Services.Service):
 				"games": {}
 			})
 		except ValueError as e:
-			return Services.Effect(error=(103, e.args[0]))
+			return Services.Effect(error=(1001, e.args[0]))
 
 		# Store the instance
 		if not oMatch.create():
-			return Services.Effect(error=300)
+			return Services.Effect(error=1100)
 
 		# Return the ID
 		return Services.Effect(oMatch['_id'])
 
-	def matchDelete(self, data, sesh):
+	def match_delete(self, data, sesh):
 		"""Match (Delete)
 
 		Deletes an existing match, can only be done if it's not finished
@@ -128,9 +128,9 @@ class Natf(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
-	def matchRead(self, data, sesh):
+	def match_read(self, data, sesh):
 		"""Match (Read)
 
 		Fetches and returns the stats from an existing match
@@ -145,9 +145,55 @@ class Natf(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
-	def matchUpdate(self, data, sesh):
+	def matchUnfinished_read(self, data, sesh):
+		"""Match Unfinished
+
+		Returns any unfinished matches the thrower is involved in
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Find all unfinished matches the thrower is involved in
+		lMatches = Match.unfinished(sesh['thrower']['_id'])
+
+		# If there's none
+		if not lMatches:
+			return Services.Effect([])
+
+		# Get the other throwers
+		lThrowers = []
+		for d in lMatches:
+			lThrowers.append(
+				d['initiator'] == sesh['thrower']['_id'] and d['opponent'] or d['initiator']
+			)
+
+		# If there's any throwers
+		dAliases = {}
+		if lThrowers:
+			oEffect = Services.read('auth', 'thrower/aliases', {
+				"_internal_": Services.internalKey(),
+				"ids": list(set(lThrowers))
+			})
+			if oEffect.errorExists():
+				return oEffect
+			dAliases = oEffect.data
+
+		# Add the aliases to each record
+		for d in lMatches:
+			s = d['initiator'] == sesh['thrower']['_id'] and d['opponent'] or d['initiator']
+			d['alias'] = s in dAliases and dAliases[s] or 'N/A'
+
+		# Return the matches
+		return Services.Effect(lMatches)
+
+	def match_update(self, data, sesh):
 		"""Match (Updates)
 
 		Updates the stats for an existing match
@@ -162,9 +208,9 @@ class Natf(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
-	def practiceCreate(self, data, sesh):
+	def practice_create(self, data, sesh):
 		"""Practice Create
 
 		Stores the details of a practice session
@@ -179,11 +225,11 @@ class Natf(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['points'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Make sure the value is a list of data points
 		if not isinstance(data['points'], list):
-			return Services.Effect(error=(103, [('points', 'must be a list')]))
+			return Services.Effect(error=(1001, [('points', 'must be a list')]))
 
 		# Init the stored structure
 		dData = {
@@ -251,16 +297,16 @@ class Natf(Services.Service):
 		try:
 			oPractice = Practice(dData)
 		except ValueError as e:
-			return Services.Effect(error=(103, e.args[0]))
+			return Services.Effect(error=(1001, e.args[0]))
 
 		# Store the instance
 		if not oPractice.create():
-			return Services.Effect(error=300)
+			return Services.Effect(error=1100)
 
 		# Return OK
 		return Services.Effect(True)
 
-	def practiceDataRead(self, data, sesh):
+	def practiceData_read(self, data, sesh):
 		"""Practice Data
 
 		Returns all the data points associated with a practice session
@@ -275,19 +321,19 @@ class Natf(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Fetch the practice data
 		dPractice = Practice.get(data['id'], raw=['data'])
 		if not dPractice:
-			return Services.Effect(error=(104, data['id']))
+			return Services.Effect(error=(1104, data['id']))
 
 		# Return the data
 		return Services.Effect(
 			[[d['clutch'], d['value']] for d in dPractice['data']]
 		)
 
-	def practiceStatsRead(self, data, sesh):
+	def practiceStats_read(self, data, sesh):
 		"""Practice Stats
 
 		Fetches the total stats for all NATF practices
