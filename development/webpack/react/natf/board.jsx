@@ -1,5 +1,14 @@
-var React = require('react');
+/**
+ * NATF Board
+ *
+ * Manages a standard NATF board
+ *
+ * @author Chris Nasr
+ * @copyright OuroborosCoding
+ * @created 2019-03-19
+ */
 
+// Board component
 class Board extends React.Component {
 
 	constructor(props) {

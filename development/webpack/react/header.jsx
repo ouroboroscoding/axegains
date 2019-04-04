@@ -1,5 +1,12 @@
-// External modules
-var React = require('react');
+/**
+ * Header
+ *
+ * Manages sign in / sign out / sign up
+ *
+ * @author Chris Nasr
+ * @copyright OuroborosCoding
+ * @created 2019-03-21
+ */
 
 // components
 var Forms = require('./base/forms.jsx');

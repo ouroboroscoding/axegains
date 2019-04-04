@@ -1,5 +1,13 @@
-// External modules
-var React = require('react');
+/**
+ * Pracitce
+ *
+ * Manages Org menu for practice and display the appropriate one based on what
+ * is chosen
+ *
+ * @author Chris Nasr
+ * @copyright OuroborosCoding
+ * @created 2019-03-26
+ */
 
 // Generic modules
 var Events = require('../generic/events.js');

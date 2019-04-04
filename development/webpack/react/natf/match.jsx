@@ -1,11 +1,19 @@
-// External modules
-var React = require('react');
+/**
+ * NATF Match
+ *
+ * Manages creating and playing a standard NATF match
+ *
+ * @author Chris Nasr
+ * @copyright OuroborosCoding
+ * @created 2019-03-26
+ */
 
 // Generic modules
 var Events = require('../../generic/events.js');
 var Hash = require('../../generic/hash.js');
 var Loader = require('../../generic/loader.js');
 var Services = require('../../generic/services.js');
+var Tools = require('../../generic/tools.js');
 
 // Site modules
 var TwoWay = require('../../twoway.js');
@@ -26,6 +34,7 @@ class Match extends React.Component {
 		// Initialise the state
 		this.state = {
 			"bigaxe": false,
+			"existing" : false,
 			"games": false,
 			"id": false,
 			"match_state": false,
@@ -36,15 +45,17 @@ class Match extends React.Component {
 		};
 
 		// Bind methods
-		this.requestCancel = this.requestCancel.bind(this);
+		this.existingContinue = this.existingContinue.bind(this);
+		this.existingDelete = this.existingDelete.bind(this);
 		this.idCallback = this.idCallback.bind(this);
 		this.matchCallback = this.matchCallback.bind(this);
 		this.overwrite = this.overwrite.bind(this);
 		this.points = this.points.bind(this);
+		this.requestCallback = this.requestCallback.bind(this);
+		this.requestCancel = this.requestCancel.bind(this);
 		this.requestCreate = this.requestCreate.bind(this);
 		this.signin = this.signin.bind(this);
 		this.signout = this.signout.bind(this);
-		this.requestCallback = this.requestCallback.bind(this);
 	}
 
 	calculateMatchState(data) {
@@ -153,7 +164,7 @@ class Match extends React.Component {
 			if(id) {
 				this.idCallback(id);
 			} else {
-				this.fetchExisting();
+				this.existingFetch();
 			}
 		}
 	}
@@ -164,8 +175,9 @@ class Match extends React.Component {
 		Events.remove('signin', this.signin);
 		Events.remove('signout', this.signout);
 
-		// Stop tracking ID in hash
+		// Stop tracking ID in hash and remove it
 		Hash.unwatch('id', this.idCallback);
+		Hash.set('id', null);
 
 		// If we're in request mode
 		if(this.state.mode == 'request') {
@@ -187,7 +199,60 @@ class Match extends React.Component {
 		}
 	}
 
-	fetchExisting() {
+	existingContinue(ev) {
+
+	}
+
+	existingDelete(ev) {
+
+		// Store this
+		var self = this;
+
+		// Show the loader
+		Loader.show();
+
+		// Store the id
+		var id = ev.currentTarget.parentNode.dataset.id;
+
+		// Notify the service the match won't be completed
+		Services.delete('natf', 'match', {
+			"id": id
+		}).done(res => {
+
+			// If there's an error
+			if(res.error && !Utils.serviceError(res.error)) {
+
+				// If the thrower can't delete that record, or it's finished
+				if(res.error.code == 1000) {
+					self.existingRemove(id);
+				}
+				// If it's already deleted
+				else if(res.error.code == 1104) {
+					self.existingRemove(id);
+				}
+				// Unknown error
+				else {
+					Events.trigger('error', JSON.stringify(res.error));
+				}
+			}
+
+			// If there's a warning
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If there's data
+			if(res.data) {
+				self.existingRemove(id);
+			}
+
+		}).always(() => {
+			// Hide the loader
+			Loader.hide();
+		})
+	}
+
+	existingFetch() {
 
 		// Store this
 		var self = this;
@@ -215,7 +280,11 @@ class Match extends React.Component {
 				// If there's any
 				if(res.data.length) {
 
-
+					// Set the state
+					self.setState({
+						"mode": "existing",
+						"existing": res.data
+					})
 				}
 			}
 
@@ -223,6 +292,30 @@ class Match extends React.Component {
 			// Hide the loader
 			Loader.hide();
 		})
+	}
+
+	existingRemove(id) {
+
+		// Store the existing
+		var existing = Tools.clone(this.state.existing);
+
+		// Go through each one
+		for(var i = 0; i < existing.length; ++i) {
+			if(existing[i]._id == id) {
+				existing.splice(i, 1);
+			}
+		}
+
+		// Init the new state
+		var state = {"existing": existing}
+
+		// If there's no more existing
+		if(existing.length == 0) {
+			state.mode = 'opponent';
+		}
+
+		// Set the new state
+		this.setState(state);
 	}
 
 	idCallback(id) {
@@ -347,6 +440,19 @@ class Match extends React.Component {
 					<div className="acenter">
 						<p>Waiting for {self.state.opponent.alias} to accept your match request</p>
 						<button onClick={self.requestCancel}>Cancel Request</button>
+					</div>
+				}
+				{this.state.mode == 'existing' &&
+					<div className="acenter">
+						{this.state.existing.map(function(m, i) {
+							return (
+								<div key={i} data-id={m._id} className="existing">
+									<p>You have an existing match with {m.alias}, do you wish to continue?</p>
+									<button onClick={self.existingDelete}>Delete</button>
+									<button onClick={self.existingContinue}>Continue</button>
+								</div>
+							);
+						})}
 					</div>
 				}
 				{this.state.mode == 'match' &&
@@ -503,7 +609,7 @@ class Match extends React.Component {
 		if(id) {
 			this.idCallback(id);
 		} else {
-			this.fetchExisting();
+			this.existingFetch();
 		}
 	}
 

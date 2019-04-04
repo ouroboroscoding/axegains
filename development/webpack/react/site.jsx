@@ -1,5 +1,12 @@
-// External modules
-var React = require('react');
+/**
+ * Site
+ *
+ * Primary component for the entire site
+ *
+ * @author Chris Nasr
+ * @copyright OuroborosCoding
+ * @created 2019-03-20
+ */
 
 // Generic modules
 var Events = require('../generic/events.js');

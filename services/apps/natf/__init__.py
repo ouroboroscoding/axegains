@@ -130,6 +130,22 @@ class Natf(Services.Service):
 		try: DictHelper.eval(data, ['id'])
 		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
+		# Get the match
+		dMatch = Match.get(data['id'], raw=['finished', 'initiator', 'opponent'])
+
+		# If the thrower is neither the initiator or opponent, or the match is
+		#	already marked finished
+		if (dMatch['initiator'] != sesh['thrower']['_id'] and \
+			dMatch['opponent'] != sesh['thrower']['_id']) or \
+			dMatch['finished']:
+			return Services.Effect(error=1000)
+
+		# Else, attempt to delete the record
+		Match.deleteGet(data['id'])
+
+		# Return OK
+		return Services.Effect(True)
+
 	def match_read(self, data, sesh):
 		"""Match (Read)
 
@@ -146,6 +162,14 @@ class Natf(Services.Service):
 		# Verify fields
 		try: DictHelper.eval(data, ['id'])
 		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
+
+		# Find the match
+		dMatch = Match.get(data['id'], raw=True)
+		if not dMatch:
+			return Services.Effect(error=(1104, 'natf_match:%s' % data['id']))
+
+		# Else return the match
+		return Services.Effect(dMatch)
 
 	def matchUnfinished_read(self, data, sesh):
 		"""Match Unfinished

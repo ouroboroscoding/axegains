@@ -480,6 +480,12 @@ button.large:active {
 #match .natf {
   margin: 5px auto;
   width: 95%; }
+  #match .natf .existing {
+    border: 1px solid #2C689B;
+    margin: 0 0 10px 0;
+    padding: 10px; }
+    #match .natf .existing button {
+      margin: 0 5px; }
 
 .natf .board {
   background-color: white;

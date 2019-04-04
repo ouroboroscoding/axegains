@@ -17,9 +17,6 @@ var WIDTH_STEPS = 40;
 var HEIGHT_STEPS = 20;
 var MARGIN = 5;
 
-// External
-var React = require('react');
-
 // Generic
 var Events = require('../../generic/events.js');
 var Tools = require('../../generic/tools.js');

@@ -1,5 +1,13 @@
-// External modules
-var React = require('react');
+/**
+ * Match
+ *
+ * Manages Org menu for matches and display the appropriate one based on what
+ * is chosen
+ *
+ * @author Chris Nasr
+ * @copyright OuroborosCoding
+ * @created 2019-03-26
+ */
 
 // Generic modules
 var Events = require('../generic/events.js');
@@ -60,7 +68,7 @@ class Match extends React.Component {
 				<div id="content">
 					<div>
 						{self.state.org == 'natf' &&
-							<Natf />
+							<Natf thrower={this.props.thrower} />
 						}
 					</div>
 				</div>

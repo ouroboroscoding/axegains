@@ -1,7 +1,3 @@
-// External
-var React = require('react');
-var ReactDOM = require('react-dom');
-
 // Generic
 var Events = require('./generic/events.js');
 var Loader = require('./generic/loader.js');

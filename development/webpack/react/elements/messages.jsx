@@ -8,9 +8,6 @@
  * @created 2019-03-31
  */
 
-// External
-var React = require('react');
-
 // Generic
 var Events = require('../../generic/events.js');
 var Tools = require('../../generic/tools.js');

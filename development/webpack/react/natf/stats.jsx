@@ -1,5 +1,12 @@
-// External modules
-var React = require('react');
+/**
+ * NATF Stats
+ *
+ * Fetchs and displays NATF stats for practice and matches
+ *
+ * @author Chris Nasr
+ * @copyright OuroborosCoding
+ * @created 2019-03-25
+ */
 
 // Generic modules
 var Events = require('../../generic/events.js');

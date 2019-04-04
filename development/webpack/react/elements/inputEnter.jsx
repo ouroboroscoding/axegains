@@ -9,9 +9,6 @@
  * @created 2018-12-01
  */
 
-// Modules
-var React = require('react');
-
 // React Base
 var Forms = require('../base/forms.jsx');
 

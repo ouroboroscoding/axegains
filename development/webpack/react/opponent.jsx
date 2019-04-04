@@ -1,5 +1,12 @@
-// External modules
-var React = require('react');
+/**
+ * Opponent
+ *
+ * A component for selecting an opponent via favourites or search
+ *
+ * @author Chris Nasr
+ * @copyright OuroborosCoding
+ * @created 2019-03-27
+ */
 
 // Generic modules
 var Events = require('../generic/events.js');
@@ -147,11 +154,6 @@ class Opponent extends React.Component {
 			"thrower": props.thrower
 		};
 
-		// Fetch the favourites
-		if(props.thrower) {
-			this.favourites();
-		}
-
 		// Bind methods
 		this.favouriteShow = this.favouriteShow.bind(this);
 		this.search = this.search.bind(this);
@@ -162,6 +164,11 @@ class Opponent extends React.Component {
 
 	componentWillMount() {
 		Events.add('signin', this.signin);
+
+		// If someone is logged in
+		if(this.state.thrower) {
+			this.favourites();
+		}
 	}
 
 	componentWillUnmount() {
