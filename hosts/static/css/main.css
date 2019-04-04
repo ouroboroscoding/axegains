@@ -486,6 +486,18 @@ button.large:active {
     padding: 10px; }
     #match .natf .existing button {
       margin: 0 5px; }
+  #match .natf .stats {
+    margin: 10px 0; }
+    #match .natf .stats .overall {
+      display: inline-block;
+      margin: 5px;
+      width: 50%; }
+      #match .natf .stats .overall table th, #match .natf .stats .overall table td {
+        text-align: center; }
+      #match .natf .stats .overall table th:first-child, #match .natf .stats .overall table td:first-child {
+        border-right: 1px solid black;
+        text-align: left;
+        width: 45%; }
 
 .natf .board {
   background-color: white;

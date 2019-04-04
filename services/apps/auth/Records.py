@@ -47,7 +47,7 @@ _mdThrowerConf = Record_ReDB.Record.generateConfig(
 class Favourites(Record_ReDB.Record):
 	"""Favourites
 
-	Represents a single uploaded consent form
+	Represents a list of favourite throwers
 
 	Extends: RestOC.Record_ReDB.Record
 	"""
@@ -137,7 +137,7 @@ class Favourites(Record_ReDB.Record):
 class MatchRequest(Record_ReDB.Record):
 	"""Match Request
 
-	Represents a single uploaded consent form
+	Represents a single match request for any organization
 
 	Extends: RestOC.Record_ReDB.Record
 	"""
@@ -157,7 +157,7 @@ class MatchRequest(Record_ReDB.Record):
 class Thrower(Record_ReDB.Record):
 	"""Thrower
 
-	Represents a single uploaded consent form
+	Represents a single thrower (aka, user)
 
 	Extends: RestOC.Record_ReDB.Record
 	"""

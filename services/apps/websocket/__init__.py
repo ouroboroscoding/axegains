@@ -250,7 +250,7 @@ class SyncApplication(WebSocketApplication):
 						self._fail(8, 'Received ping message before authorization')
 
 					# Ping redis
-					_r.ping()
+					#_r.ping()
 
 					# Respond to the request
 					self.ws.send('pong')

@@ -52,19 +52,6 @@ var __services = {};
  */
 function _addTrack(service, key, callback) {
 
-	// If the URL doesn't exist
-	if(!__socket) {
-		console.error('twoway: something went wrong, no socket found');
-		return;
-	}
-
-	// Send the tracking message through the websocket
-	__socket.send(JSON.stringify({
-		"_type": "track",
-		"service": service,
-		"key": key
-	}));
-
 	// If we don't have the service, add it
 	if(!(service in __services)) {
 		__services[service] = {}
@@ -98,40 +85,9 @@ function _handleClose() {
 		__socket = null;
 	}
 
-	// Else, reopen the socket and re-track all events
+	// Else, wait 5 seconds, and reopen the socket
 	else {
-
-		setTimeout(function() {
-
-			// Notify the backend of a new ws connection
-			Services.read('webpoll', 'websocket', {}).done(res => {
-
-				// Create the websocket
-				__socket = WSHelper('wss://' + window.location.hostname + '/ws', {
-					"open": function(sock) {
-
-						// Send the connect message
-						sock.send(JSON.stringify({
-							"_type": "connect",
-							"key": res.data
-						}))
-
-						// Retrack every service/key
-						for(var s in __services) {
-							for(var k in __services[s]) {
-								__socket.send(JSON.stringify({
-									"_type": "track",
-									"service": s,
-									"key": k
-								}));
-							}
-						}
-					},
-					"message": _handleMessage,
-					"close": _handleClose
-				});
-			});
-		}, 5000);
+		setTimeout(_openSocket, 5000);
 	}
 }
 
@@ -177,6 +133,63 @@ function _handleMessage(sock, ev) {
 }
 
 /**
+ * Open Socket
+ *
+ * Opens a new websocket by first sending a message to webpoll to start the
+ * authentication handshake, then making the connection, and finally sending
+ * all the track messages stored
+ *
+ * @name _openSocket
+ * @param
+ * @return void
+ */
+function _openSocket() {
+
+	// Notify the backend of a new ws connection
+	Services.read('webpoll', 'websocket', {}).done(res => {
+
+		// Create the websocket
+		__socket = WSHelper('wss://' + window.location.hostname + '/ws', {
+			"open": function(sock) {
+
+				// Reset the close flag
+				__close = false;
+
+				// Init the message list
+				lMsgs = [];
+
+				// Add the connect message
+				lMsgs.push({
+					"_type": "connect",
+					"key": res.data
+				});
+
+				// Add each track message
+				for(var s in __services) {
+					for(var k in __services[s]) {
+						lMsgs.push({
+							"_type": "track",
+							"service": s,
+							"key": k
+						});
+					}
+				}
+
+				// Send the messages
+				sock.send(JSON.stringify(lMsgs))
+			},
+			"message": _handleMessage,
+			"close": _handleClose
+		});
+
+		// If we haven't already setup the ping interval
+		if(__ping == null) {
+			__ping = setInterval(_ping, 300000);
+		}
+	});
+}
+
+/**
  * Ping
  *
  * Send a ping to keep the socket alive
@@ -207,39 +220,36 @@ function _ping() {
  */
 function _track(service, key, callback) {
 
-	// If we don't have a socket
+	// Add the tracking callback
+	_addTrack(service, key, callback);
+
+	// If we have no socket
 	if(!__socket) {
 
-		// Notify the backend of a new ws connection
-		Services.read('webpoll', 'websocket', {}).done(res => {
+		// If it's null
+		if(__socket == null) {
 
-			// Create the websocket
-			__socket = WSHelper('wss://' + window.location.hostname + '/ws', {
-				"open": function(sock) {
+			// Set socket to false so we don't try to re-open
+			__socket = false;
 
-					// Reset the close flag
-					__close = false;
-
-					// Send the connect message
-					sock.send(JSON.stringify({
-						"_type": "connect",
-						"key": res.data
-					}))
-
-					// Send the tracking message and store the callback
-					_addTrack(service, key, callback)
-				},
-				"message": _handleMessage,
-				"close": _handleClose
-			});
-
-			// Ping at 5 minute intervals
-			__ping = setInterval(_ping, 300000);
-		});
-
-	} else {
-		_addTrack(service, key, callback);
+			// Open a new one
+			_openSocket();
+		}
 	}
+
+	// Else if it's open
+	else if(__socket.readyState == 1) {
+
+		// Send the tracking message through the websocket
+		__socket.send(JSON.stringify({
+			"_type": "track",
+			"service": service,
+			"key": key
+		}));
+	}
+
+	// If we have no socket, or it's opening, then upon opening all servives/
+	//	keys in the tracking list will be sent as messages
 }
 
 /**
@@ -295,6 +305,7 @@ function _untrack(service, key, callback) {
 
 								// Turn off the ping interval
 								clearInterval(__ping);
+								__ping = null;
 
 								// Close the socket
 								__close = true;

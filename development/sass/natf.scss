@@ -85,6 +85,28 @@
 				margin: 0 5px;
 			}
 		}
+
+		.stats {
+			margin: 10px 0;
+
+			.overall {
+				display: inline-block;
+				margin: 5px;
+				width: 50%;
+
+				table {
+					th, td {
+						text-align: center;
+					}
+
+					th:first-child, td:first-child {
+						border-right: 1px solid black;
+						text-align: left;
+						width: 45%;
+					}
+				}
+			}
+		}
 	}
 }
 

@@ -350,9 +350,7 @@ class Match extends React.Component {
 				// Change the mode
 				this.setState({
 					"bigaxe": false,
-					"games": {
-						"1": {}
-					},
+					"games": {},
 					"id": id[1],
 					"matchState": {
 						"round": 1,
@@ -480,32 +478,65 @@ class Match extends React.Component {
 
 	renderMatch() {
 
-		// If we're in big axe mode
-		if(this.state.bigaxe) {
-			return [
-				this.renderOverall(),
-				this.renderBigAxe()
-			]
-		} else {
-			return [
-				this.renderOverall(),
-				this.renderGame()
-			]
-		}
+		return (
+			<div className="stats">
+				{this.renderOverall()}
+				{this.state.bigaxe ?
+					this.renderBigAxe()
+				:
+					this.renderGame()
+				}
+			</div>
+		);
 	}
 
 	renderOverall() {
-		return (
-			<table>
-				<thead>
-					<tr><th>Thrower</th><th>1</th><th>2</th><th>3</th></tr>
-				</thead>
-				<tbody>
 
-					<tr><td>{this.state.thrower.alias}</td><td>1</td><td>2</td><td>3</td></tr>
-					<tr><td>{this.state.alias}</td><td>1</td><td>2</td><td>3</td></tr>
-				</tbody>
-			</table>
+		// Init the points per game
+		var oPoints = {
+			"i": [0, 0, 0],
+			"o": [0, 0, 0]
+		}
+
+		// Opponent is opposite of thrower
+		var sO = this.state.throwerIs == 'i' ? 'o': 'i';
+
+		// Calculate the points
+		for(var i of ["1", "2", "3"]) {
+			if(this.state.games[i]) {
+				for(var j of ["1", "2", "3", "4", "5"]) {
+					if(this.state.games[i]['i'][j]) {
+						oPoints['i'][0+i] += this.state.games[i]['i'][j];
+					}
+					if(this.state.games[i]['o'][j]) {
+						oPoints['o'][0+i] += this.state.games[i]['o'][j];
+					}
+				}
+			}
+		}
+
+		return (
+			<div className="overall">
+				<table>
+					<thead>
+						<tr><th> </th><th>1</th><th>2</th><th>3</th></tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{this.state.thrower.alias}</td>
+							<td>{oPoints[this.state.throwerIs][0]}</td>
+							<td>{oPoints[this.state.throwerIs][1]}</td>
+							<td>{oPoints[this.state.throwerIs][2]}</td>
+						</tr>
+						<tr>
+							<td>{this.state.alias}</td>
+							<td>{oPoints[sO][0]}</td>
+							<td>{oPoints[sO][1]}</td>
+							<td>{oPoints[sO][2]}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		);
 	}
 

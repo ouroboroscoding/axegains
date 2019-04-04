@@ -1,0 +1,31 @@
+{
+	"__rethinkdb__": {
+		"db": "axegains",
+		"host": "primary",
+		"indexes": {
+			"match": null
+		},
+		"table": "natf_match_bigaxe"
+	},
+	"__name__": "NATF_Match_BigAxe",
+	"_id": {"__type__":"uuid", "__optional__":true},
+	"_created": "timestamp",
+	"match": "uuid",
+	"finished": "bool",
+	"target": {
+		"__array__": "duplicates",
+		"i": {"__type__": "bool", "__optional__": true},
+		"o": {"__type__": "bool", "__optional__": true}
+	},
+	"points": {
+		"__array__": "duplicates",
+		"i": {
+			"value": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5, 7], "__optional__": true},
+			"clutch": {"__type__": "bool"}
+		},
+		"o": {
+			"value": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5, 7], "__optional__": true},
+			"clutch": {"__type__": "bool"}
+		}
+	}
+}

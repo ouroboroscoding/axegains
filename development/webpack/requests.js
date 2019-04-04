@@ -331,7 +331,7 @@ function _requestWait(id) {
 function _signin(thrower) {
 
 	// Store the thrower
-	__thrower = thrower;
+	__thrower = thrower._id;
 
 	// Fetch the pending requests
 	_pending();

@@ -24,17 +24,28 @@ _mdMatchConf = Record_ReDB.Record.generateConfig(
 	'rethinkdb', Conf.get(("rethinkdb", "axegains"))
 )
 
+# Match - Big Axe structure and config
+_mdMatchBigAxeConf = Record_ReDB.Record.generateConfig(
+	Tree.fromFile('../json/definitions/natf/match_bigaxe.json'),
+	'rethinkdb', Conf.get(("rethinkdb", "axegains"))
+)
+
+# Match - Game structure and config
+_mdMatchGameConf = Record_ReDB.Record.generateConfig(
+	Tree.fromFile('../json/definitions/natf/match_game.json'),
+	'rethinkdb', Conf.get(("rethinkdb", "axegains"))
+)
+
 # Practice structure and config
 _mdPracticeConf = Record_ReDB.Record.generateConfig(
 	Tree.fromFile('../json/definitions/natf/practice.json'),
 	'rethinkdb', Conf.get(("rethinkdb", "axegains"))
 )
 
-# Match class
 class Match(Record_ReDB.Record):
 	"""Match
 
-	Represents a single uploaded consent form
+	Represents a match
 
 	Extends: RestOC.Record_ReDB.Record
 	"""
@@ -85,11 +96,48 @@ class Match(Record_ReDB.Record):
 			# Return the records found
 			return [d for d in itRes]
 
-# Practice class
+class MatchBigAxe(Record_ReDB.Record):
+	"""Match Big Axe
+
+	Represents big axe part of match
+
+	Extends: RestOC.Record_ReDB.Record
+	"""
+
+	@classmethod
+	def config(cls):
+		"""Config
+
+		Returns the configuration data associated with the record type
+
+		Returns:
+			dict
+		"""
+		return _mdMatchBigAxeConf
+
+class MatchGame(Record_ReDB.Record):
+	"""Match Game
+
+	Represents a single game in a match
+
+	Extends: RestOC.Record_ReDB.Record
+	"""
+
+	@classmethod
+	def config(cls):
+		"""Config
+
+		Returns the configuration data associated with the record type
+
+		Returns:
+			dict
+		"""
+		return _mdMatchGameConf
+
 class Practice(Record_ReDB.Record):
 	"""Practice
 
-	Represents a single uploaded consent form
+	Represents a single practice
 
 	Extends: RestOC.Record_ReDB.Record
 	"""
