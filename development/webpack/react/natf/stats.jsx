@@ -41,15 +41,33 @@ class Stats extends React.Component {
 		this.practiceDataHide = this.practiceDataHide.bind(this);
 		this.practiceStats = this.practiceStats.bind(this);
 		this.practiceStatsAll = this.practiceStatsAll.bind(this);
+		this.signin = this.signin.bind(this);
+		this.signout = this.signout.bind(this);
 	}
 
 	componentWillMount() {
 
-		// Fetch the practice stats
-		this.practiceStats();
+		// Track signin / signout
+		Events.add('signin', this.signin);
+		Events.add('signout', this.signout);
 
-		// Fetch the match stats
-		//this.matchStats();
+		// If someone is logged in
+		if(this.state.thrower) {
+
+			// Fetch the practice stats
+			this.practiceStats();
+
+			// Fetch the match stats
+			//this.matchStats();
+		}
+	}
+
+	componentWillUnmount() {
+
+		// Stop tracking signin / signout
+		Events.remove('signin', this.signin);
+		Events.remove('signout', this.signout);
+
 	}
 
 	matchStats() {
@@ -257,6 +275,22 @@ class Stats extends React.Component {
 				}
 			</div>
 		);
+	}
+
+	signin(thrower) {
+
+		// Set the thrower
+		this.setState({"thrower": thrower});
+
+		// Fetch the practice stats
+		this.practiceStats();
+
+		// Fetch the match stats
+		//this.matchStats();
+	}
+
+	signout() {
+		this.setState({"thrower": false});
 	}
 }
 

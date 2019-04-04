@@ -186,12 +186,12 @@ class Header extends React.Component {
 		this.setState({"modal": (this.state.modal == 'signin' ? false : 'signin')});
 	}
 
-	signinTrigger() {
+	signinTrigger(thrower) {
 
-		// Hide any modals and set a thrower to true
+		// Hide any modals and set the thrower
 		this.setState({
 			"modal": false,
-			"thrower": true
+			"thrower": thrower
 		});
 	}
 
@@ -321,7 +321,7 @@ class Header extends React.Component {
 			if(res.data) {
 
 				// Set the session with the service
-				Services.session(res.data);
+				Services.session(res.data.thrower._id);
 
 				// Revert to sign in and show success message
 				self.setState({
@@ -330,10 +330,10 @@ class Header extends React.Component {
 				});
 
 				// Greet thrower
-				Events.trigger('success', "Welcome to AxeGains " + oData.alias);
+				Events.trigger('success', "Welcome to AxeGains " + res.data.thrower.alias);
 
 				// Trigger the signin event
-				Events.trigger('signin');
+				Events.trigger('signin', res.data.thrower);
 			}
 
 		}).always(() => {

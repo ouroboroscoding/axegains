@@ -33,6 +33,7 @@ class Match extends React.Component {
 
 		// Initialise the state
 		this.state = {
+			"alias": '',
 			"bigaxe": false,
 			"existing" : false,
 			"games": false,
@@ -200,7 +201,7 @@ class Match extends React.Component {
 	}
 
 	existingContinue(ev) {
-
+		Hash.set('id', 'm|' + ev.currentTarget.parentNode.dataset.id);
 	}
 
 	existingDelete(ev) {
@@ -359,7 +360,7 @@ class Match extends React.Component {
 						"bigaxe": false
 					},
 					"mode": "match",
-					"opponent": {"alias": id[2]},
+					"opponent": {"alias": ''},
 					"throwerIs": "i"
 				})
 
@@ -397,12 +398,16 @@ class Match extends React.Component {
 					// If there's data
 					if(res.data) {
 
+						// Are we initiator or opponent?
+						var t = res.data.initiator == self.state.thrower._id ? 'i' : 'o';
+
 						// Store it in the state
 						self.setState({
+							"alias": t == 'i' ? res.data['opponent_alias'] : res.data['initiator_alias'],
 							"bigaxe": res.data.bigaxe,
 							"games": res.data.games,
 							"matchState": self.calculateMatchState(res.data),
-							"throwerIs": res.data.initiator == self.state.thrower ? 'i' : 'o',
+							"throwerIs": t,
 						});
 					}
 
@@ -458,6 +463,7 @@ class Match extends React.Component {
 				{this.state.mode == 'match' &&
 					<div>
 						<Board ref="board" clutchMode="none" onPoints={self.points} />
+						{this.renderMatch()}
 					</div>
 				}
 			</div>
@@ -468,7 +474,7 @@ class Match extends React.Component {
 		return <div />
 	}
 
-	renderGames() {
+	renderGame() {
 		return <div />
 	}
 
@@ -476,21 +482,38 @@ class Match extends React.Component {
 
 		// If we're in big axe mode
 		if(this.state.bigaxe) {
-			return this.renderBigAxe();
+			return [
+				this.renderOverall(),
+				this.renderBigAxe()
+			]
 		} else {
-			return this.renderGames();
+			return [
+				this.renderOverall(),
+				this.renderGame()
+			]
 		}
 	}
 
 	renderOverall() {
-		return <div />
+		return (
+			<table>
+				<thead>
+					<tr><th>Thrower</th><th>1</th><th>2</th><th>3</th></tr>
+				</thead>
+				<tbody>
+
+					<tr><td>{this.state.thrower.alias}</td><td>1</td><td>2</td><td>3</td></tr>
+					<tr><td>{this.state.alias}</td><td>1</td><td>2</td><td>3</td></tr>
+				</tbody>
+			</table>
+		);
 	}
 
 	requestCallback(msg) {
 
 		// If the match was accepted
 		if(msg.type == 'accepted') {
-			Hash.set('id', 'm|' + msg.match + '|' + this.state.opponent.alias)
+			Hash.set('id', 'm|' + msg.match);
 		}
 
 		// Else if it was rejected
@@ -597,7 +620,6 @@ class Match extends React.Component {
 			"opponent": false
 		});
 	}
-
 
 	signin(thrower) {
 

@@ -43,7 +43,7 @@ class OpponentRow extends React.Component {
 		this.selected = this.selected.bind(this);
 	}
 
-	add() {
+	add(ev) {
 
 		// Stop any further events
 		ev.stopPropagation();

@@ -91,7 +91,7 @@ function _parseHash() {
 
 		// Go through each part found
 		while(field = regex.exec(window.location.hash.substring(1))) {
-			_hash[field[1]] = field[2].replace('+', ' ');
+			_hash[field[1]] = decodeURIComponent(field[2]).replace('+', ' ');
 		}
 	}
 }

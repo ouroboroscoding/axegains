@@ -334,8 +334,8 @@ class Practice extends React.Component {
 		});
 	}
 
-	signin() {
-		this.setState({"thrower": true});
+	signin(thrower) {
+		this.setState({"thrower": thrower});
 	}
 
 	signout() {

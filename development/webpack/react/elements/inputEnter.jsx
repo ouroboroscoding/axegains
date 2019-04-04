@@ -34,7 +34,7 @@ class InputEnter extends Forms.Node {
 	keyPress(ev) {
 
 		// If an Enter key was pressed and the callback was set
-		if(ev.key == 'Enter' && this.props.onEnter) {
+		if(ev.key == 'Enter' && this.onEnter) {
 			this.onEnter(ev.currentTarget.value);
 			ev.stopPropagation();
 			ev.preventDefault();

@@ -292,6 +292,9 @@ class Auth(Services.Service):
 		if oEffect.errorExists():
 			return oEffect
 
+		# Delete the request
+		oRequest.delete()
+
 		# Notify the initiator of the new match
 		Sync.push('auth', 'request-%s' % data['id'], {
 			"type": "accepted",
@@ -475,7 +478,10 @@ class Auth(Services.Service):
 		Returns:
 			Services.Effect
 		"""
-		return Services.Effect(sesh['thrower']['_id'])
+		return Services.Effect({
+			"_id": sesh['thrower']['_id'],
+			"alias": sesh['thrower']['alias']
+		})
 
 	def signin_create(self, data):
 		"""Signin
@@ -514,7 +520,10 @@ class Auth(Services.Service):
 		# Return the session ID and primary thrower data
 		return Services.Effect({
 			"session": oSesh.id(),
-			"thrower": oSesh['thrower']['_id']
+			"thrower": {
+				"_id": oSesh['thrower']['_id'],
+				"alias": oSesh['thrower']['alias']
+			}
 		})
 
 	def signout_create(self, data, sesh):
@@ -633,11 +642,17 @@ class Auth(Services.Service):
 			oSesh = Sesh.start(data['session'])
 
 		# Add the thrower ID to it
-		oSesh['thrower'] = {"_id":oThrower['_id']}
+		oSesh['thrower'] = oThrower.record()
 		oSesh.save()
 
 		# Return the session token
-		return Services.Effect(oSesh.id())
+		return Services.Effect({
+			"session": oSesh.id(),
+			"thrower": {
+				"_id": oSesh['thrower']['_id'],
+				"alias": oSesh['thrower']['alias']
+			}
+		})
 
 	def throwerAliases_read(self, data):
 		"""Thrower Aliases

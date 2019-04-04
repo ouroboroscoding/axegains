@@ -46,6 +46,9 @@ class Match extends React.Component {
 
 		// Stop tracking any org hash change events
 		Hash.unwatch('org', this.orgChange);
+
+		// Remove the org from the hash
+		Hash.set('org', null);
 	}
 
 	menuChange(org) {
@@ -54,6 +57,9 @@ class Match extends React.Component {
 
 	orgChange(org) {
 		if(org != this.state.org) {
+			if(org == null) {
+				org = 'natf';
+			}
 			this.setState({"org": org});
 		}
 	}

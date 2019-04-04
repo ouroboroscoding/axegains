@@ -88,7 +88,7 @@ class Favourites(Record_ReDB.Record):
 				.run(oCon)
 
 			# Return True if a record was changed
-			return dRes['replaced'] == 1
+			return dRes['replaced'] == 1 or dRes['inserted'] == 1
 
 	@classmethod
 	def config(cls):

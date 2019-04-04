@@ -168,8 +168,37 @@ class Natf(Services.Service):
 		if not dMatch:
 			return Services.Effect(error=(1104, 'natf_match:%s' % data['id']))
 
+		# Get the aliases of both throwers
+		oEffect = Services.read('auth', 'thrower/aliases', {
+			"_internal_": Services.internalKey(),
+			"ids": [dMatch['opponent'], dMatch['initiator']]
+		})
+		if oEffect.errorExists():
+			return oEffect
+
+		# Add the aliases
+		dMatch['initiator_alias'] = oEffect.data[dMatch['initiator']]
+		dMatch['opponent_alias'] = oEffect.data[dMatch['opponent']]
+
 		# Else return the match
 		return Services.Effect(dMatch)
+
+	def match_update(self, data, sesh):
+		"""Match (Updates)
+
+		Updates the stats for an existing match
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['id'])
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 	def matchUnfinished_read(self, data, sesh):
 		"""Match Unfinished
@@ -217,22 +246,6 @@ class Natf(Services.Service):
 		# Return the matches
 		return Services.Effect(lMatches)
 
-	def match_update(self, data, sesh):
-		"""Match (Updates)
-
-		Updates the stats for an existing match
-
-		Arguments:
-			data {dict} -- Data sent with the request
-			sesh {Sesh._Session} -- Session associated with the request
-
-		Returns:
-			Services.Effect
-		"""
-
-		# Verify fields
-		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 	def practice_create(self, data, sesh):
 		"""Practice Create
