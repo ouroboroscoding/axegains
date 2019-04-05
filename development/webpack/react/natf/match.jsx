@@ -38,10 +38,10 @@ class Match extends React.Component {
 			"existing" : false,
 			"games": false,
 			"id": false,
-			"match_state": false,
+			"matchState": false,
 			"mode": "opponent",
 			"thrower": props.thrower,
-			"throwerIs": '',
+			"is": '',
 			"opponent": false
 		};
 
@@ -63,12 +63,12 @@ class Match extends React.Component {
 
 		// Init the state
 		var state = {
-			"round": 1,
-			"throw": 1
+			"game": "1",
+			"throw": "1"
 		};
 
 		// Are we opponent or initiator
-		var t = (this.state.thrower == data.initiator) ? 'i' : 'o';
+		var w = (this.state.thrower._id == data.initiator) ? 'i' : 'o';
 
 		// If there's any bigaxe data it's safe to assume we're done with the
 		//	regular match
@@ -82,8 +82,8 @@ class Match extends React.Component {
 
 				// Step through the points
 				for(var i = 0; i < data.bigaxe.points.length; ++i) {
-					if(typeof data.bigaxe.points[i][t] == 'undefined') {
-						state.round = i;
+					if(typeof data.bigaxe.points[i][w] == 'undefined') {
+						state.throw = i;
 					}
 				}
 			}
@@ -97,7 +97,7 @@ class Match extends React.Component {
 				// Step through the target
 				for(var i; i < data.bigaxe.target.length; ++i) {
 					if(typeof data.bigaxe.target[i][t] == 'undefined') {
-						state.round = i;
+						state.throw = i;
 					}
 				}
 			}
@@ -107,41 +107,35 @@ class Match extends React.Component {
 		else {
 
 			// Go through each game
-			var g = 1;
-			for(; g <= 3; ++i) {
-
-				// As a string
-				var sG = g.toString();
+			var g = "1";
+			for(g of ["1", "2", "3"]) {
 
 				// If it doesn't exist
-				if(typeof data.games[sG] == 'undefined') {
+				if(typeof data.games[g] == 'undefined') {
 					break;
 				}
 
-				// If there's no data for the thrower
-				if(typeof data.games[sG][t] == 'undefined') {
-					break;
+				// Store the game
+				state.game = g;
+
+				// If the game is finished
+				if(data.games[g].finished) {
+					continue;
 				}
 
-				// Go through each round
-				var r = 1;
-				for(; r <= 5; ++r) {
-
-					// As a string
-					var sR = r.toString();
+				// Go through each throw
+				var t = "1";
+				for(t of ["1", "2", "3", "4", "5"]) {
 
 					// If it doesn't exist
-					if(typeof data.games[sG][t][sR] == 'undefined') {
+					if(typeof data.games[g][w][t] == 'undefined') {
 						break;
 					}
 				}
 
 				// Store the round
-				state.round = r;
+				state.throw = t;
 			}
-
-			// Store the game
-			state.game = g;
 		}
 
 		// Return the state
@@ -350,16 +344,21 @@ class Match extends React.Component {
 				// Change the mode
 				this.setState({
 					"bigaxe": false,
-					"games": {},
+					"games": {
+						"1": {
+							"i": {},
+							"o": {}
+						}
+					},
 					"id": id[1],
 					"matchState": {
-						"round": 1,
+						"game": 1,
 						"throw": 1,
 						"bigaxe": false
 					},
 					"mode": "match",
 					"opponent": {"alias": ''},
-					"throwerIs": "i"
+					"is": "i"
 				})
 
 				// List for an update on the match
@@ -405,7 +404,7 @@ class Match extends React.Component {
 							"bigaxe": res.data.bigaxe,
 							"games": res.data.games,
 							"matchState": self.calculateMatchState(res.data),
-							"throwerIs": t,
+							"is": t,
 						});
 					}
 
@@ -426,10 +425,86 @@ class Match extends React.Component {
 
 	overwrite(ev) {
 
+		// Clone the match state
+		var ms = Tools.clone(this.state.matchState);
+
+		// Change the throw
+		ms.throw = ev.currentTarget.dataset.throw;
+
+		// Set the board mode
+		this.refs.board.clutchMode = ms.throw == 5 ? 'selected' : 'none';
+
+		// Set the new state
+		this.setState({
+			"matchState": ms,
+			"overwrite": true
+		});
 	}
 
 	points(clutch, value) {
 
+		// Store this
+		var self = this;
+
+		// Show the loader
+		Loader.show();
+
+		// Clone the games and match state
+		var games = Tools.clone(this.state.games);
+		var ms = Tools.clone(this.state.matchState);
+
+		// Get the value or value/clutch
+		var value = (ms.throw == 5) ? {"clutch": clutch, "value": value} : value;
+
+		// Store the point value
+		games[ms.game][this.state.is][ms.throw] = value;
+
+		// Save the value and notify the opponent
+		Services.update('natf', 'match/game', {
+			"id": games[ms.game]._id,
+			"match": this.state.id,
+			"throw": ms.throw,
+			"value": value
+		}).done(res => {
+
+			// If there's an error
+			if(res.error && !Utils.serviceError(res.error)) {
+				Events.trigger('error', JSON.stringify(res.error));
+			}
+
+			// If there's a warning
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If there's data
+			if(res.data) {
+
+				// If the overwrite flag is set
+				if(self.state.overwrite) {
+					var t = "6"
+					for(t of ["1", "2", "3", "4", "5", "6"]) {
+						if(typeof games[ms.game][this.state.is][t] == 'undefined') {
+							break;
+						}
+					}
+					ms.throw = t;
+				} else {
+					ms.throw = (parseInt(ms.throw) + 1).toString();
+				}
+
+				// Update the state
+				self.setState({
+					"games": games,
+					"matchState": ms,
+					"overwrite": false
+				});
+			}
+
+		}).always(() => {
+			// Hide the loader
+			Loader.hide();
+		})
 	}
 
 	render() {
@@ -461,7 +536,14 @@ class Match extends React.Component {
 				{this.state.mode == 'match' &&
 					<div>
 						<Board ref="board" clutchMode="none" onPoints={self.points} />
-						{this.renderMatch()}
+						<div className="stats">
+							{this.renderOverall()}
+							{this.state.bigaxe ?
+								this.renderBigAxe()
+							:
+								this.renderGame()
+							}
+						</div>
 					</div>
 				}
 			</div>
@@ -473,21 +555,111 @@ class Match extends React.Component {
 	}
 
 	renderGame() {
-		return <div />
-	}
 
-	renderMatch() {
+		// Opponent is opposite of thrower
+		var sO = this.state.is == 'i' ? 'o': 'i';
+
+		// What game are we in?
+		var g = this.state.games[this.state.matchState.game];
 
 		return (
-			<div className="stats">
-				{this.renderOverall()}
-				{this.state.bigaxe ?
-					this.renderBigAxe()
-				:
-					this.renderGame()
+			<div className="game">
+				<table>
+					<thead>
+						<tr>
+							<th>T</th>
+							<th>{this.state.thrower.alias}</th>
+							<th>{this.state.alias}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>1</td>
+							{this.renderGameThrow("1")}
+							<td>{g[sO]["1"] == -1 ? 'd' : g[sO]["1"]}</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							{this.renderGameThrow("2")}
+							<td>{g[sO]["2"] == -1 ? 'd' : g[sO]["2"]}</td>
+						</tr>
+						<tr>
+							<td>3</td>
+							{this.renderGameThrow("3")}
+							<td>{g[sO]["3"] == -1 ? 'd' : g[sO]["3"]}</td>
+						</tr>
+						<tr>
+							<td>4</td>
+							{this.renderGameThrow("4")}
+							<td>{g[sO]["4"] == -1 ? 'd' : g[sO]["4"]}</td>
+						</tr>
+						<tr>
+							<td>5</td>
+							{this.renderGameThrow("5")}
+							<td className={g[sO]["5"] && g[sO]["5"].clutch ? 'clutch' : ''}>{g[sO]["5"] ? (g[sO]["5"].value == -1 ? 'd' : g[sO]["5"].value) : ''}</td>
+						</tr>
+					</tbody>
+				</table>
+				{this.state.matchState.throw == '6' &&
+					<button onClick={this.gameFinish}>Finished</button>
 				}
 			</div>
 		);
+	}
+
+	renderGameThrow(t) {
+
+		// The game
+		var g = this.state.matchState.game;
+
+		// The value of the throw
+		var v = this.state.games[g][this.state.is][t];
+
+		// If we're working on 5
+		if(t == '5') {
+
+			// If the game is finished
+			if(this.state.games[g][this.state.is].finished) {
+				return <td className={v.clutch ? 'clutch' : ''}>{v}</td>
+			}
+
+			// Else, we're not finished, but the value exists
+			else if(v) {
+				return <td
+							className={this.state.overwrite && this.state.matchState.throw == t ? 'overwrite' : (v.clutch ? 'clutch' : '')}
+							data-throw={t}
+							onClick={this.overwrite}
+						>{v.value == -1 ? 'd' : v.value}</td>
+			}
+
+			// Else, there's no value
+			else {
+				return <td></td>
+			}
+		}
+
+		// Else it's 1 to 4
+		else {
+
+			// If the game is finished
+			if(this.state.games[g][this.state.is].finished) {
+				return <td>{v}</td>
+			}
+
+			// Else, we're not finishd, but the value exists
+			else if(v) {
+				return <td
+							className={this.state.overwrite && this.state.matchState.throw == t ? 'overwrite' : ''}
+							data-throw={t}
+							onClick={this.overwrite}
+						>{v == -1 ? 'd' : v}</td>
+			}
+
+			// Else, there's no value
+			else {
+				return <td></td>
+			}
+		}
 	}
 
 	renderOverall() {
@@ -499,17 +671,26 @@ class Match extends React.Component {
 		}
 
 		// Opponent is opposite of thrower
-		var sO = this.state.throwerIs == 'i' ? 'o': 'i';
+		var sO = this.state.is == 'i' ? 'o': 'i';
 
 		// Calculate the points
-		for(var i of ["1", "2", "3"]) {
-			if(this.state.games[i]) {
-				for(var j of ["1", "2", "3", "4", "5"]) {
-					if(this.state.games[i]['i'][j]) {
-						oPoints['i'][0+i] += this.state.games[i]['i'][j];
+		for(var g of ["1", "2", "3"]) {
+			var iG = parseInt(g) - 1;
+			if(this.state.games[g]) {
+				for(var t of ["1", "2", "3", "4", "5"]) {
+					if(this.state.games[g]['i'][t]) {
+						if(t == '5') {
+							oPoints['i'][iG] += this.state.games[g]['i'][t].value;
+						} else {
+							oPoints['i'][iG] += this.state.games[g]['i'][t];
+						}
 					}
-					if(this.state.games[i]['o'][j]) {
-						oPoints['o'][0+i] += this.state.games[i]['o'][j];
+					if(this.state.games[g]['o'][t]) {
+						if(t == '5') {
+							oPoints['o'][iG] += this.state.games[g]['o'][t].value;
+						} else {
+							oPoints['o'][iG] += this.state.games[g]['o'][t];
+						}
 					}
 				}
 			}
@@ -519,19 +700,26 @@ class Match extends React.Component {
 			<div className="overall">
 				<table>
 					<thead>
-						<tr><th> </th><th>1</th><th>2</th><th>3</th></tr>
+						<tr>
+							<th>G</th>
+							<th>{this.state.thrower.alias}</th>
+							<th>{this.state.alias}</th>
+						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td>{this.state.thrower.alias}</td>
-							<td>{oPoints[this.state.throwerIs][0]}</td>
-							<td>{oPoints[this.state.throwerIs][1]}</td>
-							<td>{oPoints[this.state.throwerIs][2]}</td>
+							<td>1</td>
+							<td>{oPoints[this.state.is][0]}</td>
+							<td>{oPoints[sO][0]}</td>
 						</tr>
 						<tr>
-							<td>{this.state.alias}</td>
-							<td>{oPoints[sO][0]}</td>
+							<td>2</td>
+							<td>{oPoints[this.state.is][1]}</td>
 							<td>{oPoints[sO][1]}</td>
+						</tr>
+						<tr>
+							<td>3</td>
+							<td>{oPoints[this.state.is][2]}</td>
 							<td>{oPoints[sO][2]}</td>
 						</tr>
 					</tbody>

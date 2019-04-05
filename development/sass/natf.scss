@@ -91,19 +91,31 @@
 
 			.overall {
 				display: inline-block;
-				margin: 5px;
+				padding: 5px;
+				vertical-align: top;
 				width: 50%;
+			}
 
-				table {
-					th, td {
-						text-align: center;
-					}
+			.game {
+				display: inline-block;
+				padding: 5px;
+				vertical-align: top;
+				width: 50%;
+			}
 
-					th:first-child, td:first-child {
-						border-right: 1px solid black;
-						text-align: left;
-						width: 45%;
-					}
+			table {
+				th, td {
+					text-align: center;
+				}
+
+				th:first-child, td:first-child {
+					border-right: 1px solid black;
+					width: 20%;
+				}
+
+				td.overwrite {
+					background-color: red;
+					color: white;
 				}
 			}
 		}

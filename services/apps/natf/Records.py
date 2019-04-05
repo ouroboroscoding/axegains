@@ -24,18 +24,6 @@ _mdMatchConf = Record_ReDB.Record.generateConfig(
 	'rethinkdb', Conf.get(("rethinkdb", "axegains"))
 )
 
-# Match - Big Axe structure and config
-_mdMatchBigAxeConf = Record_ReDB.Record.generateConfig(
-	Tree.fromFile('../json/definitions/natf/match_bigaxe.json'),
-	'rethinkdb', Conf.get(("rethinkdb", "axegains"))
-)
-
-# Match - Game structure and config
-_mdMatchGameConf = Record_ReDB.Record.generateConfig(
-	Tree.fromFile('../json/definitions/natf/match_game.json'),
-	'rethinkdb', Conf.get(("rethinkdb", "axegains"))
-)
-
 # Practice structure and config
 _mdPracticeConf = Record_ReDB.Record.generateConfig(
 	Tree.fromFile('../json/definitions/natf/practice.json'),
@@ -96,43 +84,45 @@ class Match(Record_ReDB.Record):
 			# Return the records found
 			return [d for d in itRes]
 
-class MatchBigAxe(Record_ReDB.Record):
-	"""Match Big Axe
-
-	Represents big axe part of match
-
-	Extends: RestOC.Record_ReDB.Record
-	"""
-
 	@classmethod
-	def config(cls):
-		"""Config
+	def updateThrow(cls, _id, game, _is, throw, value):
+		"""Update Throw
 
-		Returns the configuration data associated with the record type
+		Updates a single data point in the game record
+
+		Arguments:
+			_id {str} -- The UUID of the match to update
+			game {str} -- The game within the match to update
+			_is {str} -- The thrower to update, i or o
+			throw {str} -- The throw to update, 1 to 5
+			value {mixed} -- The value to set for the throw
 
 		Returns:
-			dict
+			bool
 		"""
-		return _mdMatchBigAxeConf
 
-class MatchGame(Record_ReDB.Record):
-	"""Match Game
+		# Get the structure
+		dStruct = cls.struct()
 
-	Represents a single game in a match
+		# Get a connection to the host
+		with Record_ReDB._with(dStruct['host']) as oCon:
 
-	Extends: RestOC.Record_ReDB.Record
-	"""
+			# Generate the rethink query to update the throw
+			dRes = Record_ReDB.r \
+					.db(dStruct['db']) \
+					.table(dStruct['table']) \
+					.get(_id) \
+					.update({"games": {
+						game: {
+							_is: {
+								throw: value
+							}
+						}
+					}}) \
+					.run(oCon)
 
-	@classmethod
-	def config(cls):
-		"""Config
-
-		Returns the configuration data associated with the record type
-
-		Returns:
-			dict
-		"""
-		return _mdMatchGameConf
+			# Return true if something was updated
+			return dRes['replaced'] == 1
 
 class Practice(Record_ReDB.Record):
 	"""Practice

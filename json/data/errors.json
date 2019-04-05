@@ -1,11 +1,8 @@
 {
-	"_": "Service Errors",
-	"207": "No profile in session",
-	"208": "No rights to request",
-
 	"_": "Common Errors",
-	"1000": "No rights to request",
+	"1000": "No rights to request/update",
 	"1001": "Invalid or missing data variable",
+	"1002": "Can't update finished match/game",
 
 	"_": "DB Errors",
 	"1100": "Failed to create record",

@@ -157,7 +157,8 @@ table {
     border: 1px solid black; }
   table tbody tr {
     background-color: #7CC3FF;
-    border-bottom: 1px solid black; }
+    border: 1px solid black;
+    border-top: 0; }
   table tbody tr:nth-child(odd) {
     background-color: #ffffff; }
   table td, table th {
@@ -490,14 +491,22 @@ button.large:active {
     margin: 10px 0; }
     #match .natf .stats .overall {
       display: inline-block;
-      margin: 5px;
+      padding: 5px;
+      vertical-align: top;
       width: 50%; }
-      #match .natf .stats .overall table th, #match .natf .stats .overall table td {
-        text-align: center; }
-      #match .natf .stats .overall table th:first-child, #match .natf .stats .overall table td:first-child {
-        border-right: 1px solid black;
-        text-align: left;
-        width: 45%; }
+    #match .natf .stats .game {
+      display: inline-block;
+      padding: 5px;
+      vertical-align: top;
+      width: 50%; }
+    #match .natf .stats table th, #match .natf .stats table td {
+      text-align: center; }
+    #match .natf .stats table th:first-child, #match .natf .stats table td:first-child {
+      border-right: 1px solid black;
+      width: 20%; }
+    #match .natf .stats table td.overwrite {
+      background-color: red;
+      color: white; }
 
 .natf .board {
   background-color: white;

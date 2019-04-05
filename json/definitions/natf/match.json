@@ -14,5 +14,49 @@
 	"_created": "timestamp",
 	"finished": "bool",
 	"initiator": "uuid",
-	"opponent": "uuid"
+	"opponent": "uuid",
+	"games": {
+		"__hash__": {"__type__": "string", "__options__": ["1", "2", "3"]},
+		"i": {
+			"__optional__": true,
+			"1": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5], "__optional__": true},
+			"2": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5], "__optional__": true},
+			"3": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5], "__optional__": true},
+			"4": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5], "__optional__": true},
+			"5": {
+				"value": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5, 7], "__optional__": true},
+				"clutch": {"__type__": "bool"}
+			}
+		},
+		"o": {
+			"__optional__": true,
+			"1": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5], "__optional__": true},
+			"2": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5], "__optional__": true},
+			"3": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5], "__optional__": true},
+			"4": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5], "__optional__": true},
+			"5": {
+				"value": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5, 7], "__optional__": true},
+				"clutch": {"__type__": "bool"}
+			}
+		}
+	},
+	"bigaxe": {
+		"__optional__": true,
+		"target": {
+			"__array__": "duplicates",
+			"i": {"__type__": "bool", "__optional__": true},
+			"o": {"__type__": "bool", "__optional__": true}
+		},
+		"points": {
+			"__array__": "duplicates",
+			"i": {
+				"value": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5, 7], "__optional__": true},
+				"clutch": {"__type__": "bool"}
+			},
+			"o": {
+				"value": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5, 7], "__optional__": true},
+				"clutch": {"__type__": "bool"}
+			}
+		}
+	}
 }
