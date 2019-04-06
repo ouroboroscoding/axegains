@@ -27,6 +27,11 @@ from shared import Sync
 # Service imports
 from .Records import Match, Practice
 
+# Hex
+FINISHED_INITIATOR = 0x01
+FINISHED_OPPONENT= 0x02
+FINISHED_BOTH = 0x03
+
 class Natf(Services.Service):
 	"""NATF Service class
 
@@ -102,8 +107,9 @@ class Natf(Services.Service):
 				"initiator": data['initiator'],
 				"opponent": data['opponent'],
 				"games": {
-					"1": {}
-				}
+					"1": {},
+				},
+				"games_finished": 0
 			})
 		except ValueError as e:
 			return Services.Effect(error=(1001, e.args[0]))
@@ -178,6 +184,20 @@ class Natf(Services.Service):
 		if oEffect.errorExists():
 			return oEffect
 
+		# Convert all -1 to 'd'
+		for g in ['1', '2', '3']:
+			if g in dMatch['games']:
+				for w in ['i', 'o']:
+					if w in dMatch['games'][g]:
+						for t in ['1', '2', '3', '4', '5']:
+							if t in dMatch['games'][g][w]:
+								if t == '5':
+									if dMatch['games'][g][w][t]['value'] == -1:
+										dMatch['games'][g][w][t]['value'] = 'd'
+								else:
+									if dMatch['games'][g][w][t] == -1:
+										dMatch['games'][g][w][t] = 'd'
+
 		# Add the aliases
 		dMatch['initiator_alias'] = oEffect.data[dMatch['initiator']]
 		dMatch['opponent_alias'] = oEffect.data[dMatch['opponent']]
@@ -202,6 +222,160 @@ class Natf(Services.Service):
 		try: DictHelper.eval(data, ['id'])
 		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
+	def matchBigaxePoints_update(self, data, sesh):
+		"""Match Big Axe Points
+
+		Takes a new throw for points and records it, then notifies the opponent
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['id', 'match', 'throw', 'value'])
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
+
+		# Get the match
+		dMatch = Match.get(data['id'], raw=['finished', 'initiator', 'opponent', 'bigaxe'])
+		if not dMatch:
+			return Services.Effect(error=(1104, 'natf_match:%s' % data['match']))
+
+		# If the match is already finished
+		if dMatch['finished']:
+			return Services.Effect(error=1002)
+
+		# Is the thrower the initiator or the opponent?
+		if sesh['thrower']['_id'] == dMatch['initiator']:
+			sIs = 'i'
+			iFin = FINISHED_INITIATOR
+		elif sesh['thrower']['_id'] == dMatch['opponent']:
+			sIs = 'o'
+			iFin = FINISHED_OPPONENT
+		else:
+			return Services.Effect(error=1000)
+
+	def matchBigaxeTarget_update(self, data, sesh):
+		"""Match Big Axe Target
+
+		Takes a new throw for in the pain and records it, then notifies the
+		opponent
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['id', 'match', 'throw', 'value'])
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
+
+		# Get the match
+		dMatch = Match.get(data['id'], raw=['finished', 'initiator', 'opponent', 'bigaxe'])
+		if not dMatch:
+			return Services.Effect(error=(1104, 'natf_match:%s' % data['match']))
+
+		# If the match is already finished
+		if dMatch['finished']:
+			return Services.Effect(error=1002)
+
+		# Is the thrower the initiator or the opponent?
+		if sesh['thrower']['_id'] == dMatch['initiator']:
+			sIs = 'i'
+			iFin = FINISHED_INITIATOR
+		elif sesh['thrower']['_id'] == dMatch['opponent']:
+			sIs = 'o'
+			iFin = FINISHED_OPPONENT
+		else:
+			return Services.Effect(error=1000)
+
+	def matchFinishGames_update(self, data, sesh):
+		"""Match Finish Games
+
+		Marks all games as finished. If both throwers are finished, calculates
+		if there's a winner or it's a tie
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['id', 'match'])
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
+
+		# Get the match
+		dMatch = Match.get(data['match'], raw=['finished', 'initiator', 'opponent', 'games_finished'])
+		if not dMatch:
+			return Services.Effect(error=(1104, 'natf_match:%s' % data['match']))
+
+		# If the match is already finished
+		if dMatch['finished']:
+			return Services.Effect(error=1002)
+
+		# Is the thrower the initiator or the opponent?
+		if sesh['thrower']['_id'] == dMatch['initiator']:
+			sIs = 'i'
+			iFin = FINISHED_INITIATOR
+		elif sesh['thrower']['_id'] == dMatch['opponent']:
+			sIs = 'o'
+			iFin = FINISHED_OPPONENT
+		else:
+			return Services.Effect(error=1000)
+
+		# If the thrower already marked the match as finished
+		if dMatch['games_finished'] | iFin:
+			return Services.Effect(True)
+
+		# Update the finished state
+		Match.finishGames(data['id'], iFin)
+
+		# Fetch the updated data
+		dMatch = Match.get(data['id'], raw=['games', 'games_finished'])
+
+		# If both sides are done
+		if dMatch['games_finished'] == FINISHED_BOTH:
+
+			# Init the games won
+			dWon = {"i": 0, "o": 0}
+
+			# Calculate the stats
+			for g in ["1", "2", "3"]:
+				dPoints = {"i": 0, "o": 0}
+				for w in ["i", "o"]:
+					for t in ["1", "2", "3", "4", "5"]:
+						if t == '5':
+							if dMatch['games'][g][w][t]['value'] > 0:
+								dPoints[w] += dMatch['games'][g][w][t]['value']
+						else:
+							if dMatch['games'][g][w][t] > 0:
+								dPoints[w] += dMatch['games'][g][w][t]
+				if dPoints['i'] > dPoints['o']:
+					dWon['i'] += 1
+				elif dPoints['i'] < dPoints['o']:
+					dWon['o'] += 1
+
+			# If we don't have a winner
+			if dWon['i'] == dWon['o']:
+
+				# Start big axe mode
+				Sync.push('natf', 'match-%s' % d['id'], {
+					"type": "bigaxe_start"
+				})
+
+
+		# Return OK
+		return Services.Effect(True)
+
 	def matchGame_update(self, data, sesh):
 		"""Match Game Update
 
@@ -220,7 +394,7 @@ class Natf(Services.Service):
 		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Get the match
-		dMatch = Match.get(data['match'], raw=['finished', 'initiator', 'opponent'])
+		dMatch = Match.get(data['id'], raw=['finished', 'initiator', 'opponent'])
 		if not dMatch:
 			return Services.Effect(error=(1104, 'natf_match:%s' % data['match']))
 
@@ -230,11 +404,17 @@ class Natf(Services.Service):
 
 		# Is the thrower the initiator or the opponent?
 		if sesh['thrower']['_id'] == dMatch['initiator']:
-			throwerIs = 'i'
+			sIs = 'i'
+			iFin = FINISHED_INITIATOR
 		elif sesh['thrower']['_id'] == dMatch['opponent']:
-			throwerIs = 'o'
+			sIs = 'o'
+			iFin = FINISHED_OPPONENT
 		else:
 			return Services.Effect(error=1000)
+
+		# If the thrower already marked the match as finished
+		if dMatch['games_finished'] | iFin:
+			return Services.Effect(error=1002)
 
 		# If the game is not a valid value
 		if data['game'] not in ['1', '2', '3']:
@@ -242,54 +422,33 @@ class Natf(Services.Service):
 
 		# If the throw is not a valid value
 		if data['throw'] not in ['1', '2', '3', '4', '5']:
-			return Service.Effect(error=(1001, [('throw', 'not 1 to 5')]))
+			return Services.Effect(error=(1001, [('throw', 'not 1 to 5')]))
+
+		# If the value is 'd'
+		if data['throw'] == '5':
+			data['value']['value'] = data['value']['value'] ==  'd' and -1 or int(data['value']['value'])
+		else:
+			data['value'] = data['value'] ==  'd' and -1 or int(data['value'])
 
 		# Validate the value
-		dStruct = self.struct()
-		if not dStruct['tree']['games'][thowerIs][throw].valid(data['value']):
+		dStruct = Match.struct()
+		if not dStruct['tree']['games'].child()[sIs][data['throw']].valid(data['value']):
 			return Services.Effect(error=(1001, [('value', 'invalid')]))
 
 		# Update the throw
-		if not MatchGame.updateThrow(data['id'], data['game'], throwerIs, data['throw'], data['value']):
-			return Services.Effect(error=1103)
+		Match.updateThrow(data['id'], data['game'], sIs, data['throw'], data['value'])
+
+		# Notify anyone listening
+		Sync.push('natf', 'match-%s' % data['id'], {
+			"type": "games_throw",
+			"game": data['game'],
+			"thrower": sIs,
+			"throw": data['throw'],
+			"value": data['value']
+		})
 
 		# Return OK
 		return Services.Effect(True)
-
-	def matchGameFinished_update(self, data, sesh):
-		"""Match Game Finished Update
-
-		Finishes a game and creates a new one, or creates bigaxe, or closes the
-		match
-
-		Arguments:
-			data {dict} -- Data sent with the request
-			sesh {Sesh._Session} -- Session associated with the request
-
-		Returns:
-			Services.Effect
-		"""
-
-		# Verify fields
-		try: DictHelper.eval(data, ['id', 'match'])
-		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
-
-		# Get the match
-		dMatch = Match.get(data['match'], raw=['finished', 'initiator', 'opponent'])
-		if not dMatch:
-			return Services.Effect(error=(1104, 'natf_match:%s' % data['match']))
-
-		# If the match is already finished
-		if dMatch['finished']:
-			return Services.Effect(error=1002)
-
-		# Is the thrower the initiator or the opponent?
-		if sesh['thrower']['_id'] == dMatch['initiator']:
-			throwerIs = 'i'
-		elif sesh['thrower']['_id'] == dMatch['opponent']:
-			throwerIs = 'o'
-		else:
-			return Services.Effect(error=1000)
 
 	def matchUnfinished_read(self, data, sesh):
 		"""Match Unfinished

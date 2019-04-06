@@ -40,20 +40,32 @@
 			}
 		}
 	},
+	"games_finished": {"__type__": "uint", "__maximum__": 3},
 	"bigaxe": {
 		"__optional__": true,
 		"target": {
-			"__array__": "duplicates",
-			"i": {"__type__": "bool", "__optional__": true},
-			"o": {"__type__": "bool", "__optional__": true}
+			"finished": "uint",
+			"i": {
+				"__array__": "duplicates",
+				"__type__": "int",
+				"__options__": [-1, 0, 1]
+			},
+			"o": {
+				"__array__": "duplicates",
+				"__type__": "int",
+				"__options__": [-1, 0, 1]
+			}
 		},
 		"points": {
-			"__array__": "duplicates",
+			"__optional__": true,
+			"finished": "uint",
 			"i": {
+				"__array__": "duplicates",
 				"value": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5, 7], "__optional__": true},
 				"clutch": {"__type__": "bool"}
 			},
 			"o": {
+				"__array__": "duplicates",
 				"value": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5, 7], "__optional__": true},
 				"clutch": {"__type__": "bool"}
 			}

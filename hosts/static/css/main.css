@@ -497,16 +497,19 @@ button.large:active {
     #match .natf .stats .game {
       display: inline-block;
       padding: 5px;
+      text-align: center;
       vertical-align: top;
       width: 50%; }
-    #match .natf .stats table th, #match .natf .stats table td {
-      text-align: center; }
-    #match .natf .stats table th:first-child, #match .natf .stats table td:first-child {
-      border-right: 1px solid black;
-      width: 20%; }
-    #match .natf .stats table td.overwrite {
-      background-color: red;
-      color: white; }
+    #match .natf .stats table {
+      margin-bottom: 10px; }
+      #match .natf .stats table th, #match .natf .stats table td {
+        text-align: center; }
+      #match .natf .stats table th:first-child, #match .natf .stats table td:first-child {
+        border-right: 1px solid black;
+        width: 20%; }
+      #match .natf .stats table td.overwrite {
+        background-color: red;
+        color: white; }
 
 .natf .board {
   background-color: white;

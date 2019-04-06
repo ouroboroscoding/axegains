@@ -124,7 +124,7 @@ class Board extends React.Component {
 			this.props.onPoints(true, 0);
 			this.resetClutch();
 		} else {
-			this.props.onPoints(false, target.dataset.value);
+			this.props.onPoints(false, parseInt(target.dataset.value));
 		}
 
 		// Turn on the active flag

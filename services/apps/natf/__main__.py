@@ -53,8 +53,10 @@ Services.register({
 # Create the HTTP server and map requests to service
 REST.Server({
 	"/match": {"methods": REST.ALL, "session": True},
+	"/match/bigaxe/points": {"methods": REST.UPDATE, "session": True},
+	"/match/bigaxe/target": {"methods": REST.UPDATE, "session": True},
+	"/match/finish/games": {"methods": REST.UPDATE, "session": True},
 	"/match/game": {"methods": REST.UPDATE, "session": True},
-	"/match/game/finish": {"methods": REST.UPDATE, "session": True},
 	"/match/unfinished": {"methods": REST.READ, "session": True},
 
 	"/practice": {"methods": REST.CREATE, "session": True},

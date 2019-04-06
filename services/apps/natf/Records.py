@@ -50,6 +50,40 @@ class Match(Record_ReDB.Record):
 		return _mdMatchConf
 
 	@classmethod
+	def finishGames(cls, _id, flag):
+		"""Finish Games
+
+		Updates the games_finished int by ORing with the flag passed
+
+		Arguments:
+			_id {str} -- The UUID of the match
+			flag {uint} -- The bit to set
+
+		Returns:
+			bool
+		"""
+
+		# Get the structure
+		dStruct = cls.struct()
+
+		# Get a connection to the host
+		with Record_ReDB._with(dStruct['host']) as oCon:
+
+			# Generate the rethink query to update the games_finished field
+			#	atomically
+			dRes = Record_ReDB.r \
+					.db(dStruct['db']) \
+					.table(dStruct['table']) \
+					.get(_id) \
+					.update({
+						"games_finished": r.row['games_finished'] | flag
+					})
+					.run(oCon)
+
+			# Return based on whether anything was replaced
+			return dRes['replaced'] == 1
+
+	@classmethod
 	def unfinished(cls, thrower):
 		"""Unfinished
 
@@ -74,7 +108,7 @@ class Match(Record_ReDB.Record):
 			itRes = Record_ReDB.r \
 					.db(dStruct['db']) \
 					.table(dStruct['table']) \
-					.get_all(False, index='finished') \
+					.get_all(0, index='finished') \
 					.filter((Record_ReDB.r.row['initiator'] == thrower) | \
 						(Record_ReDB.r.row['opponent'] == thrower)) \
 					.pluck('_id', 'initiator', 'opponent') \
