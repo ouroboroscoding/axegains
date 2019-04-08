@@ -479,37 +479,63 @@ button.large:active {
     width: 300px; }
 
 #match .natf {
-  margin: 5px auto;
-  width: 95%; }
+  position: relative;
+  width: 100%; }
   #match .natf .existing {
     border: 1px solid #2C689B;
-    margin: 0 0 10px 0;
+    margin: 5px 10px;
     padding: 10px; }
     #match .natf .existing button {
       margin: 0 5px; }
-  #match .natf .stats {
-    margin: 10px 0; }
-    #match .natf .stats .overall {
-      display: inline-block;
-      padding: 5px;
-      vertical-align: top;
-      width: 50%; }
-    #match .natf .stats .game {
-      display: inline-block;
-      padding: 5px;
-      text-align: center;
-      vertical-align: top;
-      width: 50%; }
-    #match .natf .stats table {
-      margin-bottom: 10px; }
-      #match .natf .stats table th, #match .natf .stats table td {
-        text-align: center; }
-      #match .natf .stats table th:first-child, #match .natf .stats table td:first-child {
-        border-right: 1px solid black;
-        width: 20%; }
-      #match .natf .stats table td.overwrite {
-        background-color: red;
-        color: white; }
+  #match .natf .actual {
+    margin: 0 auto;
+    width: 95%; }
+    #match .natf .actual .stats {
+      margin: 10px 0; }
+      #match .natf .actual .stats .overall {
+        display: inline-block;
+        padding: 5px;
+        vertical-align: top;
+        width: 50%; }
+      #match .natf .actual .stats .game, #match .natf .actual .stats .bigaxe {
+        display: inline-block;
+        padding: 5px;
+        text-align: center;
+        vertical-align: top;
+        width: 50%; }
+      #match .natf .actual .stats table {
+        margin-bottom: 10px; }
+        #match .natf .actual .stats table th, #match .natf .actual .stats table td {
+          text-align: center; }
+        #match .natf .actual .stats table th:first-child, #match .natf .actual .stats table td:first-child {
+          border-right: 1px solid black;
+          width: 20%; }
+        #match .natf .actual .stats table td.overwrite {
+          background-color: red;
+          color: white; }
+    #match .natf .actual .overlay {
+      background-color: rgba(0, 0, 0, 0.33);
+      position: absolute;
+      top: 0;
+      left: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      z-index: 40; }
+      #match .natf .actual .overlay div {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center; }
+        #match .natf .actual .overlay div span {
+          background-color: white;
+          border: 2px solid black;
+          border-radius: 20px;
+          color: black;
+          margin: -30px auto 0;
+          padding: 10px 20px;
+          text-align: center; }
 
 .natf .board {
   background-color: white;

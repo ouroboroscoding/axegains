@@ -23,6 +23,11 @@ var Utils = require('../../utils.js');
 var Board = require('./board.jsx');
 var Opponent = require('../opponent.jsx');
 
+// Defines
+FINISHED_INITIATOR = 0x01;
+FINISHED_OPPONENT = 0x02;
+FINISHED_BOTH = 0x03;
+
 // Match Component
 class Match extends React.Component {
 
@@ -46,6 +51,7 @@ class Match extends React.Component {
 		};
 
 		// Bind methods
+		this.bigaxeFinish = this.bigaxeFinish.bind(this);
 		this.existingContinue = this.existingContinue.bind(this);
 		this.existingDelete = this.existingDelete.bind(this);
 		this.gameFinish = this.gameFinish.bind(this);
@@ -60,8 +66,134 @@ class Match extends React.Component {
 		this.signout = this.signout.bind(this);
 	}
 
-	calculateBigAxeTarget() {
+	bigaxeFinish() {
 
+		// Store this
+		var self = this;
+
+		// Show the loader
+		Loader.show();
+
+		// If we're in points mode
+		var noun = '';
+		if(this.state.matchState.mode == 'bigaxe_points') {
+			noun = 'match/finish/bigaxe/points';
+		} else {
+			noun = 'match/finish/bigaxe/target';
+		}
+
+		// Let the service know
+		Services.update('natf', noun, {
+			"id": this.state.id
+		}).done(res => {
+
+			// If there's an error
+			if(res.error && !Utils.serviceError(res.error)) {
+				Events.trigger('error', JSON.stringify(res.error));
+			}
+
+			// If there's a warning
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If there's data
+			if(res.data) {
+
+				// Clone the match state
+				var ms = self.state.matchState
+
+				// Remove the finish and set the waiting
+				ms.bigaxe_can_finish = false;
+				ms.waiting = true;
+
+				// Set the new state
+				self.setState({"matchState": ms});
+			}
+
+		}).always(() => {
+			// Hide the loader
+			Loader.hide();
+		});
+	}
+
+	calculateBigAxeFinished(type, data) {
+
+		// Make my life easier
+		var throws = data.bigaxe[type];
+
+		// If the lengths don't match
+		if(throws['i'].length != throws['o'].length) {
+
+			// We aren't done
+			return false;
+		}
+
+		// If we're checking points
+		if(type == 'points') {
+
+			// Loop through till we have no more throws
+			for(var i = 0; throws['i'].length < i; ++i) {
+
+				// If we got a drop, consider it a zero
+				if(throws['i'][i] == 'd') {
+					throws['i'][i] = 0
+				}
+				if(throws['o'][i] == 'd') {
+					throws['o'][i] = 0
+				}
+
+				// If the values don't match, someone won
+				if(throws['i'][i] != throws['o'][i]) {
+
+					// Allow finishing
+					return true;
+				}
+			}
+		}
+
+		// Else we're checking target
+		else {
+
+			// Init consecutive hits
+			var iCon = 0;
+
+			// Loop through till we have no more throws
+			for(var i = 0; i < throws['i'].length; ++i) {
+
+				// If we got double failures
+				if((throws['i'][i] == 'd' || throws['i'][i] == 0) &&
+					(throws['o'][i] == 'd' || throws['o'][i] == 0)) {
+
+					// Reset the consecutive and continue the loop
+					iCon = 0;
+					continue;
+				}
+
+				// If we got double 1s
+				if(throws['i'][i] == 1 && throws['o'][i] == 1) {
+
+					// Increase the consecutive
+					++iCon;
+
+					// If we got 3
+					if(iCon == 3) {
+
+						// Allow finishing
+						return true;
+					}
+
+					// Continue the loop
+					continue;
+				}
+
+				// Looks like someone won
+				return true;
+			}
+		}
+
+		// Not done yet
+		return false;
 	}
 
 	calculateMatchState(data) {
@@ -69,28 +201,40 @@ class Match extends React.Component {
 		// Init the state
 		var state = {
 			"game": "1",
-			"throw": "1"
+			"throw": "1",
+			"waiting": false
 		};
 
 		// Are we opponent or initiator
-		var w = (this.state.thrower._id == data.initiator) ? 'i' : 'o';
+		var is = (this.state.thrower._id == data.initiator) ? 'i' : 'o';
 
 		// If there's any bigaxe data it's safe to assume we're done with the
 		//	regular match
 		if(data.bigaxe && !Tools.empty(data.bigaxe)) {
 
+			// Bigaxe throw starts at 0
+			state.throw = 0;
+
 			// If we have points
-			if(data.bigaxe.points && data.bigaxe.points.length) {
+			if(data.bigaxe.points && data.bigaxe.points[is].length) {
 
 				// Set bigaxe to points
 				state.mode = "bigaxe_points";
 
 				// Step through the points
-				for(var i = 0; i < data.bigaxe.points.length; ++i) {
-					if(typeof data.bigaxe.points[i][w] == 'undefined') {
+				for(var i = 0; i < data.bigaxe.points[is].length; ++i) {
+					if(typeof data.bigaxe.points[is][i] == 'undefined') {
 						state.throw = i;
 					}
 				}
+
+				// If we're finished
+				if(data.bigaxe.points.finished[is]) {
+					state.waiting = true;
+				}
+
+				// Do we need to show the finish button?
+				state.bigaxe_can_finish = this.calculateBigAxeFinished('points', data);
 			}
 
 			// Else we're still on target
@@ -105,6 +249,14 @@ class Match extends React.Component {
 						state.throw = i;
 					}
 				}
+
+				// If we're finished
+				if(data.bigaxe.target.finished[is]) {
+					state.waiting = true;
+				}
+
+				// Do we need to show the finish button?
+				state.bigaxe_can_finish = this.calculateBigAxeFinished('target', data);
 			}
 		}
 
@@ -114,35 +266,39 @@ class Match extends React.Component {
 			// Set the mode
 			state.mode = "games";
 
-			// Go through each game
-			var g = "1";
-			for(g of ["1", "2", "3"]) {
+			// If we're finished
+			if(data.games_finished[is]) {
+				state.waiting = true;
+			}
 
-				// If it doesn't exist
-				if(typeof data.games[g] == 'undefined') {
-					break;
-				}
-
-				// Store the game
-				state.game = g;
-
-				// If the game is finished
-				if(data.games[g].finished) {
-					continue;
-				}
-
-				// Go through each throw
-				var t = "1";
-				for(t of ["1", "2", "3", "4", "5", "6"]) {
+			// Else, go through each game
+			else {
+				var g = "1";
+				for(g of ["1", "2", "3"]) {
 
 					// If it doesn't exist
-					if(typeof data.games[g][w][t] == 'undefined') {
+					if(typeof data.games[g] == 'undefined' ||
+						typeof data.games[g][is] == 'undefined' ||
+						Tools.empty(data.games[g][is])) {
 						break;
 					}
-				}
 
-				// Store the round
-				state.throw = t;
+					// Store the game
+					state.game = g;
+
+					// Go through each throw
+					var t = "1";
+					for(t of ["1", "2", "3", "4", "5", "6"]) {
+
+						// If it doesn't exist
+						if(typeof data.games[g][is][t] == 'undefined') {
+							break;
+						}
+					}
+
+					// Store the round
+					state.throw = t;
+				}
 			}
 		}
 
@@ -357,7 +513,7 @@ class Match extends React.Component {
 					var ms = Tools.clone(self.state.matchState);
 
 					// Set the match state to waiting
-					ms.mode = "waiting";
+					ms.waiting = true;
 					self.setState({
 						"matchState": ms
 					});
@@ -450,7 +606,8 @@ class Match extends React.Component {
 					"matchState": {
 						"game": 1,
 						"throw": 1,
-						"mode": "games"
+						"mode": "games",
+						"waiting": false
 					},
 					"mode": "match",
 					"opponent": {"alias": ''},
@@ -525,6 +682,8 @@ class Match extends React.Component {
 
 	matchCallback(msg) {
 
+		console.log(msg);
+
 		// If we got a message about a new throw in a game
 		if(msg.type == 'games_throw') {
 
@@ -551,21 +710,148 @@ class Match extends React.Component {
 			this.setState({"games": games});
 		}
 
+		// Else if we got an update on a big axe points throw
+		else if(msg.type == "bigaxe_points") {
+
+			// If we need to start
+			if(msg.subtype == "start") {
+
+				// Clone the match state and bigaxe
+				var ms = Tools.clone(this.state.matchState);
+				var ba = Tools.clone(this.state.bigaxe);
+
+				// Set the mode to big axe target and reset the throw to 1
+				ms.mode = "bigaxe_points";
+				ms.throw = 0;
+				ms.waiting = false;
+
+				// Add the points section
+				ba['points'] = {
+					"i": [],
+					"o": []
+				}
+
+				// Set the board mode
+				this.refs.board.clutchMode = 'select';
+
+				// Set the new state
+				this.setState({
+					"bigaxe": ba,
+					"matchState": ms
+				});
+			}
+
+			// Else if we got a throw
+			else if(msg.subtype == "throw") {
+
+				// Clone the bigaxe
+				var ba = Tools.clone(this.state.bigaxe);
+
+				// If points doesn't exist
+				if(typeof ba['points'] == 'undefined') {
+					ba['points'] = {"i": [], "o": []};
+				}
+
+				// If the thrower doesn't exist
+				if(typeof ba['points'][msg.thrower] == 'undefined') {
+					ba['points'][msg.thrower] = [];
+				}
+
+				// If the throw doesn't exist
+				if(ba['points'][msg.thrower].length == msg.throw) {
+					ba['points'][msg.thrower].push({"clutch": msg.clutch, "value": msg.value});
+				} else {
+					ba['points'][msg.thrower][msg.throw] = {"clutch": msg.clutch, "value": msg.value};
+				}
+
+				// Set the new state
+				this.setState({"bigaxe": ba});
+			}
+
+			// Else we aren't actually finished
+			else if(msg.subtype == 'notfinished') {
+
+				// Clone the match state
+				var ms = Tools.clone(this.state.matchState);
+
+				// Remove waiting and set to bigaxe points just in case
+				ms.mode = 'bigaxe_points';
+				ms.waiting = false;
+
+				// Set the new state
+				this.setState({"matchState": ms});
+			}
+		}
+
 		// If we got a message to start big axe
-		else if(msg.type == "bigaxe_start") {
+		else if(msg.type == "bigaxe_target") {
 
-			// Clone the match state
-			var ms = Tools.clone(this.state.matchState);
+			// If we need to start
+			if(msg.subtype == "start") {
 
-			// Set the mode to big axe target and reset the throw to 1
-			ms.mode = "bigaxe_target":
-			ms.throw = 0;
+				// Clone the match state
+				var ms = Tools.clone(this.state.matchState);
 
-			// Set the board mode
-			this.refs.board.clutchMode = 'none';
+				// Set the mode to big axe target and reset the throw to 1
+				ms.mode = "bigaxe_target";
+				ms.throw = 0;
+				ms.waiting = false;
 
-			// Set the new state
-			this.setState({"matchState": ms});
+				// Set the board mode
+				this.refs.board.clutchMode = 'none';
+
+				// Set the new state
+				this.setState({
+					"bigaxe": {
+						"target": {
+							"i": [],
+							"o": []
+						}
+					},
+					"matchState": ms
+				});
+			}
+
+			// Else if we got a throw
+			else if(msg.subtype == "throw") {
+
+				// Clone the bigaxe
+				var ba = Tools.clone(this.state.bigaxe);
+
+				// If it's false or target doesn't exist
+				if(!ba || typeof ba['target'] == 'undefined') {
+					ba = {"target": {"i": [], "o": []}}
+				}
+
+				// If the thrower doesn't exist
+				if(typeof ba['target'][msg.thrower] == 'undefined') {
+					ba['target'][msg.thrower] = [];
+				}
+
+				// If the throw doesn't exist
+				if(ba['target'][msg.thrower].length == msg.throw) {
+					ba['target'][msg.thrower].push(msg.value);
+				} else {
+					ba['target'][msg.thrower][msg.throw] = msg.value;
+				}
+
+				// Set the new state
+				this.setState({"bigaxe": ba});
+			}
+
+			// Else we aren't actually finished
+			else if(msg.subtype == 'notfinished') {
+
+				// Clone the match state
+				var ms = Tools.clone(this.state.matchState);
+
+				// Remove waiting and set to bigaxe target just in case
+				ms.mode = 'bigaxe_target';
+				ms.waiting = false;
+
+				// Set the new state
+				this.setState({"matchState": ms});
+			}
 		}
 	}
 
@@ -679,11 +965,6 @@ class Match extends React.Component {
 			})
 		}
 
-		// Else we're in waiting mode
-		else if(ms.mode == "waiting") {
-			// Do nothing
-		}
-
 		// Else we're in a bigaxe mode
 		else {
 
@@ -693,8 +974,10 @@ class Match extends React.Component {
 			// If we're in target
 			if(ms.mode == "bigaxe_target") {
 
-				// If the value is 1, 3, or 5, it's 1, else it's 0
-				value = ([1, 3, 5].indexOf(value) > 0) ? 1 : 0;
+				// If the value is 1, 3, or 5, it's considered a 1
+				if([1, 3, 5].indexOf(value) > 0) {
+					value = 1;
+				}
 
 				// If there's no target
 				if(typeof bigaxe['target'] == 'undefined') {
@@ -735,6 +1018,27 @@ class Match extends React.Component {
 					// If there's data
 					if(res.data) {
 
+						// If the overwrite flag is set
+						if(self.state.overwrite) {
+							var t = 0;
+							for(; true; ++t) {
+								if(typeof bigaxe['target'][self.state.is][t] == 'undefined') {
+									break;
+								}
+							}
+							ms.throw = t;
+						} else {
+							ms.throw += 1;
+						}
+
+						// Calculate the throws so we can know if we're done
+						ms.bigaxe_can_finish = self.calculateBigAxeFinished('target', self.state);
+
+						// Set the new state
+						self.setState({
+							"bigaxe": bigaxe,
+							"matchState": ms
+						});
 					}
 
 				}).always(() => {
@@ -746,7 +1050,73 @@ class Match extends React.Component {
 			// Else we're in points
 			else {
 
+				// If there's no points
+				if(typeof bigaxe['points'] == 'undefined') {
+					bigaxe['points'] = {
+						"finished": 0,
+						"i": [],
+						"o": []
+					};
+				}
 
+				// If the value doesn't exist yet, push it
+				if(bigaxe['points'][this.state.is].length == ms.throw) {
+					bigaxe['points'][this.state.is].push(value);
+				}
+
+				// Else, overwrite it
+				else {
+					bigaxe['points'][this.state.is][ms.throw] = value;
+				}
+
+				// Save the value and notify the opponent
+				Services.update('natf', 'match/bigaxe/points', {
+					"id": this.state.id,
+					"throw": ms.throw,
+					"clutch": clutch,
+					"value": value
+				}).done(res => {
+
+					// If there's an error
+					if(res.error && !Utils.serviceError(res.error)) {
+						Events.trigger('error', JSON.stringify(res.error));
+					}
+
+					// If there's a warning
+					if(res.warning) {
+						Events.trigger('warning', JSON.stringify(res.warning));
+					}
+
+					// If there's data
+					if(res.data) {
+
+						// If the overwrite flag is set
+						if(self.state.overwrite) {
+							var t = 0;
+							for(; true; ++t) {
+								if(typeof bigaxe['points'][self.state.is][t] == 'undefined') {
+									break;
+								}
+							}
+							ms.throw = t;
+						} else {
+							ms.throw += 1;
+						}
+
+						// Calculate the throws so we can know if we're done
+						ms.bigaxe_can_finish = self.calculateBigAxeFinished('target', self.state);
+
+						// Set the new state
+						self.setState({
+							"bigaxe": bigaxe,
+							"matchState": ms
+						});
+					}
+
+				}).always(() => {
+					// Hide loader
+					Loader.hide();
+				})
 			}
 		}
 	}
@@ -755,18 +1125,18 @@ class Match extends React.Component {
 		var self = this;
 		return (
 			<div className="natf">
-				{this.state.mode == 'opponent' &&
-					<Opponent thrower={this.state.thrower} onSelect={this.requestCreate} />
+				{self.state.mode == 'opponent' &&
+					<Opponent thrower={self.state.thrower} onSelect={self.requestCreate} />
 				}
-				{this.state.mode == 'request' &&
+				{self.state.mode == 'request' &&
 					<div className="acenter">
 						<p>Waiting for {self.state.opponent.alias} to accept your match request</p>
 						<button onClick={self.requestCancel}>Cancel Request</button>
 					</div>
 				}
-				{this.state.mode == 'existing' &&
+				{self.state.mode == 'existing' &&
 					<div className="acenter">
-						{this.state.existing.map(function(m, i) {
+						{self.state.existing.map(function(m, i) {
 							return (
 								<div key={i} data-id={m._id} className="existing">
 									<p>You have an existing match with {m.alias}, do you wish to continue?</p>
@@ -777,12 +1147,17 @@ class Match extends React.Component {
 						})}
 					</div>
 				}
-				{this.state.mode == 'match' &&
-					<div>
+				{self.state.mode == 'match' &&
+					<div className="actual">
 						<Board ref="board" clutchMode="none" onPoints={self.points} />
 						<div className="stats">
-							{this.renderPrimary()}
-							{this.renderSecondary()}
+							{self.renderPrimary()}
+							{self.renderSecondary()}
+						</div>
+						<div className="overlay" style={{"display": self.state.matchState.waiting ? 'block' : 'none'}}>
+							<div>
+								<span>Waiting for {self.state.alias}</span>
+							</div>
 						</div>
 					</div>
 				}
@@ -791,7 +1166,78 @@ class Match extends React.Component {
 	}
 
 	renderBigAxe() {
-		return <div />
+		var self = this;
+
+		// Init the rows
+		var rows = [];
+
+		// Opponent is opposite of thrower
+		var sO = this.state.is == 'i' ? 'o': 'i';
+
+		// If we have a target section
+		var add_to_points = 0;
+		if(this.state.bigaxe.target) {
+			var target = this.state.bigaxe.target;
+			for(var i = 0; true; ++i) {
+				if(target[this.state.is].length <= i &&
+					target[sO].length <= i) {
+					add_to_points = i;
+					break;
+				}
+				var columns = ['', ''];
+				if(target[this.state.is][i]) {
+					columns[0] = target[this.state.is][i];
+				}
+				if(target[sO][i]) {
+					columns[1] = target[sO][i];
+				}
+
+				// Add the row
+				rows.push(<tr><td>{i+1}</td><td>{columns[0]}</td><td>{columns[1]}</td></tr>);
+			}
+		}
+
+		// If we have a points section
+		if(this.state.bigaxe.points) {
+			var points = this.state.bigaxe.points;
+			for(var i = 0; true; ++i) {
+				if(points[this.state.is].length <= i &&
+					points[sO].length <= i) {
+					add_to_points = i;
+					break;
+				}
+				var columns = ['', ''];
+				if(points[this.state.is][i]) {
+					columns[0] = points[this.state.is][i];
+				}
+				if(points[sO][i]) {
+					columns[1] = points[sO][i];
+				}
+
+				// Add the row
+				rows.push(<tr><td>{add_to_points+i+1}</td><td>{columns[0]}</td><td>{columns[1]}</td></tr>);
+			}
+		}
+
+		return (
+			<div className="bigaxe">
+				<table>
+					<thead>
+						<tr>
+							<th>B</th>
+							<th>{this.state.thrower.alias}</th>
+							<th>{this.state.alias}</th>
+						</tr>
+					</thead>
+					<tbody>
+						{rows}
+					</tbody>
+				</table>
+				{this.state.matchState.bigaxe_can_finish &&
+					<button onClick={this.bigaxeFinish}>"Finish"</button>
+				}
+			</div>
+		)
 	}
 
 	renderGame() {
@@ -966,13 +1412,6 @@ class Match extends React.Component {
 		// If we're in games mode
 		if(this.state.matchState.mode == "games") {
 			return this.renderGame();
-		}
-
-		// If we're in waiting mode
-		if(this.state.matchState.mode == "waiting") {
-			return (
-				<div>Waiting for {this.state.alias} to finish.</div>
-			);
 		}
 
 		// Else we're in a bigaxe mode

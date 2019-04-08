@@ -73,12 +73,12 @@
 #match {
 
 	.natf {
-		margin: 5px auto;
-		width: 95%;
+		position: relative;
+		width: 100%;
 
 		.existing {
 			border: 1px solid $color-1;
-			margin: 0 0 10px 0;
+			margin: 5px 10px;
 			padding: 10px;
 
 			button {
@@ -86,39 +86,73 @@
 			}
 		}
 
-		.stats {
-			margin: 10px 0;
+		.actual {
+			margin: 0 auto;
+			width: 95%;
 
-			.overall {
-				display: inline-block;
-				padding: 5px;
-				vertical-align: top;
-				width: 50%;
-			}
+			.stats {
+				margin: 10px 0;
 
-			.game {
-				display: inline-block;
-				padding: 5px;
-				text-align: center;
-				vertical-align: top;
-				width: 50%;
-			}
+				.overall {
+					display: inline-block;
+					padding: 5px;
+					vertical-align: top;
+					width: 50%;
+				}
 
-			table {
-				margin-bottom: 10px;
-
-				th, td {
+				.game, .bigaxe {
+					display: inline-block;
+					padding: 5px;
 					text-align: center;
+					vertical-align: top;
+					width: 50%;
 				}
 
-				th:first-child, td:first-child {
-					border-right: 1px solid black;
-					width: 20%;
-				}
+				table {
+					margin-bottom: 10px;
 
-				td.overwrite {
-					background-color: red;
-					color: white;
+					th, td {
+						text-align: center;
+					}
+
+					th:first-child, td:first-child {
+						border-right: 1px solid black;
+						width: 20%;
+					}
+
+					td.overwrite {
+						background-color: red;
+						color: white;
+					}
+				}
+			}
+
+			.overlay {
+				background-color: rgba(0, 0, 0, 0.33);
+				position: absolute;
+				top: 0;
+				left: 0;
+				margin: 0;
+				height: 100%;
+				width: 100%;
+				z-index: $zi_loader;
+
+				div {
+					height: 100%;
+					width: 100%;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+
+					span {
+						background-color: white;
+						border: 2px solid black;
+						border-radius: 20px;
+						color: black;
+						margin: -30px auto 0;
+						padding: 10px 20px;
+						text-align: center;
+					}
 				}
 			}
 		}
