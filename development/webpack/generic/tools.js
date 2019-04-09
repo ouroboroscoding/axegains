@@ -204,7 +204,7 @@ var Tools = {
 	omap: function(o, callback) {
 		var ret = [];
 		for(var k in o) {
-			ret.push(callback(k, o[k]));
+			ret.push(callback(o[k], k));
 		}
 		return ret;
 	},

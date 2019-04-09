@@ -1,5 +1,12 @@
-// External modules
-var React = require('react');
+/**
+ * NATF Practice
+ *
+ * Manages tracking and storing practice on an NATF board
+ *
+ * @author Chris Nasr
+ * @copyright OuroborosCoding
+ * @created 2019-03-20
+ */
 
 // Generic modules
 var Events = require('../../generic/events.js');
@@ -208,7 +215,7 @@ class Practice extends React.Component {
 				<dl className="select" style={{"display": self.state.mode == null ? 'block':'none'}}>
 					<dt data-mode="free" onClick={this.modeSelect}>Free Practice</dt>
 					<dd>In free practice any points are available at any time. You must select the clutch first if you wish to try for it.</dd>
-					<dt data-mode="supernatural" onClick={this.modeSelect}>Supernatural</dt>
+					<dt data-mode="supernatural" onClick={this.modeSelect}>Supernatural / Unicorn</dt>
 					<dd>In supernatural practice every fifth throw is for clutch, and it will be pre-selected for you on those turns.</dd>
 					<dt data-mode="clutch" onClick={this.modeSelect}>Clutch</dt>
 					<dd>In clutch practice every throw is for the clutch, and it will be pre-selected every turn.</dd>
@@ -327,8 +334,8 @@ class Practice extends React.Component {
 		});
 	}
 
-	signin() {
-		this.setState({"thrower": true});
+	signin(thrower) {
+		this.setState({"thrower": thrower});
 	}
 
 	signout() {

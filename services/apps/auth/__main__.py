@@ -17,7 +17,7 @@ __created__		= "2018-09-09"
 # Python imports
 import os, platform
 
-# Framework imports
+# Pip imports
 from RestOC import Conf, Record_Base, Record_ReDB, REST, \
 					Services, Sesh, Templates
 
@@ -44,11 +44,12 @@ oRestConf = REST.Config(Conf.get("rest"))
 if 'AXE_VERBOSE' in os.environ and os.environ['AXE_VERBOSE'] == '1':
 	Services.verbose()
 
-# Register all necessary services
-Services.register({
-	"auth": Auth(),
-	"communications": None
-}, oRestConf, Conf.get(('services', 'salt')))
+# Get all the services
+dServices = {k:None for k in Conf.get(('rest', 'services'))}
+dServices['auth'] = Auth()
+
+# Register all services
+Services.register(dServices, oRestConf, Conf.get(('services', 'salt')))
 
 # Init Templates
 Templates.init('../templates')
@@ -58,15 +59,21 @@ REST.Server({
 	"/favourite": {"method": REST.CREATE | REST.DELETE, "session": True},
 	"/favourites": {"method": REST.READ, "session": True},
 
+	"/match/request": {"methods": REST.ALL, "session": True},
+	"/match/requests": {"methods": REST.READ, "session": True},
+
 	"/passwd/forgot": {"methods": REST.CREATE | REST.UPDATE},
 
 	"/search": {"methods": REST.READ, "session": True},
+
+	"/session": {"methods": REST.READ, "session": True},
 
 	"/signin": {"methods": REST.POST},
 	"/signout": {"methods": REST.POST, "session": True},
 	"/signup": {"methods": REST.POST},
 
 	"/thrower": {"methods": REST.READ | REST.UPDATE, "session": True},
+	"/thrower/aliases": {"methods": REST.READ},
 	"/thrower/email": {"methods": REST.UPDATE, "session": True},
 	"/thrower/verify": {"methods": REST.UPDATE}
 

@@ -1,5 +1,12 @@
-// External modules
-var React = require('react');
+/**
+ * Opponent
+ *
+ * A component for selecting an opponent via favourites or search
+ *
+ * @author Chris Nasr
+ * @copyright OuroborosCoding
+ * @created 2019-03-27
+ */
 
 // Generic modules
 var Events = require('../generic/events.js');
@@ -36,7 +43,7 @@ class OpponentRow extends React.Component {
 		this.selected = this.selected.bind(this);
 	}
 
-	add() {
+	add(ev) {
 
 		// Stop any further events
 		ev.stopPropagation();
@@ -127,7 +134,7 @@ class OpponentRow extends React.Component {
 
 	selected(ev) {
 		ev.stopPropagation();
-		this.props.selected(this.state.thrower._id);
+		this.props.selected(this.state.thrower);
 	}
 }
 
@@ -144,15 +151,28 @@ class Opponent extends React.Component {
 			"favourites": [],
 			"mode": "favourites",
 			"search": [],
+			"thrower": props.thrower
 		};
-
-		// Fetch the favourites
-		this.favourites();
 
 		// Bind methods
 		this.favouriteShow = this.favouriteShow.bind(this);
 		this.search = this.search.bind(this);
 		this.searchShow = this.searchShow.bind(this);
+		this.selected = this.selected.bind(this);
+		this.signin = this.signin.bind(this);
+	}
+
+	componentWillMount() {
+		Events.add('signin', this.signin);
+
+		// If someone is logged in
+		if(this.state.thrower) {
+			this.favourites();
+		}
+	}
+
+	componentWillUnmount() {
+		Events.remove('signin', this.signin);
 	}
 
 	favourites() {
@@ -200,34 +220,32 @@ class Opponent extends React.Component {
 		var self = this;
 		return (
 			<React.Fragment>
-				{this.state.mode == 'favourites' ?
+				{self.state.mode == 'favourites' ?
 					<div className="acenter">
-							<span>Favourites</span> |
-							<span className="link" onClick={this.searchShow}>Search</span>
+							<span>Favorites</span> | <span className="link" onClick={self.searchShow}>Search</span>
 					</div>
 				:
 					<React.Fragment>
 						<div className="acenter">
-							<span className="link" onClick={this.favouriteShow}>Favourites</span> |
-							<span>Search</span>
+							<span className="link" onClick={self.favouriteShow}>Favorites</span> | <span>Search</span>
 						</div>
 						<div className="form">
-							<InputEnter onEnter={this.search} />
+							<p><InputEnter onEnter={self.search} placeholder="Search by alias" /></p>
 						</div>
 					</React.Fragment>
 				}
 				<table>
 					<thead>
-						<tr><th>Alias</th><th>Favourite</th></tr>
+						<tr><th>Alias</th><th>Favorite</th></tr>
 					</thead>
 					<tbody>
-						{this.state.mode == 'favourites' ?
-							this.state.favourites.map(function(t, i) {
-								return <OpponentRow key={i} thrower={t} favourite={true} selected={this.selected} />
+						{self.state.mode == 'favourites' ?
+							self.state.favourites.map(function(t, i) {
+								return <OpponentRow key={i} thrower={t} favourite={true} selected={self.selected} />
 							})
 						:
-							this.state.search.map(function(t, i) {
-								return <OpponentRow key={i} thrower={t} favourite={false} selected={this.selected} />
+							self.state.search.map(function(t, i) {
+								return <OpponentRow key={i} thrower={t} favourite={false} selected={self.selected} />
 							})
 						}
 					</tbody>
@@ -279,10 +297,14 @@ class Opponent extends React.Component {
 		this.setState({"mode": "search"})
 	}
 
-	selected(id) {
+	selected(thrower) {
 		if(typeof this.props.onSelect == 'function') {
-			this.props.onSelect(id);
+			this.props.onSelect(thrower);
 		}
+	}
+
+	signin(thrower) {
+		this.favourites();
 	}
 }
 

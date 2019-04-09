@@ -2,10 +2,11 @@
  * Utils
  *
  * Shared utilities
+ *
+ * @author Chris Nasr
+ * @copyright OuroborosCoding
+ * @created 2019-03-24
  */
-
-// External modules
-var moment = require('moment');
 
 // Generic modules
 var Events = require('./generic/events.js');
@@ -16,8 +17,13 @@ var Events = require('./generic/events.js');
 var Utils = {
 
 	date: function(ts) {
-		var d = moment.unix(ts);
-		return d.format('YYYY/MM/DD');
+		var d = new Date(ts*1000);
+		var Y = '' + d.getFullYear();
+		var M = '' + (d.getMonth() + 1);
+		if(M.length == 1) M = '0' + M;
+		var D = '' + d.getDate();
+		if(D.length == 1) D = '0' + D;
+		return Y + '/' + M + '/' + D;
 	},
 
 	errorTree: function(errors) {
@@ -79,7 +85,7 @@ var Utils = {
 				return true;
 
 			// Invalid fields
-			case 103:
+			case 1001:
 
 				// Rebuild the error message
 				err.msg = Utils.errorTree(err.msg);

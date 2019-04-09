@@ -1,5 +1,12 @@
-// External modules
-var React = require('react');
+/**
+ * Site
+ *
+ * Primary component for the entire site
+ *
+ * @author Chris Nasr
+ * @copyright OuroborosCoding
+ * @created 2019-03-20
+ */
 
 // Generic modules
 var Events = require('../generic/events.js');
@@ -7,7 +14,8 @@ var Hash = require('../generic/hash.js');
 
 // Generic components
 var {Menu, Item} = require('./elements/menu.jsx');
-var Messages = require ('./elements/messages.jsx');
+var Messages = require('./elements/messages.jsx');
+var Popups = require ('./elements/popups.jsx');
 
 // Site components
 var Header = require('./header.jsx');
@@ -34,7 +42,7 @@ class Site extends React.Component {
 		// Initialise the state
 		this.state = {
 			"page": Hash.get('page', 'home'),
-			"thrower": props.thrower ? props.thrower : false
+			"thrower": false
 		};
 
 		// Bind methods
@@ -62,14 +70,14 @@ class Site extends React.Component {
 			<Item key={1} name="practice">Practice</Item>
 		];
 		if(this.state.thrower) {
-			//items.push(<Item key={2} name="match">Match</Item>);
+			items.push(<Item key={2} name="match">Match</Item>);
 			//items.push(<Item key={3} name="league">League</Item>);
 			items.push(<Item key={4} name="stats">Stats</Item>);
 		}
 
 		return (
 			<div id="site">
-				<Header thrower={self.state.thrower} />
+				<Header />
 				<Menu ref="menu" className="menu primary" selected={self.state.page} onChange={self.pageChange}>
 					{items}
 				</Menu>
@@ -106,13 +114,14 @@ class Site extends React.Component {
 				{self.state.page == 'stats' &&
 					<Stats />
 				}
+				<Popups />
 				<Messages />
 			</div>
 		);
 	}
 
-	signin() {
-		this.setState({"thrower": true});
+	signin(thrower) {
+		this.setState({"thrower": thrower});
 	}
 
 	signout() {

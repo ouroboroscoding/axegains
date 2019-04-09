@@ -71,7 +71,7 @@ var Cookies = {
 	 * @param int expires			The number of seconds before the cookie expires
 	 * @param str domain			The optional domain to set the cookie on
 	 * @param str path				The optional path of the cookie
-	 * @returns null
+	 * @return null
 	 */
 	set: function(name, value, expires, domain, path) {
 

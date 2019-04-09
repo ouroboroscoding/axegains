@@ -1,5 +1,13 @@
-// External modules
-var React = require('react');
+/**
+ * Stats
+ *
+ * Manages Org menu for stats and display the appropriate one based on what
+ * is chosen
+ *
+ * @author Chris Nasr
+ * @copyright OuroborosCoding
+ * @created 2019-03-26
+ */
 
 // Generic modules
 var Events = require('../generic/events.js');
@@ -38,6 +46,9 @@ class Stats extends React.Component {
 
 		// Stop tracking any org hash change events
 		Hash.unwatch('org', this.orgChange);
+
+		// Remove the org from the hash
+		Hash.set('org', null);
 	}
 
 	menuChange(org) {
@@ -46,6 +57,9 @@ class Stats extends React.Component {
 
 	orgChange(org) {
 		if(org != this.state.org) {
+			if(org == null) {
+				org = 'natf';
+			}
 			this.setState({"org": org});
 		}
 	}
@@ -60,7 +74,7 @@ class Stats extends React.Component {
 				<div id="content">
 					<div>
 						{self.state.org == 'natf' &&
-							<Natf />
+							<Natf thrower={self.props.thrower} />
 						}
 					</div>
 				</div>

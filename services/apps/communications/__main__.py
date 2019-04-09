@@ -13,7 +13,7 @@ __created__ = "2018-11-17"
 # Python imports
 import os, platform
 
-# Rest imports
+# Pip imports
 from RestOC import Conf, REST, Services, SMTP
 
 # App imports

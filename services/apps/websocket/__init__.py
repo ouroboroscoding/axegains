@@ -15,7 +15,7 @@ __email__		= "chris@fuelforthefire.ca"
 __created__		= "2017-06-26"
 
 # Import python modules
-from Cookie import SimpleCookie
+from http.cookies import SimpleCookie
 import json
 import time
 
@@ -25,18 +25,44 @@ import gevent
 from geventwebsocket import WebSocketApplication, WebSocketError
 from redis import StrictRedis
 from redis.exceptions import ConnectionError
-
-# Import local modules
-from shared import Config
+from RestOC import Conf
 
 # Init the global  vars
-_r			= None
-_r_pubsub	= None
-_r_clients	= {}
-_verbose	= False
+_r = None
+_r_pubsub = None
+_r_clients = {}
+_verbose = False
+
+def signalCatch(signum, frame):
+	"""Signal Catch
+
+	Called when a signal is passed to the program
+
+	Arguments:
+		signum {int} -- The signal value
+		frame {object} -- The current frame
+
+	Returns:
+		None
+	"""
+
+	print('Got %d signal' % signum)
+
+	# Go through each tracking code
+	for track in _r_clients:
+
+		# Unsubscribe
+		_r_pubsub.unsubscribe(track)
+
+		# Go through each websocket
+		for i in range(len(_r_clients[track])):
+
+			# If it's not closed, close it
+			if not _r_clients[track][i].ws.closed:
+				_r_clients[track][i].ws.close()
 
 # Init function
-def Init(verbose=False):
+def init(verbose=False):
 	"""Init
 
 	Called to initialize the service
@@ -50,23 +76,23 @@ def Init(verbose=False):
 	global _r, _r_pubsub, _verbose
 
 	# Create a new Redis instance
-	_r	= StrictRedis(**Config.get(('redis', 'sync'), {
-		"host":	"localhost",
-		"port":	6380,
-		"db":	1
+	_r = StrictRedis(**Conf.get(('redis', 'sync'), {
+		"host": "localhost",
+		"port": 6379,
+		"db": 1
 	}))
 
 	# Get the pubsub instance
-	_r_pubsub	= _r.pubsub()
+	_r_pubsub = _r.pubsub()
 
 	# Subscribe to an empty channel just to get things started
 	_r_pubsub.subscribe('sync')
 
 	# Set the verbose flag
-	_verbose	= verbose and True or False
+	_verbose = verbose and True or False
 
 # Redis thread
-def RedisThread():
+def redisThread():
 
 	if _verbose: print('Threading starting')
 
@@ -79,6 +105,9 @@ def RedisThread():
 
 			# If the message is real data and not subscribe/ubsubscribe
 			if d['type'] == 'message':
+
+				# Convert the channel to a unicode string
+				d['channel'] = d['channel'].decode('utf-8')
 
 				# If we have the channel
 				if d['channel'] in _r_clients:
@@ -113,7 +142,7 @@ class SyncApplication(WebSocketApplication):
 			None
 		"""
 
-		self.ws.send('{"error":{"code":%d,"msg":"%s"},"data":null}' % (code, msg))
+		self.ws.send('{"error":{"code":%d,"msg":"%s"}}' % (code, msg))
 		self.ws.close()
 
 	# on close method
@@ -156,7 +185,7 @@ class SyncApplication(WebSocketApplication):
 
 			# Convert the JSON data
 			try:
-				messages	= json.loads(message)
+				messages = json.loads(message)
 			except ValueError as e:
 				if _verbose: print('Failed to decode JSON: "%s"' % message)
 				return self._fail(1, 'Failed to decode JSON: "%s"' % message)
@@ -194,23 +223,37 @@ class SyncApplication(WebSocketApplication):
 
 					# Convert the JSON data
 					try:
-						dConnect	= json.loads(sConnect)
+						dConnect = json.loads(sConnect)
 					except ValueError as e:
 						if _verbose: print('Failed to decode JSON: "%s"' % sConnect)
 						return self._fail(5, 'Failed to decode JSON: "%s"' % sConnect)
 
 					# If the session ID doesn't exist
-					if 'phpsid' not in dConnect:
+					if 'session' not in dConnect:
 						if _verbose: print('Session ID missing: "%s"', sConnect)
 						return self._fail(6, 'Session ID missing: "%s"' % sConnect)
 
 					# If the PHP session ID doesn't match
-					if dConnect['phpsid'] != self.phpsid:
-						if _verbose: print('Session IDs don\'t match: "%s" != "%s"' % (dConnect['phpsid'], self.phpsid))
-						return self._fail(7, 'Session IDs don\'t match: "%s" != "%s"' % (dConnect['phpsid'], self.phpsid))
+					if dConnect['session'] != self.token:
+						if _verbose: print('Session IDs don\'t match: "%s" != "%s"' % (dConnect['session'], self.token))
+						return self._fail(7, 'Session IDs don\'t match: "%s" != "%s"' % (dConnect['session'], self.token))
 
 					# Allow further messages
 					self.authorized = True
+
+				# Else if it's a message to ping
+				elif data['_type'] == 'ping':
+
+					# Make sure we are authorized
+					if not self.authorized:
+						if _verbose: print('Received ping message before authorization')
+						self._fail(8, 'Received ping message before authorization')
+
+					# Ping redis
+					#_r.ping()
+
+					# Respond to the request
+					self.ws.send('pong')
 
 				# Else if it's a message to track something new
 				elif data['_type'] == 'track':
@@ -229,7 +272,7 @@ class SyncApplication(WebSocketApplication):
 							return self._fail(9, 'Missing `%s` in message: ""' % (s, message))
 
 						# Make sure the data is a string
-						if not isinstance(data[s], basestring):
+						if not isinstance(data[s], str):
 							data[s] = str(data[s])
 
 					# Combine the two
@@ -246,18 +289,44 @@ class SyncApplication(WebSocketApplication):
 					if _verbose: print('Successfully started tracking: "%s"' % track)
 					self.tracking.append(track)
 
-				# Else if it's a message to ping
-				elif data['_type'] == 'ping':
+				# Else if it's a message to stop tracking something
+				elif data['_type'] == 'untrack':
 
-					# Make sure we are authorized
+					# Make sure we are authorized or else fuck off
 					if not self.authorized:
-						if _verbose: print('Received ping message before authorization')
-						self._fail(8, 'Received ping message before authorization')
+						if _verbose: print('Received untrack message before authorization')
+						self._fail(8, 'Received untrack message before authorization')
 
-					_r.ping()
+					# Check for an object and key
+					for s in ['service', 'key']:
 
-					self.ws.send(json.dumps('pong'))
+						# If the data is missing
+						if s not in data:
+							if _verbose: print('Missing `%s` in message: ""' % (s, message))
+							return self._fail(9, 'Missing `%s` in message: ""' % (s, message))
 
+						# Make sure the data is a string
+						if not isinstance(data[s], str):
+							data[s] = str(data[s])
+
+						# Combine the two
+						track = "%s%s" % (data['service'], data['key'])
+
+						# If the key exists in the clients
+						if track in _r_clients:
+
+							# If the socket exists, delete it
+							if self in _r_clients[track]:
+								_r_clients[track].remove(self)
+
+							# If there's no nore clients
+							if not len(_r_clients[track]):
+								del _r_clients[track]
+								_r_pubsub.unsubscribe(track)
+
+					# Remove the list on this socket
+					if _verbose: print('Successfully stopped tracking: "%s"' % track)
+					self.tracking.remove(track)
 
 				# Else this is an invalid message
 				else:
@@ -292,12 +361,12 @@ class SyncApplication(WebSocketApplication):
 		oCookies = SimpleCookie()
 		oCookies.load(self.ws.environ['HTTP_COOKIE'])
 		dCookies = {k:v.value for k,v in oCookies.items()}
-		if 'PHPSESSID' not in dCookies:
-			if _verbose: print('PHPSESSID not in cookies')
-			return self._fail(12, 'PHPSESSID not in cookies')
+		if '_session' not in dCookies:
+			if _verbose: print('_session not in cookies')
+			return self._fail(12, '_session not in cookies')
 
 		# Store the session ID
-		self.phpsid	= dCookies['PHPSESSID']
+		self.token = dCookies['_session']
 		self.authorized = False
 		self.tracking = []
 

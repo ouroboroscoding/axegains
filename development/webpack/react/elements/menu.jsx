@@ -8,9 +8,6 @@
  * @created 2018-11-11
  */
 
-// Modules
-var React = require('react');
-
 // Create the Menu Component
 class Menu extends React.PureComponent
 {
