@@ -943,7 +943,7 @@ class Match extends React.Component {
 			ms.throw = ev.currentTarget.dataset.throw;
 
 			// Set the board mode
-			this.refs.board.clutchMode = ms.throw == "5" ? 'selected' : 'none';
+			this.refs.board.clutchMode = ms.throw == '5' ? 'select' : 'none';
 		}
 
 		// Else if we're in bigaxe target mode
@@ -1024,7 +1024,7 @@ class Match extends React.Component {
 					}
 
 					// Set the board mode
-					self.refs.board.clutchMode = ms.throw == 5 ? 'selected' : 'none';
+					self.refs.board.clutchMode = ms.throw == '5' ? 'select' : 'none';
 
 					// Update the state
 					self.setState({
