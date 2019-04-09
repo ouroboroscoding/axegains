@@ -17,7 +17,7 @@ __created__		= "2019-03-24"
 # Python imports
 import os, platform
 
-# Framework imports
+# Pip imports
 from RestOC import Conf, Record_Base, Record_ReDB, REST, \
 					Services, Sesh
 
@@ -52,6 +52,15 @@ Services.register({
 
 # Create the HTTP server and map requests to service
 REST.Server({
+	"/match": {"methods": REST.CREATE | REST.DELETE | REST.READ, "session": True},
+	"/match/bigaxe/points": {"methods": REST.UPDATE, "session": True},
+	"/match/bigaxe/target": {"methods": REST.UPDATE, "session": True},
+	"/match/finish/bigaxe/points": {"methods": REST.UPDATE, "session": True},
+	"/match/finish/bigaxe/target": {"methods": REST.UPDATE, "session": True},
+	"/match/finish/games": {"methods": REST.UPDATE, "session": True},
+	"/match/game": {"methods": REST.UPDATE, "session": True},
+	"/match/unfinished": {"methods": REST.READ, "session": True},
+
 	"/practice": {"methods": REST.CREATE, "session": True},
 	"/practice/data": {"methods": REST.READ, "session": True},
 	"/practice/stats": {"methods": REST.READ, "session": True}

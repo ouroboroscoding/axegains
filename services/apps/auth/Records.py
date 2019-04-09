@@ -14,14 +14,12 @@ __maintainer__	= "Chris Nasr"
 __email__		= "chris@fuelforthefire.ca"
 __created__		= "2018-09-09"
 
-# Import python modules
+# Python imports
 from hashlib import sha1
 import re
 
-# Import pip modules
+# Pip imports
 from FormatOC import Tree
-
-# Import local modules
 from RestOC import Conf, StrHelper, Record_ReDB
 
 # Valid mime types
@@ -49,7 +47,7 @@ _mdThrowerConf = Record_ReDB.Record.generateConfig(
 class Favourites(Record_ReDB.Record):
 	"""Favourites
 
-	Represents a single uploaded consent form
+	Represents a list of favourite throwers
 
 	Extends: RestOC.Record_ReDB.Record
 	"""
@@ -90,7 +88,7 @@ class Favourites(Record_ReDB.Record):
 				.run(oCon)
 
 			# Return True if a record was changed
-			return dRes['replaced'] == 1
+			return dRes['replaced'] == 1 or dRes['inserted'] == 1
 
 	@classmethod
 	def config(cls):
@@ -139,7 +137,7 @@ class Favourites(Record_ReDB.Record):
 class MatchRequest(Record_ReDB.Record):
 	"""Match Request
 
-	Represents a single uploaded consent form
+	Represents a single match request for any organization
 
 	Extends: RestOC.Record_ReDB.Record
 	"""
@@ -159,7 +157,7 @@ class MatchRequest(Record_ReDB.Record):
 class Thrower(Record_ReDB.Record):
 	"""Thrower
 
-	Represents a single uploaded consent form
+	Represents a single thrower (aka, user)
 
 	Extends: RestOC.Record_ReDB.Record
 	"""

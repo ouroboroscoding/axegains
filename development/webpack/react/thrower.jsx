@@ -1,5 +1,12 @@
-// External modules
-var React = require('react');
+/**
+ * Thrower
+ *
+ * Manages editing details for the currently logged in thrower
+ *
+ * @author Chris Nasr
+ * @copyright OuroborosCoding
+ * @created 2019-03-25
+ */
 
 // Generic modules
 var Events = require('../generic/events.js');

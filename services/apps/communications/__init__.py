@@ -12,8 +12,8 @@ __created__ = "2018-11-17"
 # Python imports
 from hashlib import md5
 
-# Rest imports
-from RestOC import Conf, DictHelper, Services, SMTP, StrHelper
+# Pip imports
+from RestOC import Conf, DictHelper, Errors, Services, SMTP, StrHelper
 
 class Service(Services.Service):
 	"""Service
@@ -80,7 +80,7 @@ class Service(Services.Service):
 			return self.sms(data)
 
 		# Invalid path
-		return Effect(error=(205, 'POST %s' % path))
+		return Effect(error=(Errors.SERVICE_NO_SUCH_NOUN, 'POST %s' % path))
 
 	def email(self, data):
 		"""Email
@@ -97,16 +97,16 @@ class Service(Services.Service):
 
 		# Verify fields
 		try: DictHelper.eval(data, ['_internal_', 'subject', 'to', 'from'])
-		except ValueError as e: return Services.Effect(error=(103, [(f, 'missing') for f in e.args]))
+		except ValueError as e: return Services.Effect(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Verify the key, remove it if it's ok
 		if not Services.internalKey(data['_internal_']):
-			return Services.Effect(error=206)
+			return Services.Effect(error=Errors.SERVICE_INTERNAL_KEY)
 		del data['_internal_']
 
 		# Check that we have at least one type of body
 		if 'html_body' not in data and 'text_body' not in data:
-			return Services.Effect(error=601)
+			return Services.Effect(error=1300)
 
 		# Add None if either body is missing
 		if 'html_body' not in data:	data['html_body'] = None
@@ -120,7 +120,7 @@ class Service(Services.Service):
 
 			# If it's not valid
 			if not _queueKey(data, sQueueKey):
-				return Services.Effect(error=600)
+				return Services.Effect(error=1001)
 
 			# Else, we're good
 			data['_queue_'] = True
@@ -143,19 +143,19 @@ class Service(Services.Service):
 
 					# If we didn't get a dictionary
 					if not isinstance(data['attachments'][i], dict):
-						return Services.Effect(error=(602, "attachments.%d" % i))
+						return Services.Effect(error=(1301, "attachments.%d" % i))
 
 					# If the fields are missing
 					try:
 						DictHelper.eval(data['attachments'][i], ['body', 'filename'])
 					except ValueError as e:
-						return Services.Effects(error=(103, [("attachments.%d.%s" % (i, s), 'invalid') for s in e.args]))
+						return Services.Effects(error=(1001, [("attachments.%d.%s" % (i, s), 'invalid') for s in e.args]))
 
 					# Try to decode the base64
 					try:
 						data['attachments'][i]['body'] = b64decode(data['attachments'][i]['body'])
 					except TypeError:
-						return Services.Effect(error=602)
+						return Services.Effect(error=1302)
 
 				# Set the attachments from the data
 				mAttachments = data['attachments']
@@ -167,7 +167,7 @@ class Service(Services.Service):
 
 			# If there was an error
 			if iRes != SMTP.OK:
-				return Services.Effect(error=(603, '%i %s' % (iRes, SMTP.lastError())))
+				return Services.Effect(error=(1303, '%i %s' % (iRes, SMTP.lastError())))
 
 		# Else, we are sending to the queue first
 		else:

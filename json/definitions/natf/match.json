@@ -3,50 +3,93 @@
 		"db": "axegains",
 		"host": "primary",
 		"indexes": {
-			"thrower": null
+			"finished": null,
+			"initiator": null,
+			"opponent": null
 		},
 		"table": "natf_match"
 	},
 	"__name__": "NATF_Match",
 	"_id": {"__type__":"uuid", "__optional__":true},
 	"_created": "timestamp",
-	"intiator": "uuid",
+	"finished": "bool",
+	"initiator": "uuid",
 	"opponent": "uuid",
 	"games": {
 		"__hash__": {"__type__": "string", "__options__": ["1", "2", "3"]},
-		"__optional__": true,
-		"1": {
-			"i": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5], "__optional__": true},
-			"o": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5], "__optional__": true}
+		"i": {
+			"__optional__": true,
+			"1": [{"__type__": "int", "__options__": [0, 1, 3, 5], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"]}],
+			"2": [{"__type__": "int", "__options__": [0, 1, 3, 5], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"]}],
+			"3": [{"__type__": "int", "__options__": [0, 1, 3, 5], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"]}],
+			"4": [{"__type__": "int", "__options__": [0, 1, 3, 5], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"]}],
+			"5": {
+				"value": [{"__type__": "int", "__options__": [0, 1, 3, 5, 7], "__optional__": true},
+							{"__type__": "string", "__options__": ["d"]}],
+				"clutch": {"__type__": "bool"}
+			}
 		},
-		"2": {
-			"i": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5], "__optional__": true},
-			"o": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5], "__optional__": true}
-		},
-		"3": {
-			"i": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5], "__optional__": true},
-			"o": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5], "__optional__": true}
-		},
-		"4": {
-			"i": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5], "__optional__": true},
-			"o": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5], "__optional__": true}
-		},
-		"5": {
-			"i": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5, 7], "__optional__": true},
-			"o": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5, 7], "__optional__": true}
+		"o": {
+			"__optional__": true,
+			"1": [{"__type__": "int", "__options__": [0, 1, 3, 5], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"]}],
+			"2": [{"__type__": "int", "__options__": [0, 1, 3, 5], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"]}],
+			"3": [{"__type__": "int", "__options__": [0, 1, 3, 5], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"]}],
+			"4": [{"__type__": "int", "__options__": [0, 1, 3, 5], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"]}],
+			"5": {
+				"value": [{"__type__": "int", "__options__": [0, 1, 3, 5, 7], "__optional__": true},
+							{"__type__": "string", "__options__": ["d"]}],
+				"clutch": {"__type__": "bool"}
+			}
 		}
+	},
+	"games_finished": {
+		"i": "bool",
+		"o": "bool"
 	},
 	"bigaxe": {
 		"__optional__": true,
 		"target": {
-			"__array__": "duplicates",
-			"i": {"__type__": "bool", "__optional__": true},
-			"o": {"__type__": "bool", "__optional__": true}
+			"finished": {
+				"i": "bool",
+				"o": "bool"
+			},
+			"i": {
+				"__array__": "duplicates",
+				"__type__": [{"__type__": "int", "__options__": [0, 1]},
+							{"__type__": "string", "__options__": ["d"]}]
+			},
+			"o": {
+				"__array__": "duplicates",
+				"__type__": [{"__type__": "int", "__options__": [0, 1]},
+							{"__type__": "string", "__options__": ["d"]}]
+			}
 		},
 		"points": {
-			"__array__": "duplicates",
-			"i": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5, 7], "__optional__": true},
-			"o": {"__type__": "int", "__options__": [-1, 0, 1, 3, 5, 7], "__optional__": true}
+			"__optional__": true,
+			"finished": {
+				"i": "bool",
+				"o": "bool"
+			},
+			"i": {
+				"__array__": "duplicates",
+				"value": [{"__type__": "int", "__options__": [0, 1, 3, 5, 7]},
+							{"__type__": "string", "__options__": ["d"]}],
+				"clutch": {"__type__": "bool"}
+			},
+			"o": {
+				"__array__": "duplicates",
+				"value": [{"__type__": "int", "__options__": [0, 1, 3, 5, 7]},
+							{"__type__": "string", "__options__": ["d"]}],
+				"clutch": {"__type__": "bool"}
+			}
 		}
 	}
 }

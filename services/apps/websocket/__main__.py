@@ -18,54 +18,54 @@ __created__		= "2017-06-26"
 from collections import OrderedDict
 import os
 import platform
+import signal
 import threading
 
 # Import pip modules
 from gevent import monkey; monkey.patch_all()
 from geventwebsocket import Resource, WebSocketServer
-
-# Import project modules
-from shared import Config, REST
+from RestOC import Conf, REST
 
 # Load the config
-Config.load('config.json')
-
-# If there's a custom config for the system
-sCustomConfig	= 'config.%s.json' % platform.node()
-if os.path.isfile(sCustomConfig):
-	Config.merge(sCustomConfig)
+Conf.load('../config.json')
+sConfOverride = '../config.%s.json' % platform.node()
+if os.path.isfile(sConfOverride):
+	Conf.load_merge(sConfOverride)
 
 # Import service modules
-from . import Init as WSInit, SyncApplication, RedisThread
-
-# Create a PathInfo instance
-path_info = REST.PathInfo(Config.get(('services')))
+from . import init as wsInit, redisThread, signalCatch, SyncApplication
 
 # If verbose mode is requested
 verbose	= False
-if 'LOGLEVEL' in os.environ and os.environ['LOGLEVEL'] == 'verbose':
+if 'AXE_VERBOSE' in os.environ and os.environ['AXE_VERBOSE'] == '1':
 	verbose	= True
 
-# Set the host, port, and number of workers
-_host		= 'API_HOST' in os.environ and os.environ['API_HOST'] or '0.0.0.0'
-_port		= 'API_PORT' in os.environ and int(os.environ['API_PORT']) or path_info['websocket']['port']
+# Catch SIGNTERM and
+signal.signal(signal.SIGINT, signalCatch)
+signal.signal(signal.SIGTERM, signalCatch)
 
 # Init the sync application
-WSInit(verbose)
+wsInit(verbose)
 
 # Start the Redis thread
 try:
 	if verbose: print('Starting the Redis thread')
-	thread	= threading.Thread(target=RedisThread)
-	thread.daemon	= True
+	thread = threading.Thread(target=redisThread)
+	thread.daemon = True
 	thread.start()
 except Exception as e:
 	print('Failed to start Redis thread: %s' % str(e))
 
+# Get the host and port
+dConf = Conf.get('websocket', {
+	"host": "0.0.0.0",
+	"port": 8001
+})
+
 # Create the websocket server
 if verbose: print('Starting the WebSocket server')
-server	= WebSocketServer(
-	(_host, _port),
+server = WebSocketServer(
+	(dConf['host'], dConf['port']),
 	Resource(OrderedDict([('/',SyncApplication)]))
 )
 

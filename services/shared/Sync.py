@@ -21,7 +21,7 @@ from redis import StrictRedis
 from . import JSON
 
 # The redis instance
-_moRedis	= None
+_moRedis = None
 
 # init function
 def init(conf):
@@ -53,17 +53,17 @@ def clear(auth, service, key, count):
 	"""
 
 	# Make sure the service and key are strings
-	if not isinstance(service, basestring): service	= str(service)
-	if not isinstance(key, basestring): key	= str(key)
+	if not isinstance(service, str): service = str(service)
+	if not isinstance(key, str): key = str(key)
 
 	# Generate the key name
-	sKey	= '%s-%s%s' % (auth, service, key)
+	sKey = '%s-%s%s' % (auth, service, key)
 
 	# If we have messages to delete
 	if count == 1:
 		_moRedis.rpop(sKey);
 	else:
-		oPipeline	= _moRedis.pipeline()
+		oPipeline = _moRedis.pipeline()
 		for __ in range(count):
 			oPipeline.rpop(sKey);
 		oPipeline.execute()
@@ -83,11 +83,11 @@ def join(auth, service, key):
 	"""
 
 	# Make sure the service and key are strings
-	if not isinstance(service, basestring): service	= str(service)
-	if not isinstance(key, basestring): key	= str(key)
+	if not isinstance(service, str): service = str(service)
+	if not isinstance(key, str): key = str(key)
 
 	# Add the key to the set and extend the ttl
-	p	= _moRedis.pipeline()
+	p = _moRedis.pipeline()
 	p.sadd('%s%s' % (service, key), "%s-%s%s" % (auth, service, key))
 	p.expire(key, 21600)
 	p.execute()
@@ -107,7 +107,7 @@ def leave(auth, service, key):
 	"""
 
 	# Make sure the key is a string
-	if not isinstance(key, basestring):	key	= str(key)
+	if not isinstance(key, str): key = str(key)
 
 	# Remove the key from the set
 	_moRedis.srem('%s%s' % (service, key), "%s-%s%s" % (auth, service, key))
@@ -129,17 +129,17 @@ def pull(auth, service, key):
 	"""
 
 	# Make sure the service and key are strings
-	if not isinstance(service, basestring): service	= str(service)
-	if not isinstance(key, basestring): key	= str(key)
+	if not isinstance(service, str): service = str(service)
+	if not isinstance(key, str): key = str(key)
 
 	# Generate the key name
-	sKey	= '%s-%s%s' % (auth, service, key)
+	sKey = '%s-%s%s' % (auth, service, key)
 
 	# Get the current length of messages
-	iLen	= _moRedis.llen(sKey)
+	iLen = _moRedis.llen(sKey)
 
 	# Update the TTL on the session
-	bRes	= _moRedis.expire('%s%s' % (service, key), 21600) # 6 hours
+	bRes = _moRedis.expire('%s%s' % (service, key), 21600) # 6 hours
 
 	# If the key doesn't even exist anymore
 	if not bRes:
@@ -149,7 +149,7 @@ def pull(auth, service, key):
 	if iLen:
 
 		# Fetch them
-		lRet	= _moRedis.lrange(sKey, 0, iLen)
+		lRet = _moRedis.lrange(sKey, 0, iLen)
 
 		# Reverse the list
 		lRet.reverse()
@@ -177,18 +177,18 @@ def push(service, key, data):
 	"""
 
 	# Make sure the service and key are strings
-	if not isinstance(service, basestring): service	= str(service)
-	if not isinstance(key, basestring): key	= str(key)
+	if not isinstance(service, str): service = str(service)
+	if not isinstance(key, str): key = str(key)
 
 	# Generate the JSON
-	sJSON	= JSON.encode({
+	sJSON = JSON.encode({
 		"service": service,
 		"key": key,
 		"data": data
 	})
 
 	# Check if anyone is interested in the key
-	lSessions	= _moRedis.smembers("%s%s" % (service, key))
+	lSessions = _moRedis.smembers("%s%s" % (service, key))
 
 	# If there are any sessions
 	if lSessions:
@@ -197,7 +197,7 @@ def push(service, key, data):
 		for sSession in lSessions:
 
 			# Add the message to its list
-			p	= _moRedis.pipeline()
+			p = _moRedis.pipeline()
 			p.lpush(sSession, sJSON)
 			p.expire(sSession, 21600)
 			p.execute()
@@ -223,8 +223,7 @@ def socket(key, data):
 	"""
 
 	# Make sure the service and key are strings
-	if not isinstance(key, basestring): key	= str(key)
+	if not isinstance(key, str): key = str(key)
 
 	# Create the key and make it expire in 10 seconds
 	_moRedis.setex(key, 10, JSON.encode(data))
-

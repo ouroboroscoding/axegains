@@ -1,5 +1,12 @@
-// External modules
-var React = require('react');
+/**
+ * Header
+ *
+ * Manages sign in / sign out / sign up
+ *
+ * @author Chris Nasr
+ * @copyright OuroborosCoding
+ * @created 2019-03-21
+ */
 
 // components
 var Forms = require('./base/forms.jsx');
@@ -26,7 +33,7 @@ class Header extends React.Component {
 		// Initialise the state
 		this.state = {
 			"modal": false,
-			"thrower": props.thrower ? props.thrower : false
+			"thrower": false
 		};
 
 		// Bind methods
@@ -132,16 +139,16 @@ class Header extends React.Component {
 			if(res.error && !Utils.serviceError(res.error)) {
 				var error = ' ';
 				switch(res.error.code) {
-					case 103:
+					case 1001:
 						// Go through each message and make the ref red
 						for(var i in res.error.msg) {
 							Forms.errorAdd(self.refs[i]);
 						}
 						break;
-					case 401:
+					case 1201:
 						Events.trigger('error', 'Alias or password invalid');
 						break;
-					case 404:
+					case 1204:
 						Forms.errorAdd(self.refs['signup_passwd']);
 						Events.trigger('error', 'Password not strong enough');
 						break;
@@ -160,13 +167,13 @@ class Header extends React.Component {
 			if(res.data) {
 
 				// Set the session with the service
-				Services.session(res.data);
+				Services.session(res.data.session);
 
 				// Greet thrower
 				Events.trigger('success', "Welcome back to AxeGains " + alias);
 
 				// Trigger the signin event
-				Events.trigger('signin');
+				Events.trigger('signin', res.data.thrower);
 			}
 
 		}).always(() => {
@@ -179,12 +186,12 @@ class Header extends React.Component {
 		this.setState({"modal": (this.state.modal == 'signin' ? false : 'signin')});
 	}
 
-	signinTrigger() {
+	signinTrigger(thrower) {
 
-		// Hide any modals and set a thrower to true
+		// Hide any modals and set the thrower
 		this.setState({
 			"modal": false,
-			"thrower": true
+			"thrower": thrower
 		});
 	}
 
@@ -235,6 +242,13 @@ class Header extends React.Component {
 
 	signup(ev) {
 
+		// If the alias is not long enough
+		if(this.refs.signup_alias.trim().length < 3) {
+			Forms.errorAdd(this.refs.signup_alias);
+			Events.trigger('error', 'Alias must be at least 3 characters');
+			return;
+		}
+
 		// If the passwords don't match
 		if(this.refs.signup_passwd.value != this.refs.repeat_passwd.value) {
 			Forms.errorAdd(this.refs.repeat_passwd);
@@ -250,7 +264,7 @@ class Header extends React.Component {
 
 		// Init the data
 		var oData = {
-			"alias": this.refs.signup_alias.value,
+			"alias": this.refs.signup_alias.value.trim(),
 			"passwd": this.refs.signup_passwd.value
 		}
 
@@ -269,7 +283,7 @@ class Header extends React.Component {
 			if(res.error && !Utils.serviceError(res.error)) {
 				var error = ' ';
 				switch(res.error.code) {
-					case 103:
+					case 1001:
 						// Go through each message and make the ref red
 						for(var i in res.error.msg) {
 							if(i == 'alias') {
@@ -280,15 +294,15 @@ class Header extends React.Component {
 							Forms.errorAdd(self.refs[i]);
 						}
 						break;
-					case 400:
+					case 1200:
 						Forms.errorAdd(self.refs['signup_alias']);
 						Events.trigger('error', 'Alias is already in use');
 						break;
-					case 404:
+					case 1204:
 						Forms.errorAdd(self.refs['signup_passwd']);
 						Events.trigger('error', 'Password not strong enough');
 						break;
-					case 406:
+					case 1206:
 						Forms.errorAdd(self.refs['email']);
 						Events.trigger('error', 'E-Mail already in use');
 						break;
@@ -307,7 +321,7 @@ class Header extends React.Component {
 			if(res.data) {
 
 				// Set the session with the service
-				Services.session(res.data);
+				Services.session(res.data.thrower._id);
 
 				// Revert to sign in and show success message
 				self.setState({
@@ -316,10 +330,10 @@ class Header extends React.Component {
 				});
 
 				// Greet thrower
-				Events.trigger('success', "Welcome to AxeGains " + oData.alias);
+				Events.trigger('success', "Welcome to AxeGains " + res.data.thrower.alias);
 
 				// Trigger the signin event
-				Events.trigger('signin');
+				Events.trigger('signin', res.data.thrower);
 			}
 
 		}).always(() => {

@@ -11,9 +11,6 @@
 // Error class define
 var ERROR_CLASS = 'error';
 
-// Pull in modules
-var React = require('react');
-
 /**
  * Add Class
  *

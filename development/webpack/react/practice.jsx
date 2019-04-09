@@ -1,5 +1,13 @@
-// External modules
-var React = require('react');
+/**
+ * Pracitce
+ *
+ * Manages Org menu for practice and display the appropriate one based on what
+ * is chosen
+ *
+ * @author Chris Nasr
+ * @copyright OuroborosCoding
+ * @created 2019-03-26
+ */
 
 // Generic modules
 var Events = require('../generic/events.js');
@@ -21,8 +29,7 @@ class Practice extends React.Component {
 
 		// Initialise the state
 		this.state = {
-			"org": Hash.get('org', 'natf'),
-			"thrower": props.thrower ? props.thrower : false
+			"org": Hash.get('org', 'natf')
 		};
 
 		// Bind methods
@@ -39,6 +46,9 @@ class Practice extends React.Component {
 
 		// Stop tracking any org hash change events
 		Hash.unwatch('org', this.orgChange);
+
+		// Remove the org from the hash
+		Hash.set('org', null);
 	}
 
 	menuChange(org) {
@@ -47,6 +57,9 @@ class Practice extends React.Component {
 
 	orgChange(org) {
 		if(org != this.state.org) {
+			if(org == null) {
+				org = 'natf';
+			}
 			this.setState({"org": org});
 		}
 	}
@@ -61,7 +74,7 @@ class Practice extends React.Component {
 				<div id="content">
 					<div>
 						{self.state.org == 'natf' &&
-							<Natf thrower={self.state.thrower} />
+							<Natf thrower={self.props.thrower} />
 						}
 					</div>
 				</div>

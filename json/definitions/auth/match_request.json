@@ -11,7 +11,7 @@
 	"__name__": "Match_Request",
 	"_id": {"__type__":"uuid", "__optional__":true},
 	"_created": "timestamp",
-	"intiator": "uuid",
+	"initiator": "uuid",
 	"opponent": "uuid",
-	"type": {"__type__": "string", "__options__": ["natf"]}
+	"org": {"__type__": "string", "__options__": ["NATF", "WATL"]}
 }
