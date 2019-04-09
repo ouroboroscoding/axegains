@@ -293,22 +293,6 @@ class Match(Record_ReDB.Record):
 			bool
 		"""
 
-		# Create the update structure
-		dUpdate = {
-			"bigaxe": {
-				_type: {
-					_is: data[_is]
-				}
-			}
-		}
-
-		# If finished is zero
-		if data['finished'] == 0:
-			dUpdate['bigaxe'][_type]['finished'] = {
-				"i": False,
-				"o": False
-			}
-
 		# Get the structure
 		dStruct = cls.struct()
 
@@ -321,7 +305,14 @@ class Match(Record_ReDB.Record):
 					.db(dStruct['db']) \
 					.table(dStruct['table']) \
 					.get(_id) \
-					.update(dUpdate) \
+					.update({
+						"bigaxe": {
+							_type: {
+								"finished": {"i": False, "o": False},
+								_is: data[_is]
+							}
+						}
+					}) \
 					.run(oCon)
 
 			# Return based on whether anything was replaced

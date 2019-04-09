@@ -25,6 +25,7 @@ var Site = require('./react/site.jsx');
 
 		// If we got a 401, let everyone know we signed out
 		if(xhr.status == 401) {
+			Events.trigger('error', 'You have been signed out!');
 			Events.trigger('signout');
 		}
 	});

@@ -28,7 +28,7 @@
 			"4": [{"__type__": "int", "__options__": [0, 1, 3, 5], "__optional__": true},
 					{"__type__": "string", "__options__": ["d"]}],
 			"5": {
-				"value": [{"__type__": "int", "__options__": [0, 1, 3, 5], "__optional__": true},
+				"value": [{"__type__": "int", "__options__": [0, 1, 3, 5, 7], "__optional__": true},
 							{"__type__": "string", "__options__": ["d"]}],
 				"clutch": {"__type__": "bool"}
 			}

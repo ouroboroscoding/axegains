@@ -256,6 +256,43 @@ class Auth(Services.Service):
 		# Return OK
 		return Services.Effect(True)
 
+	def matchRequest_read(self, data, sesh):
+		"""Match Request (Read)
+
+		Fetchs a match request and returns it
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- The session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['id'])
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
+
+		# Find the request
+		dRequest = MatchRequest.get(data['id'], raw=True)
+		if not dRequest:
+			return Services.Effect(error=(1104, 'match_request:%s' % data['id']))
+
+		# Get the ID of the other thrower
+		if sesh['thrower']['_id'] == dRequest['initiator']:
+			sID = dRequest['opponent']
+		elif sesh['thrower']['_id'] == dRequest['opponent']:
+			sID = dRequest['initiator']
+		else:
+			return Services.Effect(error=1000)
+
+		# Get the other thrower's alias and add it to the request
+		dAlias = Thrower.get(sID, raw=['alias'])
+		dRequest['alias'] = dAlias and dAlias['alias'] or 'N/A'
+
+		# Return the request
+		return Services.Effect(dRequest)
+
 	def matchRequest_update(self, data, sesh):
 		"""Match Request (Update)
 

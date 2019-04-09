@@ -156,7 +156,7 @@ function _requestAccept(id) {
 			Hash.set({
 				"page": "match",
 				"org": req.org.toLowerCase(),
-				"id": "m|" + res.data + "|" + req.alias
+				"id": "m|" + res.data
 			})
 		}
 	})
@@ -312,7 +312,7 @@ function _requestWait(id) {
 	Hash.set({
 		"page": "match",
 		"org": req.org.toLowerCase(),
-		"id": "r|" + req._id + '|' + req.alias
+		"id": "r|" + req._id
 	})
 
 	// Return OK

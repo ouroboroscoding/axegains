@@ -62,8 +62,9 @@ class Board extends React.Component {
 		else {
 
 			if(this.state.selected) {
-				this.props.onPoints(true, 7);
-				this.resetClutch();
+				if(this.props.onPoints(true, 7) !== false) {
+					this.resetClutch();
+				}
 			} else {
 				this.setState({"selected": true});
 			}
@@ -79,20 +80,21 @@ class Board extends React.Component {
 		var target = ev.currentTarget;
 
 		// Send out the drop
-		this.props.onPoints(this.state.selected, 'd');
+		if(this.props.onPoints(this.state.selected, 'd') !== false) {
 
-		// De-select the clutch if there's one selected
-		if(this.state.selected) {
-			this.resetClutch();
+			// De-select the clutch if there's one selected
+			if(this.state.selected) {
+				this.resetClutch();
+			}
+
+			// Turn on the active flag
+			target.className = 'drop active';
+
+			// And set a timeout to turn it off
+			setTimeout(function() {
+				target.className = 'drop';
+			}, 500);
 		}
-
-		// Turn on the active flag
-		target.className = 'drop active';
-
-		// And set a timeout to turn it off
-		setTimeout(function() {
-			target.className = 'drop';
-		}, 500);
 	}
 
 	resetClutch() {
@@ -120,20 +122,27 @@ class Board extends React.Component {
 		}
 
 		// If there's a clutch selected
+		var accepted = true;
 		if(this.state.selected) {
-			this.props.onPoints(true, 0);
-			this.resetClutch();
+			accepted = this.props.onPoints(true, 0);
+			if(accepted !== false) {
+				this.resetClutch();
+			}
 		} else {
-			this.props.onPoints(false, parseInt(target.dataset.value));
+			accepted = this.props.onPoints(false, parseInt(target.dataset.value));
 		}
 
-		// Turn on the active flag
-		target.className = classNames[0] + ' active';
+		// If the points were not rejected accepted
+		if(accepted !== false) {
 
-		// And set a timeout to turn it off
-		setTimeout(function() {
-			target.className = classNames[0];
-		}, 500);
+			// Turn on the active flag
+			target.className = classNames[0] + ' active';
+
+			// And set a timeout to turn it off
+			setTimeout(function() {
+				target.className = classNames[0];
+			}, 500);
+		}
 	}
 
 	render() {

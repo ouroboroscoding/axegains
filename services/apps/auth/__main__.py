@@ -59,7 +59,7 @@ REST.Server({
 	"/favourite": {"method": REST.CREATE | REST.DELETE, "session": True},
 	"/favourites": {"method": REST.READ, "session": True},
 
-	"/match/request": {"methods": REST.CREATE | REST.UPDATE | REST.DELETE, "session": True},
+	"/match/request": {"methods": REST.ALL, "session": True},
 	"/match/requests": {"methods": REST.READ, "session": True},
 
 	"/passwd/forgot": {"methods": REST.CREATE | REST.UPDATE},

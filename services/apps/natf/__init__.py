@@ -98,13 +98,13 @@ class Natf(Services.Service):
 		try:
 			oMatch = Match({
 				"_created": int(time()),
-				"finished": {"i": False, "o": False},
+				"finished": False,
 				"initiator": data['initiator'],
 				"opponent": data['opponent'],
 				"games": {
 					"1": {},
 				},
-				"games_finished": 0
+				"games_finished": {"i": False, "o": False}
 			})
 		except ValueError as e:
 			return Services.Effect(error=(1001, e.args[0]))
@@ -145,6 +145,11 @@ class Natf(Services.Service):
 
 		# Else, attempt to delete the record
 		Match.deleteGet(data['id'])
+
+		# Notify anyone watching the match
+		Sync.push('natf', 'match-%s' % data['id'], {
+			"type": "deleted"
+		})
 
 		# Return OK
 		return Services.Effect(True)
@@ -239,7 +244,6 @@ class Natf(Services.Service):
 
 		# If the value doesn't exist
 		if len(dMatch['bigaxe']['points'][sIs]) == data['throw']:
-			dMatch['bigaxe']['points']['finished'] = 0
 			dMatch['bigaxe']['points'][sIs].append({"clutch": data['clutch'], "value": data['value']})
 
 		# Else, overwrite it
@@ -316,7 +320,6 @@ class Natf(Services.Service):
 
 		# If the value doesn't exist
 		if len(dMatch['bigaxe']['target'][sIs]) == data['throw']:
-			dMatch['bigaxe']['target']['finished'] = 0
 			dMatch['bigaxe']['target'][sIs].append(data['value'])
 
 		# Else, overwrite it
@@ -391,34 +394,32 @@ class Natf(Services.Service):
 		# If both sides are done
 		if dMatch['bigaxe']['points']['finished'] == {'i': True, 'o': True}:
 
+			# If the lengths don't match
+			if len(dMatch['bigaxe']['points']['i']) != len(dMatch['bigaxe']['points']['o']):
+
+				# Reset finished
+				Match.finishBigAxeReset('points', data['id'])
+
+				# Notify throwers we aren't finished
+				Sync.push('natf', 'match-%s' % data['id'], {
+					"type": "bigaxe_points",
+					"subtype": "notfinished"
+				})
+
+				# Return failure
+				return Services.Effect(False)
+
 			# Count up until we have a clear winner or loser
-			i = 0;
-			while True:
-
-				# If either array is missing the value
-				if len(dMatch['bigaxe']['points']['i']) < i or \
-					len(dMatch['bigaxe']['points']['i']) < i:
-
-					# Reset finished
-					Match.finishBigAxeReset('points', data['id'])
-
-					# Notify throwers we aren't finished
-					Sync.push('natf', 'match-%s' % data['id'], {
-						"type": "bigaxe_points",
-						"subtype": "notfinished"
-					})
-
-					# Return failure
-					return Services.Effect(False)
+			for i in range(len(dMatch['bigaxe']['points']['i'])):
 
 				# If we got a drop, consider it a zero
-				if dMatch['bigaxe']['points']['i'][i] == 'd':
-					dMatch['bigaxe']['points']['i'][i] = 0
-				if dMatch['bigaxe']['points']['o'][i] == 'd':
-					dMatch['bigaxe']['points']['o'][i] = 0
+				if dMatch['bigaxe']['points']['i'][i]['value'] == 'd':
+					dMatch['bigaxe']['points']['i'][i]['value'] = 0
+				if dMatch['bigaxe']['points']['o'][i]['value'] == 'd':
+					dMatch['bigaxe']['points']['o'][i]['value'] = 0
 
 				# If they aren't the same
-				if dMatch['bigaxe']['points']['i'][i] != dMatch['bigaxe']['points']['o'][i]:
+				if dMatch['bigaxe']['points']['i'][i]['value'] != dMatch['bigaxe']['points']['o'][i]['value']:
 
 					# Mark as finished
 					Match.finished(data['id'])
@@ -426,14 +427,26 @@ class Natf(Services.Service):
 					# Notify throwers
 					Sync.push('natf', 'match-%s' % data['id'], {
 						"type": "winner",
-						"is": dMatch['bigaxe']['points']['i'][i] > dMatch['bigaxe']['points']['o'][i] and 'i' or 'o'
+						"is": dMatch['bigaxe']['points']['i'][i]['value'] > dMatch['bigaxe']['points']['o'][i]['value'] and 'i' or 'o'
 					})
 
 					# Break out of the loop
 					break;
 
-				# Increase the throw count
-				++i
+			# If we didn't get a winner, something is wrong
+			else:
+
+				# Reset finished
+				Match.finishBigAxeReset('points', data['id'])
+
+				# Notify throwers we aren't finished
+				Sync.push('natf', 'match-%s' % data['id'], {
+					"type": "bigaxe_points",
+					"subtype": "notfinished"
+				})
+
+				# Return failure
+				return Services.Effect(False)
 
 		# Return OK
 		return Services.Effect(True)
@@ -487,28 +500,26 @@ class Natf(Services.Service):
 		# If both sides are done
 		if dMatch['bigaxe']['target']['finished'] == {'i': True, 'o': True}:
 
+			# If the lengths don't match
+			if len(dMatch['bigaxe']['target']['i']) != len(dMatch['bigaxe']['target']['o']):
+
+				# Reset finished
+				Match.finishBigAxeReset('target', data['id'])
+
+				# Notify throwers we aren't finished
+				Sync.push('natf', 'match-%s' % data['id'], {
+					"type": "bigaxe_target",
+					"subtype": "notfinished"
+				})
+
+				# Return failure
+				return Services.Effect(False)
+
 			# Init the consecutive successes
 			iCons = 0
 
 			# Count up until we have a clear winner or loser
-			i = 0;
-			while True:
-
-				# If either array is missing the value
-				if len(dMatch['bigaxe']['target']['i']) < i or \
-					len(dMatch['bigaxe']['target']['i']) < i:
-
-					# Reset finished
-					Match.finishBigAxeReset('target', data['id'])
-
-					# Notify throwers we aren't finished
-					Sync.push('natf', 'match-%s' % data['id'], {
-						"type": "bigaxe_target",
-						"subtype": "notfinished"
-					})
-
-					# Return failure
-					return Services.Effect(False)
+			for i in range(len(dMatch['bigaxe']['target']['i'])):
 
 				# If both are 0 or drops
 				if (dMatch['bigaxe']['target']['i'][i] == 0 or \
@@ -554,10 +565,22 @@ class Natf(Services.Service):
 					})
 
 					# Break out of the loop
-					break;
+					break
 
-				# Increase the throw count
-				++i
+			# If we didn't get a winner or a jump to points, something is wrong
+			else:
+
+				# Reset finished
+				Match.finishBigAxeReset('target', data['id'])
+
+				# Notify throwers we aren't finished
+				Sync.push('natf', 'match-%s' % data['id'], {
+					"type": "bigaxe_target",
+					"subtype": "notfinished"
+				})
+
+				# Return failure
+				return Services.Effect(False)
 
 		# Return OK
 		return Services.Effect(True)
@@ -705,13 +728,13 @@ class Natf(Services.Service):
 		# Validate the value
 		dStruct = Match.struct()
 		if not dStruct['tree']['games'].child()[sIs][data['throw']].valid(data['value']):
-			return Services.Effect(error=(1001, [('value', 'invalid')]))
+			return Services.Effect(error=(1001, [('value', 'invalid data.value')]))
 
 		# If it's throw 5, and clutch is set, but we didn't get 'd', 0, or 7
 		if data['throw'] == '5':
 			if data['value']['clutch']:
 				if data['value']['value'] not in ['d', 0, 7]:
-					return Services.Effect(error=(1001, [('value', 'invalid')]))
+					return Services.Effect(error=(1001, [('value', 'invalid data.value.value')]))
 
 		# Update the throw
 		Match.updateThrow(data['id'], data['game'], sIs, data['throw'], data['value'])
