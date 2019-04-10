@@ -77,7 +77,7 @@ REST.Server({
 	"/thrower/email": {"methods": REST.UPDATE, "session": True},
 	"/thrower/verify": {"methods": REST.UPDATE}
 
-}, 'auth', "https?://%s" % Conf.get(("domain","primary")).replace('.', '\\.')).run(
+}, 'auth', "https?://(.*\\.)?%s" % Conf.get(("domain","primary")).replace('.', '\\.')).run(
 	host=oRestConf['auth']['host'],
 	port=oRestConf['auth']['port'],
 	workers=oRestConf['auth']['workers']

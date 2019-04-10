@@ -65,7 +65,7 @@ REST.Server({
 	"/practice/data": {"methods": REST.READ, "session": True},
 	"/practice/stats": {"methods": REST.READ, "session": True}
 
-}, 'natf', "https?://%s" % Conf.get(("domain","primary")).replace('.', '\\.')).run(
+}, 'natf', "https?://(.*\\.)?%s" % Conf.get(("domain","primary")).replace('.', '\\.')).run(
 	host=oRestConf['natf']['host'],
 	port=oRestConf['natf']['port'],
 	workers=oRestConf['natf']['workers']

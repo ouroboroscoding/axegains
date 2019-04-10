@@ -70,7 +70,7 @@ class Site extends React.Component {
 			<Item key={1} name="practice">Practice</Item>
 		];
 		if(this.state.thrower) {
-			items.push(<Item key={2} name="match">Match</Item>);
+			//items.push(<Item key={2} name="match">Match</Item>);
 			//items.push(<Item key={3} name="league">League</Item>);
 			items.push(<Item key={4} name="stats">Stats</Item>);
 		}
