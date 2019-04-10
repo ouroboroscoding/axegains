@@ -85,6 +85,14 @@ class Site extends React.Component {
 					<div className="content">
 						<div>
 							<dl id="home">
+								<dt>v1.2.0</dt>
+								<dd>
+									<ul className="fa-ul">
+										<li><i className="fa-li fas fa-angle-double-right"></i>NATF Matches now available. Find other signed up throwers and challenge them to a 3 game match.</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Throwers can be added to your favorites list for easy match starting by clicking on the green icon beside their name.</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Match stats are not yet available, but fear not, the stats will not be lost, and any matches played now will still show up in stats once the feature is completed.</li>
+									</ul>
+								</dd>
 								<dt>v1.1.0</dt>
 								<dd>
 									<ul className="fa-ul">
