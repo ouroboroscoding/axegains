@@ -10,6 +10,7 @@
  */
 
 // Generic modules
+var Events = require('./generic/events.js');
 var Services = require('./generic/services.js');
 var Tools = require('./generic/tools.js');
 var WSHelper = require('./generic/websocket.js');
@@ -181,6 +182,12 @@ function _openSocket() {
 			"message": _handleMessage,
 			"close": _handleClose
 		});
+
+		// If we got false
+		if(__socket == false) {
+			Events.trigger('error', 'Websockets not supported');
+			return;
+		}
 
 		// If we haven't already setup the ping interval
 		if(__ping == null) {

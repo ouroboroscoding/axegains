@@ -53,7 +53,7 @@ REST.Server({
 	"/pull": {"methods": REST.READ, "session": True},
 	"/websocket": {"methods": REST.READ, "session": True}
 
-}, 'webpoll', "https?://%s" % Conf.get(("domain","primary")).replace('.', '\\.')).run(
+}, 'webpoll', "https?://(.*\\.)?%s" % Conf.get(("domain","primary")).replace('.', '\\.')).run(
 	host=oRestConf['webpoll']['host'],
 	port=oRestConf['webpoll']['port'],
 	workers=oRestConf['webpoll']['workers']
