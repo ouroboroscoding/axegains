@@ -43,6 +43,15 @@ class OpponentRow extends React.Component {
 		this.selected = this.selected.bind(this);
 	}
 
+	componentDidUpdate(prevProps) {
+		if(prevProps.thrower._id != this.props.thrower._id) {
+			this.setState({
+				"favourite": this.props.favourite,
+				"thrower": this.props.thrower
+			})
+		}
+	}
+
 	add(ev) {
 
 		// Stop any further events
@@ -255,6 +264,11 @@ class Opponent extends React.Component {
 	}
 
 	search(q) {
+
+		// If there's no query, do nothing
+		if(q.length == 0) {
+			return;
+		}
 
 		// Store this
 		var self = this;
