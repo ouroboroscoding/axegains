@@ -32,7 +32,8 @@ class Stats extends React.Component {
 			"match": null,
 			"practice": null,
 			"practice_all": false,
-			"practice_data": false
+			"practice_data": false,
+			"thrower": props.thrower
 		};
 
 		// Bind methods

@@ -242,8 +242,11 @@ class Header extends React.Component {
 
 	signup(ev) {
 
+		// Get the alias
+		var alias = this.refs.signup_alias.value.trim();
+
 		// If the alias is not long enough
-		if(this.refs.signup_alias.trim().length < 3) {
+		if(alias.length < 3) {
 			Forms.errorAdd(this.refs.signup_alias);
 			Events.trigger('error', 'Alias must be at least 3 characters');
 			return;
@@ -264,7 +267,7 @@ class Header extends React.Component {
 
 		// Init the data
 		var oData = {
-			"alias": this.refs.signup_alias.value.trim(),
+			"alias": alias,
 			"passwd": this.refs.signup_passwd.value
 		}
 
@@ -321,12 +324,12 @@ class Header extends React.Component {
 			if(res.data) {
 
 				// Set the session with the service
-				Services.session(res.data.thrower._id);
+				Services.session(res.data.session);
 
 				// Revert to sign in and show success message
 				self.setState({
 					"modal": false,
-					"thrower": true
+					"thrower": res.data.thrower
 				});
 
 				// Greet thrower
