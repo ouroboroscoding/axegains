@@ -120,7 +120,7 @@ class Site extends React.Component {
 					<Match thrower={self.state.thrower} />
 				}
 				{self.state.page == 'stats' &&
-					<Stats />
+					<Stats thrower={self.state.thrower} />
 				}
 				<Popups />
 				<Messages />
