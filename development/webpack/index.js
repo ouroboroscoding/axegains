@@ -18,7 +18,7 @@ var Site = require('./react/site.jsx');
 	);
 
 	// Init the requests
-	Requests.init();
+	//Requests.init();
 
 	// Init the services
 	Services.init("services", function(xhr) {
