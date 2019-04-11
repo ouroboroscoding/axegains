@@ -17,7 +17,7 @@
 			"port": 587,
 			"tls": true,
 			"user": "noone",
-			"passwd": "nopasswd",
+			"passwd": "nopasswd"
 		}
 	},
 
