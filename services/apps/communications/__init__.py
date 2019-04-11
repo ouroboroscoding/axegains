@@ -96,7 +96,7 @@ class Service(Services.Service):
 		"""
 
 		# Verify fields
-		try: DictHelper.eval(data, ['_internal_', 'subject', 'to', 'from'])
+		try: DictHelper.eval(data, ['_internal_', 'subject', 'to'])
 		except ValueError as e: return Services.Effect(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Verify the key, remove it if it's ok
@@ -111,6 +111,10 @@ class Service(Services.Service):
 		# Add None if either body is missing
 		if 'html_body' not in data:	data['html_body'] = None
 		if 'text_body' not in data:	data['text_body'] = None
+
+		# If the from is not set
+		if 'from' not in data:
+			data['from'] = self.fromDefault
 
 		# If we got a _queue_ value
 		if '_queue_' in data:
@@ -197,6 +201,9 @@ class Service(Services.Service):
 		Returns:
 			None
 		"""
+
+		# Get the default from
+		self.fromDefault = Conf.get(('email', 'from'))
 
 		# Get the method for sending emails
 		self.emailMethod = Conf.get(('email', 'method'))
