@@ -32,12 +32,18 @@ class Header extends React.Component {
 
 		// Initialise the state
 		this.state = {
+			"forgot": false,
 			"modal": false,
+			"resend": false,
 			"thrower": false
 		};
 
 		// Bind methods
 		this.accountShow = this.accountShow.bind(this);
+		this.forgotShow = this.forgotShow.bind(this);
+		this.forgotEmailSubmit = this.forgotEmailSubmit.bind(this);
+		this.forgotPasswordSubmit = this.forgotPasswordSubmit.bind(this);
+		this.forgotResend = this.forgotResend.bind(this);
 		this.home = this.home.bind(this);
 		this.signin = this.signin.bind(this);
 		this.signinShow = this.signinShow.bind(this);
@@ -49,7 +55,7 @@ class Header extends React.Component {
 	}
 
 	accountShow(ev) {
-		this.setState({"modal": this.state.modal == "account" ? false : 'account'});
+		this.setState({"modal": this.state.modal == 'account' ? false : 'account'});
 	}
 
 	componentWillMount() {
@@ -57,6 +63,15 @@ class Header extends React.Component {
 		// Track any signin/signout events
 		Events.add('signin', this.signinTrigger);
 		Events.add('signout', this.signoutTrigger);
+
+		// If we have a forgot key in the hash
+		var key = Hash.get('forgot')
+		if(key) {
+			this.setState({
+				"forgot": key,
+				"modal": "forgot"
+			});
+		}
 	}
 
 	componentWillUnmount() {
@@ -64,6 +79,157 @@ class Header extends React.Component {
 		// Stop tracking any signin/signout events
 		Events.remove('signin', this.signinTrigger);
 		Events.remove('signout', this.signoutTrigger);
+	}
+
+	forgotShow(ev) {
+		this.setState({
+			"forgot": false,
+			"modal": this.state.modal == 'forgot' ? false : 'forgot'
+		});
+	}
+
+	forgotEmailSubmit(ev) {
+
+		// Check the e-mail field
+		var email = this.refs.forgot_email.value.trim();
+
+		// If it's missing or invalid
+		if(!email) {
+			Events.trigger('error', 'Please enter the e-mail address associated with your account');
+			Forms.errorAdd(this.refs.forgot_email);
+			return;
+		}
+
+		// Store this
+		var self = this;
+
+		// Show loader
+		Loader.show();
+
+		// Create the params
+		dParams = {
+			"email": email
+		}
+
+		// If resend is set
+		if(this.state.resend) {
+			dParams['regenerate'] = true;
+		}
+
+		// Send the email to the service
+		Services.create('auth', 'passwd/forgot', dParams).done(res => {
+
+			// If there's an error
+			if(res.error && !Utils.serviceError(res.error)) {
+				Events.trigger('error', JSON.stringify(res.error));
+			}
+
+			// If there's a warning
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If there's data
+			if(res.data) {
+
+				// Notify
+				Events.trigger('success', 'Submitted, please check your e-mail');
+
+				// Change state
+				self.setState({
+					"forgot": '',
+					"resend": false
+				});
+			}
+
+		}).always(() => {
+			// Hide loader
+			Loader.hide();
+		});
+	}
+
+	forgotPasswordSubmit(ev) {
+
+		// If the key is missing
+		var key = this.refs.key.value.trim();
+		if(!key) {
+			Events.trigger('error', 'Please enter the key you received by e-mail.');
+			Forms.errorAdd(this.refs.key);
+			return;
+		}
+
+		// If the passwords don't match
+		if(this.refs.forgot_passwd.value != this.refs.forgot_repeat_passwd.value) {
+			Events.trigger('error', 'Passwords do not match');
+			Forms.errorAdd(this.refs.forgot_repeat_passwd);
+			return;
+		}
+
+		// Store this
+		var self = this;
+
+		// Show the loader
+		Loader.show();
+
+		// Submit the key and new password to the service
+		Services.update('auth', 'passwd/forgot', {
+			"key": key,
+			"passwd": this.refs.forgot_passwd.value
+		}).done(res => {
+
+			// If there's an error
+			if(res.error && !Utils.serviceError(res.error)) {
+
+				// If the key code is wrong
+				if(res.error.code == 1203) {
+					Events.trigger('error', 'Invalid key code. Either it was typed wrong, or it has expired.');
+					Forms.errorAdd(this.refs.key);
+				}
+
+				// Else if the password is not strong enough
+				else if(res.error.code == 1204) {
+					Events.trigger('error', 'Password not strong enough');
+					Forms.errorAdd(this.refs.forgot_passwd);
+				}
+
+				// Else, unknown error
+				else {
+					Events.trigger('error', JSON.stringify(res.error));
+				}
+			}
+
+			// If there's a warning
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If there's data
+			if(res.data) {
+
+				// Notify
+				Events.trigger('success', 'Password successfully changed, please login.');
+
+				// Change state
+				self.setState({
+					"forgot": false,
+					"modal": false
+				});
+
+				// Hide the key in the hash if there is one
+				Hash.set('forgot', null);
+			}
+
+		}).always(() => {
+			// Hide the loader
+			Loader.hide();
+		});
+	}
+
+	forgotResend() {
+		this.setState({
+			"forgot": false,
+			"resend": true
+		})
 	}
 
 	home() {
@@ -93,13 +259,16 @@ class Header extends React.Component {
 					<div id="signin" className="form">
 						<p><input ref="alias" type="text" title="alias" placeholder="alias" onClick={Forms.errorFocus} /></p>
 						<p><input ref="passwd" type="password" title="password" placeholder="password" onClick={Forms.errorFocus} /></p>
-						<p className="aright"><button onClick={self.signin}>sign in</button></p>
+						<p className="fright"><button onClick={self.signin}>sign in</button></p>
+						<p style={{paddingTop: "5px"}}>
+							<span className="link" onClick={self.forgotShow}>Forgot Password</span>
+						</p>
 					</div>
 				}
 				{self.state.modal == 'signup' &&
 					<div id="signup" className="form">
 						<p><input ref="signup_alias" type="text" title="alias" placeholder="alias" onClick={Forms.errorFocus} /></p>
-						<p><input ref="email" type="text" title="email" placeholder="email (not required)" onClick={Forms.errorFocus} /></p>
+						<p><input ref="email" type="text" title="e-mail" placeholder="e-mail (not required)" onClick={Forms.errorFocus} /></p>
 						<p><input ref="signup_passwd" type="password" title="password" placeholder="password" onClick={Forms.errorFocus} /></p>
 						<p><input ref="repeat_passwd" type="password" title="repeat password" placeholder="repeat password" onClick={Forms.errorFocus} /></p>
 						<p className="aright"><button onClick={self.signup}>sign up</button></p>
@@ -107,11 +276,37 @@ class Header extends React.Component {
 				}
 				{self.state.modal == 'account' &&
 					<Modal
-						title="Account"
 						close={self.accountShow}
+						key="account"
+						title="Account"
 						width="95%"
 					>
 						<Thrower />
+					</Modal>
+				}
+				{self.state.modal == 'forgot' &&
+					<Modal
+						close={self.forgotShow}
+						key="forgot"
+						title="Forgot Password"
+						width="95%"
+					>
+						{self.state.forgot !== false ?
+							<div key="code" className="form">
+								<p><input ref="key" type="text" title="forgot password Key" placeholder="enter forgot password key" onFocus={Forms.errorFocus} autocomplete="off" defaultValue={self.state.forgot} /></p>
+								<p><input ref="forgot_passwd" title="new password" placeholder="new password" type="password" onFocus={Forms.errorFocus} autocomplete="new-password" /></p>
+								<p><input ref="forgot_repeat_passwd" title="repeat new password" placeholder="repeat new password" type="password" onFocus={Forms.errorFocus} autocomplete="repeat-password" /></p>
+								<p className="fright"><button onClick={this.forgotPasswordSubmit}>Change Password</button></p>
+								<p className="fleft" style={{paddingTop: "5px"}}>
+									<span class="link" onClick={self.forgotResend}>Resend Key</span>
+								</p>
+							</div>
+						:
+							<div key="email" className="form">
+								<p><input ref="forgot_email" type="text" title="Email" placeholder="enter e-mail associated with account" onClick={Forms.errorFocus} /></p>
+								<p className="aright"><button onClick={this.forgotEmailSubmit}>Send E-mail</button></p>
+							</div>
+						}
 					</Modal>
 				}
 			</header>
@@ -307,7 +502,7 @@ class Header extends React.Component {
 						break;
 					case 1206:
 						Forms.errorAdd(self.refs['email']);
-						Events.trigger('error', 'E-Mail already in use');
+						Events.trigger('error', 'E-mail already in use');
 						break;
 					default:
 						Events.trigger('error', JSON.stringify(res.error));
