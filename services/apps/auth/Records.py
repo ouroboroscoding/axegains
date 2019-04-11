@@ -163,6 +163,37 @@ class Thrower(Record_ReDB.Record):
 	"""
 
 	@classmethod
+	def alias(cls, _id, alias):
+		"""Alias
+
+		Updates the alias associated with the thrower
+
+		Arguments:
+			_id {str} -- The UUID of the thrower
+			alias {str} -- The new alias
+
+		Returns:
+			bool
+		"""
+
+		# Get the structure
+		dStruct = cls.struct()
+
+		# Get a connection to the host
+		with Record_ReDB._with(dStruct['host']) as oCon:
+
+			# Generate the rethink query
+			dRes = Record_ReDB.r \
+				.db(dStruct['db']) \
+				.table(dStruct['table']) \
+				.get(_id) \
+				.update({"alias": alias}) \
+				.run(oCon)
+
+			# Return based on whether anything was replaced
+			return dRes['replaced'] == 1
+
+	@classmethod
 	def config(cls):
 		"""Config
 
@@ -172,6 +203,37 @@ class Thrower(Record_ReDB.Record):
 			dict
 		"""
 		return _mdThrowerConf
+
+	@classmethod
+	def email(cls, _id, email):
+		"""Email
+
+		Updates the email associated with the thrower
+
+		Arguments:
+			_id {str} -- The UUID of the thrower
+			email {str} -- The new email
+
+		Returns:
+			bool
+		"""
+
+		# Get the structure
+		dStruct = cls.struct()
+
+		# Get a connection to the host
+		with Record_ReDB._with(dStruct['host']) as oCon:
+
+			# Generate the rethink query
+			dRes = Record_ReDB.r \
+				.db(dStruct['db']) \
+				.table(dStruct['table']) \
+				.get(_id) \
+				.update({"email": email}) \
+				.run(oCon)
+
+			# Return based on whether anything was replaced
+			return dRes['replaced'] == 1
 
 	@staticmethod
 	def passwordHash(passwd):

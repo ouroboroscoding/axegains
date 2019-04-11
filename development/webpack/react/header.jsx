@@ -8,7 +8,7 @@
  * @created 2019-03-21
  */
 
-// components
+// Components
 var Forms = require('./base/forms.jsx');
 var Modal = require('./elements/modal.jsx');
 var Thrower = require('./thrower.jsx');
@@ -32,6 +32,7 @@ class Header extends React.Component {
 
 		// Initialise the state
 		this.state = {
+			"account": false,
 			"forgot": false,
 			"modal": false,
 			"resend": false,
@@ -55,7 +56,7 @@ class Header extends React.Component {
 	}
 
 	accountShow(ev) {
-		this.setState({"modal": this.state.modal == 'account' ? false : 'account'});
+		this.setState({"account": !this.state.account});
 	}
 
 	componentWillMount() {
@@ -82,6 +83,11 @@ class Header extends React.Component {
 	}
 
 	forgotShow(ev) {
+
+		// Remove the forgot hash
+		Hash.set('forgot', null);
+
+		// Set the new state
 		this.setState({
 			"forgot": false,
 			"modal": this.state.modal == 'forgot' ? false : 'forgot'
@@ -243,7 +249,7 @@ class Header extends React.Component {
 				<div className="actions fright aright">
 					{self.state.thrower ?
 						<React.Fragment>
-							<i className="far fa-user" title="Account" onClick={self.accountShow}></i>
+							<i className="fas fa-user" title="Account" onClick={self.accountShow}></i>
 							<i className="fas fa-power-off" title="Sign Out" onClick={self.signout}></i>
 						</React.Fragment>
 					:
@@ -274,16 +280,6 @@ class Header extends React.Component {
 						<p className="aright"><button onClick={self.signup}>sign up</button></p>
 					</div>
 				}
-				{self.state.modal == 'account' &&
-					<Modal
-						close={self.accountShow}
-						key="account"
-						title="Account"
-						width="95%"
-					>
-						<Thrower />
-					</Modal>
-				}
 				{self.state.modal == 'forgot' &&
 					<Modal
 						close={self.forgotShow}
@@ -307,6 +303,16 @@ class Header extends React.Component {
 								<p className="aright"><button onClick={this.forgotEmailSubmit}>Send E-mail</button></p>
 							</div>
 						}
+					</Modal>
+				}
+				{self.state.account &&
+					<Modal
+						close={self.accountShow}
+						key="account"
+						title="Account"
+						width="95%"
+					>
+						<Thrower thrower={self.state.thrower} />
 					</Modal>
 				}
 			</header>
@@ -441,9 +447,9 @@ class Header extends React.Component {
 		var alias = this.refs.signup_alias.value.trim();
 
 		// If the alias is not long enough
-		if(alias.length < 3) {
+		if(alias.length < 3 || alias.length > 32) {
 			Forms.errorAdd(this.refs.signup_alias);
-			Events.trigger('error', 'Alias must be at least 3 characters');
+			Events.trigger('error', 'Alias must be between 3 and 32 characters');
 			return;
 		}
 
