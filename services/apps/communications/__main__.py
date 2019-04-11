@@ -32,7 +32,7 @@ SMTP.init(**Conf.get(('email', 'smtp')))
 oRestConf = REST.Config(Conf.get("rest"))
 
 # Set verbose mode if requested
-if 'EMR_VERBOSE' in os.environ and os.environ['EMR_VERBOSE'] == '1':
+if 'AXE_VERBOSE' in os.environ and os.environ['AXE_VERBOSE'] == '1':
 	Services.verbose()
 
 # Register the Services that will be accessible
