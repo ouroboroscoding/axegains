@@ -73,8 +73,10 @@ REST.Server({
 	"/signup": {"methods": REST.POST},
 
 	"/thrower": {"methods": REST.READ | REST.UPDATE, "session": True},
+	"/thrower/alias": {"methods": REST.UPDATE, "session": True},
 	"/thrower/aliases": {"methods": REST.READ},
 	"/thrower/email": {"methods": REST.UPDATE, "session": True},
+	"/thrower/passwd": {"methods": REST.UPDATE, "session": True},
 	"/thrower/verify": {"methods": REST.UPDATE}
 
 }, 'auth', "https?://(.*\\.)?%s" % Conf.get(("domain","primary")).replace('.', '\\.')).run(
