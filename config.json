@@ -10,6 +10,7 @@
 
 	"email": {
 		"errors": "webmaster@axegains.local",
+		"from": "axegains@gmail.com",
 		"method": "queue",
 		"smtp": {
 			"host": "localhost",
@@ -17,7 +18,6 @@
 			"tls": true,
 			"user": "noone",
 			"passwd": "nopasswd",
-			"from": "axegains@gmail.com"
 		}
 	},
 
