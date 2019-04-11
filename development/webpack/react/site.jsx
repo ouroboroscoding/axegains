@@ -85,6 +85,13 @@ class Site extends React.Component {
 					<div className="content">
 						<div>
 							<dl id="home">
+								<dt>v1.3.0</dt>
+								<dd>
+									<ul className="fa-ul">
+										<li><i className="fa-li fas fa-angle-double-right"></i>Added "Forgot Password" link on sign in window. Please note, you can not change your password in this way if you do not have an e-mail address associated with your account.</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Account icon (<i className="fas fa-user color-five"></i>) now works and through it you can change your alias, your e-mail, and your password.</li>
+									</ul>
+								</dd>
 								<dt>v1.2.0</dt>
 								<dd>
 									<ul className="fa-ul">

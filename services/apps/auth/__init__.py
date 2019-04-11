@@ -415,9 +415,9 @@ class Auth(Services.Service):
 		# Is there already a key in the thrower?
 		if 'forgot' in oThrower and 'regenerate' not in data:
 
-			# Is it not expired expired?
+			# Is it not expired?
 			if oThrower['forgot']['expires'] > int(time()):
-				return Services.Effect(error=1202)
+				return Services.Effect(True)
 
 		# Update the thrower with a timestamp (for expiry) and the key
 		sKey = StrHelper.random(32, '_0x')
@@ -425,14 +425,27 @@ class Auth(Services.Service):
 			"expires": int(time()) + 300,
 			"key": sKey
 		}
-		oThrower.save(changes=False)
+		if not oThrower.save(changes=False):
+			return Services.Effect(error=1103)
+
+		# Get the domain config
+		dConf = Conf.get("domain")
+
+		# Forgot email template variables
+		dTpl = {
+			"key": sKey,
+			"url": "%s://%s/#forgot=%s" % (
+				dConf['protocol'],
+				dConf['primary'],
+				sKey
+			)
+		}
 
 		# Email the user the key
-		dConf = Conf.get("domain")
 		oEffect = Services.create('communications', 'email', {
 			"_internal_": Services.internalKey(),
 			"from": "noreply@%s" % dConf['primary'],
-			"html_body": Templates.generate('email/forgot.html', {"key":sKey}, oThrower['locale']),
+			"html_body": Templates.generate('email/forgot.html', dTpl, oThrower['locale']),
 			"subject": Templates.generate('email/forgot_subject.txt', {}, oThrower['locale']),
 			"to": data['email'],
 		})
@@ -455,13 +468,13 @@ class Auth(Services.Service):
 		"""
 
 		# Verify fields
-		try: DictHelper.eval(data, ['email', 'passwd', 'key'])
+		try: DictHelper.eval(data, ['passwd', 'key'])
 		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
-		# Look for the thrower by email
-		oThrower = Thrower.get(data['email'], index='email', limit=1)
+		# Look for the thrower by the key
+		oThrower = Thrower.get(filter={"forgot": {"key": data['key']}}, limit=1)
 		if not oThrower:
-			return Services.Effect(error=1203) # Don't let people know if the email exists or not
+			return Services.Effect(error=1203) # Don't let people know if the key exists or not
 
 		# Check if we even have a forgot section, or the key has expired, or the
 		#	key is invalid
@@ -476,6 +489,7 @@ class Auth(Services.Service):
 
 		# Store the new password and update
 		oThrower['passwd'] = Thrower.passwordHash(data['passwd'])
+		oThrower.fieldDelete('forgot')
 		oThrower.save(changes=False)
 
 		# Return OK
@@ -691,6 +705,43 @@ class Auth(Services.Service):
 			}
 		})
 
+	def throwerAlias_update(self, data, sesh):
+		"""Thrower Alias
+
+		Changes the alias associated with the thrower
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- The session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['alias'])
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
+
+		# If the alias is invalid
+		if not Thrower.struct()['tree']['alias'].valid(data['alias']):
+			return Services.Effect(error=(1001, [('alias', 'invalid')]))
+
+		# Look for someone else with that alias
+		dThrower = Thrower.get(data['alias'], index='alias', raw=['_id'])
+		if dThrower:
+			return Services.Effect(error=(1200, data['alias']))
+
+		# Try to change the alias
+		if not Thrower.alias(sesh['thrower']['_id'], data['alias']):
+			return Services.Effect(False)
+
+		# Update the session
+		sesh['thrower']['alias'] = data['alias']
+		sesh.save()
+
+		# Return OK
+		return Services.Effect(True)
+
 	def throwerAliases_read(self, data):
 		"""Thrower Aliases
 
@@ -727,7 +778,7 @@ class Auth(Services.Service):
 		})
 
 	def throwerEmail_update(self, data, sesh):
-		"""Thrower My Email
+		"""Thrower Email
 
 		Changes the email for the current signed in user
 
@@ -748,7 +799,7 @@ class Auth(Services.Service):
 		if not oThrower:
 			return Services.Effect(error=1104)
 
-		# Validate the old password
+		# Validate the password
 		if not oThrower.passwordValidate(data['email_passwd']):
 			return Services.Effect(error=(1001, [('email_passwd', 'invalid')]))
 
@@ -788,6 +839,43 @@ class Auth(Services.Service):
 		})
 		if oEffect.errorExists():
 			return oEffect
+
+		# Return OK
+		return Services.Effect(True)
+
+	def throwerPasswd_update(self, data, sesh):
+		"""Thrower Password
+
+		Changes the password for the current signed in user
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- The session associated with the user
+
+		Returns:
+			Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['passwd', 'new_passwd'])
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
+
+		# Find the thrower
+		oThrower = Thrower.get(sesh['thrower']['_id'])
+		if not oThrower:
+			return Services.Effect(error=1104)
+
+		# Validate the password
+		if not oThrower.passwordValidate(data['passwd']):
+			return Services.Effect(error=(1001, [('passwd', 'invalid')]))
+
+		# Make sure the new password is strong enough
+		if not Thrower.passwordStrength(data['new_passwd']):
+			return Services.Effect(error=1204)
+
+		# Set the new password and save
+		oThrower['passwd'] = Thrower.passwordHash(data['new_passwd'])
+		oThrower.save(changes={"creator":sesh['thrower']['_id']})
 
 		# Return OK
 		return Services.Effect(True)

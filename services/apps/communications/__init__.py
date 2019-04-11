@@ -161,9 +161,7 @@ class Service(Services.Service):
 				mAttachments = data['attachments']
 
 			# Send the e-mail
-			#iRes = SMTP.send(data['to'], data['subject'], text_body=data['text_body'], html_body=data['html_body'], from_=data['from'], attachments=mAttachments)
-			print('!!!Email sending turned off during development!!!')
-			iRes = SMTP.OK
+			iRes = SMTP.send(data['to'], data['subject'], text_body=data['text_body'], html_body=data['html_body'], from_=data['from'], attachments=mAttachments)
 
 			# If there was an error
 			if iRes != SMTP.OK:

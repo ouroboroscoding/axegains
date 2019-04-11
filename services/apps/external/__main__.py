@@ -92,7 +92,7 @@ def verify(id, key):
 		emailEffect(oEffect, {"request":"verify", "id": id, "key":key})
 		return show500()
 
-	# Redirect to my
+	# Redirect to main site
 	dConf = Conf.get("domain")
 	bottle.redirect("%s://%s/#verified" % (
 		dConf['protocol'],
