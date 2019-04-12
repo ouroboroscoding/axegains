@@ -4,6 +4,7 @@
 		"host": "primary",
 		"indexes": {
 			"finished": null,
+			"calculate": ["finished", "calculated"],
 			"initiator": null,
 			"opponent": null
 		},
@@ -13,6 +14,7 @@
 	"_id": {"__type__":"uuid", "__optional__":true},
 	"_created": "timestamp",
 	"finished": "bool",
+	"calculated": "bool",
 	"initiator": "uuid",
 	"opponent": "uuid",
 	"games": {

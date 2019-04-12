@@ -1,0 +1,56 @@
+{
+	"__rethinkdb__": {
+		"auto_primary": false,
+		"db": "axegains",
+		"host": "primary",
+		"indexes": {},
+		"primary": "_thrower",
+		"table": "natf_match_stats"
+	},
+	"__name__": "NATF_Match_Stats",
+	"_thrower": {"__type__":"uuid"},
+	"matches": "uint",
+	"points": "uint",
+	"wins": "uint",
+	"losses": "uint",
+	"eightyone": "uint",
+	"supernaturals": "uint",
+	"naturals": "uint",
+	"unnaturals": "uint",
+	"clutches": {
+		"attempts": "uint",
+		"drops": "uint",
+		"hits": "uint"
+	},
+	"regular": {
+		"attempts": "uint",
+		"drops": "uint",
+		"fives": "uint",
+		"threes": "uint",
+		"ones": "uint",
+		"zeros": "uint"
+	},
+	"bigaxe": {
+		"matches": "uint",
+		"wins": "uint",
+		"losses": "uint",
+		"clutches": {
+			"attempts": "uint",
+			"drops": "uint",
+			"hits": "uint"
+		},
+		"paint": {
+			"attempts": "uint",
+			"drops": "uint",
+			"hits": "uint"
+		},
+		"points": {
+			"attempts": "uint",
+			"drops": "uint",
+			"fives": "uint",
+			"threes": "uint",
+			"ones": "uint",
+			"zeros": "uint"
+		}
+	}
+}

@@ -12,6 +12,7 @@
 var Events = require('../../generic/events.js');
 var Loader = require('../../generic/loader.js');
 var Services = require('../../generic/services.js');
+var Tools = require('../../generic/tools.js');
 
 // Site modules
 var Utils = require('../../utils.js');
@@ -223,34 +224,40 @@ class Stats extends React.Component {
 									<th className="rate">Clutch</th>
 								</tr>
 							</thead>
-							<tbody>
-								<tr>
-									<td>Overall</td>
-									<td>{practice.total.points.total}</td>
-									<td>{practice.total.throws.attempts}</td>
-									<td>{practice.total.throws.drops}</td>
-									<td>{practice.total.average.total}</td>
-									<td>{practice.total.average.target}</td>
-									<td>{practice.total.rate.total}%</td>
-									<td>{practice.total.rate.target}%</td>
-									<td>{practice.total.rate.clutch}%</td>
-								</tr>
-								{practice.last.map(function(o, i) {
-									return (
-										<tr key={i} data-id={o._id} className="session" onClick={self.practiceData}>
-											<td>{Utils.date(o._created)}</td>
-											<td>{o.points.total}</td>
-											<td>{o.throws.attempts}</td>
-											<td>{o.throws.drops}</td>
-											<td>{o.average.total}</td>
-											<td>{o.average.target}</td>
-											<td>{o.rate.total}%</td>
-											<td>{o.rate.target}%</td>
-											<td>{o.rate.clutch}%</td>
-										</tr>
-									);
-								})}
-							</tbody>
+							{Tools.empty(practice.total) ?
+								<tbody>
+									<tr><td colSpan="9">No practices recorded</td></tr>
+								</tbody>
+							:
+								<tbody>
+									<tr>
+										<td>Overall</td>
+										<td>{practice.total.points.total}</td>
+										<td>{practice.total.throws.attempts}</td>
+										<td>{practice.total.throws.drops}</td>
+										<td>{practice.total.average.total}</td>
+										<td>{practice.total.average.target}</td>
+										<td>{practice.total.rate.total}%</td>
+										<td>{practice.total.rate.target}%</td>
+										<td>{practice.total.rate.clutch}%</td>
+									</tr>
+									{practice.last.map(function(o, i) {
+										return (
+											<tr key={i} data-id={o._id} className="session" onClick={self.practiceData}>
+												<td>{Utils.date(o._created)}</td>
+												<td>{o.points.total}</td>
+												<td>{o.throws.attempts}</td>
+												<td>{o.throws.drops}</td>
+												<td>{o.average.total}</td>
+												<td>{o.average.target}</td>
+												<td>{o.rate.total}%</td>
+												<td>{o.rate.target}%</td>
+												<td>{o.rate.clutch}%</td>
+											</tr>
+										);
+									})}
+								</tbody>
+							}
 						</table>
 						{!this.state.practice_all &&
 							<p className="link" onClick={this.practiceStatsAll}>Fetch All</p>
