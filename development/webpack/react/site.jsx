@@ -85,6 +85,13 @@ class Site extends React.Component {
 					<div className="content">
 						<div>
 							<dl id="home">
+								<dt>v1.4.0</dt>
+								<dd>
+									<ul className="fa-ul">
+										<li><i className="fa-li fas fa-angle-double-right"></i>Now storing overall NATF practice stats instead of generating them every time. Stats page loads faster.</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Started generating stats for NATF matches. Takes about a minute after a match is finished to update.</li>
+									</ul>
+								</dd>
 								<dt>v1.3.0</dt>
 								<dd>
 									<ul className="fa-ul">

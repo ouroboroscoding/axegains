@@ -13,7 +13,7 @@
 	"points": "uint",
 	"wins": "uint",
 	"losses": "uint",
-	"eightyone": "uint",
+	"eightyones": "uint",
 	"supernaturals": "uint",
 	"naturals": "uint",
 	"unnaturals": "uint",
@@ -34,23 +34,25 @@
 		"matches": "uint",
 		"wins": "uint",
 		"losses": "uint",
-		"clutches": {
-			"attempts": "uint",
-			"drops": "uint",
-			"hits": "uint"
-		},
 		"paint": {
 			"attempts": "uint",
 			"drops": "uint",
 			"hits": "uint"
 		},
 		"points": {
-			"attempts": "uint",
-			"drops": "uint",
-			"fives": "uint",
-			"threes": "uint",
-			"ones": "uint",
-			"zeros": "uint"
+			"clutches": {
+				"attempts": "uint",
+				"drops": "uint",
+				"hits": "uint"
+			},
+			"regular": {
+				"attempts": "uint",
+				"drops": "uint",
+				"fives": "uint",
+				"threes": "uint",
+				"ones": "uint",
+				"zeros": "uint"
+			}
 		}
 	}
 }

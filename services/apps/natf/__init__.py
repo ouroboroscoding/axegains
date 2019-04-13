@@ -22,7 +22,7 @@ from RestOC import Conf, DictHelper, Errors, Record_ReDB, Services, Sesh
 from shared import Sync
 
 # Service imports
-from .Records import Match, Practice, PracticeStats
+from .Records import Match, MatchStats, Practice, PracticeStats
 
 class Natf(Services.Service):
 	"""NATF Service class
@@ -748,6 +748,28 @@ class Natf(Services.Service):
 
 		# Return OK
 		return Services.Effect(True)
+
+	def matchStats_read(self, data, sesh):
+		"""Match Stats
+
+		Fetches the total stats for all NATF matches
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# If the thrower is not passed, assume the logged in thrower
+		if 'thrower' not in data:
+			data['thrower'] = sesh['thrower']['_id']
+
+		# Fetch the total stats for the thrower and return them
+		return Services.Effect(
+			MatchStats.get(data['thrower'], raw=True)
+		)
 
 	def matchUnfinished_read(self, data, sesh):
 		"""Match Unfinished

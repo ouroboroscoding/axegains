@@ -18,7 +18,7 @@ from time import time
 from RestOC import Conf, Record_ReDB
 
 # Service imports
-from apps.natf.Records import Match, MatchStats, Queue
+from apps.natf.Records import Match, MatchStats
 
 # Cron imports
 from . import isRunning
@@ -40,19 +40,16 @@ def run(which):
 			return 0
 
 		# Else, get matches
-		if not matches()
+		if not matches():
 			return 1
 
 	# Return OK
 	return 0
 
-def matches(_id):
+def matches():
 	"""Matches
 
 	Calculates the stats for the given match
-
-	Arguments:
-		_id {str} -- The UUID of the match
 
 	Returns:
 		bool

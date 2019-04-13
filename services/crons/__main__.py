@@ -48,9 +48,10 @@ sCron = sys.argv[1]
 # Try to import the cron
 try:
 	oCron = importlib.import_module('crons.%s' % sCron)
-except ImportError:
+except ImportError as e:
 	print('The given cron "%s" is invalid.' % sCron)
+	print(e)
 	sys.exit(1)
 
 # Run the cron with whatever additional arguments were passed
-os.exit(oCron.run(*(sys.arg[2:]))
+sys.exit(oCron.run(*(sys.argv[2:])))

@@ -151,20 +151,22 @@ class Match(Record_ReDB.Record):
 			"matches": 1,
 			"points": 0,
 			"wins": 0, "losses": 0,
-			"eightyone": 0, "supernatural": 0, "natural": 0, "unnatural": 0,
+			"eightyones": 0, "supernaturals": 0, "naturals": 0, "unnaturals": 0,
 			"clutches": {"attempts": 0, "drops": 0, "hits": 0},
-			"regular": {"attempts": 0, "drops": 0, "five": 0, "three": 0, "one": 0, "zero": 0},
+			"regular": {"attempts": 0, "drops": 0, "fives": 0, "threes": 0, "ones": 0, "zeros": 0},
 			"bigaxe": {
 				"matches": 0,
 				"wins": 0, "losses": 0,
-				"clutches": {"attempts": 0, "drops": 0, "hits": 0},
 				"paint": {"attempts": 0, "drops": 0, "hits": 0},
-				"points": {"attempts": 0, "drops": 0, "fives": 0, "threes": 0, "ones": 0, "zeros": 0}
+				"points": {
+					"clutches": {"attempts": 0, "drops": 0, "hits": 0},
+					"regular": {"attempts": 0, "drops": 0, "fives": 0, "threes": 0, "ones": 0, "zeros": 0}
+				}
 			}
 		}
 
 		# Opponent is opposite of _is
-		sO = _is == 't' and 'o' or 'i'
+		sO = (_is == 'i' and 'o' or 'i')
 
 		# Init the game wins
 		dWins = {'i': 0, 'o': 0}
@@ -184,51 +186,54 @@ class Match(Record_ReDB.Record):
 				if self._dRecord['games'][g]['o'][t] != 'd':
 					dPoints['o'] += self._dRecord['games'][g]['o'][t]
 
+				# Increase the attempts
+				dStats['regular']['attempts'] += 1
+
 				# Increase the type of throw
-				if self._dRecord['games'][g]['i'][t] == 'd':
-					dStruct['regular']['drops'] += 1
-				elif self._dRecord['games'][g]['i'][t] == 5:
-					dStruct['regular']['fives'] += 1
-				elif self._dRecord['games'][g]['i'][t] == 3:
-					dStruct['regular']['threes'] += 1
-				elif self._dRecord['games'][g]['i'][t] == 1:
-					dStruct['regular']['ones'] += 1
-				elif self._dRecord['games'][g]['i'][t] == 0:
-					dStruct['regular']['zeros'] += 1
+				if self._dRecord['games'][g][_is][t] == 'd':
+					dStats['regular']['drops'] += 1
+				elif self._dRecord['games'][g][_is][t] == 5:
+					dStats['regular']['fives'] += 1
+				elif self._dRecord['games'][g][_is][t] == 3:
+					dStats['regular']['threes'] += 1
+				elif self._dRecord['games'][g][_is][t] == 1:
+					dStats['regular']['ones'] += 1
+				elif self._dRecord['games'][g][_is][t] == 0:
+					dStats['regular']['zeros'] += 1
 
 			# Add the points for throw 5
-			if self._dRecord['games'][g]['i']['5'] != 'd':
-				dPoints['i'] += self._dRecord['games'][g]['i']['5'].value
-			if self._dRecord['games'][g]['o']['5'] != 'd':
-				dPoints['o'] += self._dRecord['games'][g]['o']['5'].value
+			if self._dRecord['games'][g]['i']['5']['value'] != 'd':
+				dPoints['i'] += self._dRecord['games'][g]['i']['5']['value']
+			if self._dRecord['games'][g]['o']['5']['value'] != 'd':
+				dPoints['o'] += self._dRecord['games'][g]['o']['5']['value']
 
 			# If it's a clutch
-			if self._dRecord['games'][g]['i']['5'].clutch:
+			if self._dRecord['games'][g][_is]['5']['clutch']:
 				dStats['clutches']['attempts'] += 1
 
 				# If it's a drop
-				if self._dRecord['games'][g]['i']['5'].value == 'd':
+				if self._dRecord['games'][g][_is]['5']['value'] == 'd':
 					dStats['clutches']['drops'] += 1
 
 				# Else if it's a 7
-				elif self._dRecord['games'][g]['i']['5'].value == 7:
+				elif self._dRecord['games'][g][_is]['5']['value'] == 7:
 					dStats['clutches']['hits'] += 1
 
 			# Else it's a regular throw
 			else:
-				dStruct['regular']['attempts'] += 1
+				dStats['regular']['attempts'] += 1
 
 				# Increase the type of throw
-				if self._dRecord['games'][g]['i']['5'] == 'd':
-					dStruct['regular']['drops'] += 1
-				elif self._dRecord['games'][g]['i']['5'] == 5:
-					dStruct['regular']['fives'] += 1
-				elif self._dRecord['games'][g]['i']['5'] == 3:
-					dStruct['regular']['threes'] += 1
-				elif self._dRecord['games'][g]['i']['5'] == 1:
-					dStruct['regular']['ones'] += 1
-				elif self._dRecord['games'][g]['i']['5'] == 0:
-					dStruct['regular']['zeros'] += 1
+				if self._dRecord['games'][g][_is]['5']['value'] == 'd':
+					dStats['regular']['drops'] += 1
+				elif self._dRecord['games'][g][_is]['5']['value'] == 5:
+					dStats['regular']['fives'] += 1
+				elif self._dRecord['games'][g][_is]['5']['value'] == 3:
+					dStats['regular']['threes'] += 1
+				elif self._dRecord['games'][g][_is]['5']['value'] == 1:
+					dStats['regular']['ones'] += 1
+				elif self._dRecord['games'][g][_is]['5']['value'] == 0:
+					dStats['regular']['zeros'] += 1
 
 			# If the points are 27
 			if dPoints[_is] == 27:
@@ -238,7 +243,7 @@ class Match(Record_ReDB.Record):
 			elif dPoints[_is] == 25:
 
 				# If we got a clutch
-				if self._dRecord['games'][g][_is]['5'].clutch:
+				if self._dRecord['games'][g][_is]['5']['clutch']:
 					dStats['unnaturals'] += 1
 				else:
 					dStats['naturals'] += 1
@@ -254,7 +259,7 @@ class Match(Record_ReDB.Record):
 
 		# If we got 81 points
 		if dStats['points'] == 81:
-			dStats['eightyone'] = 1
+			dStats['eightyones'] = 1
 
 		# If the thrower won
 		if dWins[_is] > dWins[sO]:
@@ -266,9 +271,100 @@ class Match(Record_ReDB.Record):
 
 		# Else, go to big axe
 		else:
-			pass
 
-		return {}
+			# Increase the bigaxe matches played
+			dStats['bigaxe']['matches'] += 1
+
+			# Init the points per thrower
+			dPoints = {'i': 0, 'o': 0}
+
+			# Go through every target (paint) throw
+			for i in range(len(self._dRecord['bigaxe']['target'][_is])):
+
+				# Update the points
+				if self._dRecord['bigaxe']['target']['i'][i] == 1:
+					dPoints['i'] += 1
+				if self._dRecord['bigaxe']['target']['o'][i] == 1:
+					dPoints['o'] += 1
+
+				# Increase attempts
+				dStats['bigaxe']['paint']['attempts'] += 1
+
+				# If we got a drop
+				if self._dRecord['bigaxe']['target'][_is][i] == 'd':
+					dStats['bigaxe']['paint']['drops'] += 1
+
+				# If we got a hit
+				if self._dRecord['bigaxe']['target'][_is][i] == 1:
+					dStats['bigaxe']['paint']['hits'] += 1
+
+			# If the thrower won
+			if dPoints[_is] > dPoints[sO]:
+				dStats['wins'] += 1
+				dStats['bigaxe']['wins'] += 1
+
+			# If the thrower lost
+			elif dPoints[_is] < dPoints[sO]:
+				dStats['losses'] += 1
+				dStats['bigaxe']['losses'] += 1
+
+			# Else, no winner yet, check points
+			else:
+
+				# Init the points per thrower
+				dPoints = {'i': 0, 'o': 0}
+
+				# Go through every points throw
+				for i in range(len(self._dRecord['bigaxe']['points'][_is])):
+
+					# Update the points
+					if self._dRecord['bigaxe']['points']['i'][i]['value'] != 'd':
+						dPoints['i'] += self._dRecord['bigaxe']['points']['i'][i]['value']
+					if self._dRecord['bigaxe']['points']['o'][i]['value'] != 'd':
+						dPoints['o'] += self._dRecord['bigaxe']['points']['o'][i]['value']
+
+					# If it's a clutch
+					if self._dRecord['bigaxe']['points'][_is][i]['clutch']:
+
+						# Increase attempts
+						dStats['bigaxe']['points']['clutches']['attempts'] += 1
+
+						# If it's a drop
+						if self._dRecord['bigaxe']['points'][_is][i]['value'] == 'd':
+							dStats['bigaxe']['points']['clutches']['drops'] += 1
+
+						# If it's a hit
+						if self._dRecord['bigaxe']['points'][_is][i]['value'] == 7:
+							dStats['bigaxe']['points']['clutches']['hits'] += 1
+
+					# Else it's a regular throw
+					else:
+
+						# Increase attempts
+						dStats['bigaxe']['points']['regular']['attempts'] += 1
+
+						# Increase the type of throw
+						if self._dRecord['bigaxe']['points'][_is][i]['value'] == 'd':
+							dStats['bigaxe']['points']['regular']['drops'] += 1
+						elif self._dRecord['bigaxe']['points'][_is][i]['value'] == 5:
+							dStats['bigaxe']['points']['regular']['fives'] += 1
+						elif self._dRecord['bigaxe']['points'][_is][i]['value'] == 3:
+							dStats['bigaxe']['points']['regular']['threes'] += 1
+						elif self._dRecord['bigaxe']['points'][_is][i]['value'] == 1:
+							dStats['bigaxe']['points']['regular']['ones'] += 1
+						elif self._dRecord['bigaxe']['points'][_is][i]['value'] == 0:
+							dStats['bigaxe']['points']['regular']['zeros'] += 1
+
+				# Who won?
+				if dPoints[_is] > dPoints[sO]:
+					dStats['wins'] += 1
+					dStats['bigaxe']['wins'] += 1
+				elif dPoints[_is] < dPoints[sO]:
+					dStats['losses'] += 1
+					dStats['bigaxe']['losses'] += 1
+
+		# Return the calculated stats
+		return dStats
 
 	@classmethod
 	def finishBigAxe(cls, _type, _id, _is):
@@ -560,20 +656,73 @@ class MatchStats(Record_ReDB.Record):
 			bool
 		"""
 
+		# Add the thrower to the stats
+		stats['_thrower'] = thrower
+
 		# Get the structure
 		dStruct = cls.struct()
+
+		# Simplify
+		r = Record_ReDB.r
 
 		# Get a connection to the host
 		with Record_ReDB._with(dStruct['host']) as oCon:
 
 			# Up to the table
-			t = Record_ReDB.r.db(dStruct['db']).table(dStruct['table'])
+			t = r.db(dStruct['db']).table(dStruct['table'])
 
 			# Generate the rethink query
-			dRes = Record_ReDB.r.branch(
+			dRes = r.branch(
 				t.get(thrower).ne(None),
-				t.get(thrower).update().run(oCon),
-				t.insert().run(oCon)
+				t.get(thrower).update({
+					"matches": r.row['matches'] + stats['matches'],
+					"points": r.row['points'] + stats['points'],
+					"wins": r.row['wins'] + stats['wins'],
+					"losses": r.row['losses'] + stats['losses'],
+					"eightyones": r.row['eightyones'] + stats['eightyones'],
+					"supernaturals": r.row['supernaturals'] + stats['supernaturals'],
+					"naturals": r.row['naturals'] + stats['naturals'],
+					"unnaturals": r.row['unnaturals'] + stats['unnaturals'],
+					"clutches": {
+						"attempts": r.row['clutches']['attempts'] + stats['clutches']['attempts'],
+						"drops": r.row['clutches']['drops'] + stats['clutches']['drops'],
+						"hits": r.row['clutches']['hits'] + stats['clutches']['hits']
+					},
+					"regular": {
+						"attempts": r.row['regular']['attempts'] + stats['regular']['attempts'],
+						"drops": r.row['regular']['drops'] + stats['regular']['drops'],
+						"fives": r.row['regular']['fives'] + stats['regular']['fives'],
+						"threes": r.row['regular']['threes'] + stats['regular']['threes'],
+						"ones": r.row['regular']['ones'] + stats['regular']['ones'],
+						"zeros": r.row['regular']['zeros'] + stats['regular']['zeros']
+					},
+					"bigaxe": {
+						"matches": r.row['bigaxe']['matches'] + stats['bigaxe']['matches'],
+						"wins": r.row['bigaxe']['wins'] + stats['bigaxe']['wins'],
+						"losses": r.row['bigaxe']['losses'] + stats['bigaxe']['losses'],
+						"paint": {
+							"attempts": r.row['bigaxe']['paint']['attempts'] + stats['bigaxe']['paint']['attempts'],
+							"drops": r.row['bigaxe']['paint']['drops'] + stats['bigaxe']['paint']['drops'],
+							"hits": r.row['bigaxe']['paint']['hits'] + stats['bigaxe']['paint']['hits']
+						},
+						"points": {
+							"clutches": {
+								"attempts": r.row['bigaxe']['points']['clutches']['attempts'] + stats['bigaxe']['points']['clutches']['attempts'],
+								"drops": r.row['bigaxe']['points']['clutches']['drops'] + stats['bigaxe']['points']['clutches']['drops'],
+								"hits": r.row['bigaxe']['points']['clutches']['hits'] + stats['bigaxe']['points']['clutches']['hits']
+							},
+							"regular": {
+								"attempts": r.row['bigaxe']['points']['regular']['attempts'] + stats['bigaxe']['points']['regular']['attempts'],
+								"drops": r.row['bigaxe']['points']['regular']['drops'] + stats['bigaxe']['points']['regular']['drops'],
+								"fives": r.row['bigaxe']['points']['regular']['fives'] + stats['bigaxe']['points']['regular']['fives'],
+								"threes": r.row['bigaxe']['points']['regular']['threes'] + stats['bigaxe']['points']['regular']['threes'],
+								"ones": r.row['bigaxe']['points']['regular']['ones'] + stats['bigaxe']['points']['regular']['ones'],
+								"zeros": r.row['bigaxe']['points']['regular']['zeros'] + stats['bigaxe']['points']['regular']['zeros']
+							}
+						}
+					}
+				}).run(oCon),
+				t.insert(stats).run(oCon)
 			)
 
 			# Return true if something was updated

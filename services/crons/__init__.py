@@ -48,6 +48,9 @@ def isRunning(name):
 		bool
 	"""
 
+	# Import pidfile list
+	global _lPidFiles
+
 	# Generate the nameof the files
 	sFile = '/tmp/%s.pid' % name
 
@@ -55,6 +58,13 @@ def isRunning(name):
 	if os.path.isfile(sFile):
 		return True
 
-	# Create the file
-	file(pidfile, 'w').write(str(os.getpid()))
+	# Create the file, write to, and close the file
+	oFile = open(sFile, 'w')
+	oFile.write(str(os.getpid()))
+	oFile.close()
+
+	# Add the file to the pidfiles
+	_lPidFiles.append(sFile)
+
+	# Return was not running
 	return False

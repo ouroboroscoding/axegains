@@ -56,6 +56,7 @@ REST.Server({
 	"/match/finish/bigaxe/target": {"methods": REST.UPDATE, "session": True},
 	"/match/finish/games": {"methods": REST.UPDATE, "session": True},
 	"/match/game": {"methods": REST.UPDATE, "session": True},
+	"/match/stats": {"methods": REST.READ, "session": True},
 	"/match/unfinished": {"methods": REST.READ, "session": True},
 
 	"/practice": {"methods": REST.CREATE, "session": True},
