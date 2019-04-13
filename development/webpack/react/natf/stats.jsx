@@ -289,7 +289,7 @@ class Stats extends React.Component {
 					<div>Losses</div>
 				</div>
 				<div className="mwl">
-					<div>{match.matches}</div>
+					<div>{match.bigaxe.matches}</div>
 					<div className="win">{match.bigaxe.wins}</div>
 					<div className="loss">{match.bigaxe.losses}</div>
 				</div>
