@@ -1,0 +1,25 @@
+{
+	"__rethinkdb__": {
+		"auto_primary": false,
+		"db": "axegains",
+		"host": "primary",
+		"indexes": {},
+		"primary": "_thrower",
+		"table": "natf_practice_stats"
+	},
+	"__name__": "NATF_Practice_Stats",
+	"_thrower": {"__type__":"uuid"},
+	"clutches": {
+		"attempts": "uint",
+		"hits": "uint"
+	},
+	"points": {
+		"target": "uint",
+		"total": "uint"
+	},
+	"throws": {
+		"attempts": "uint",
+		"drops": "uint",
+		"hits": "uint"
+	}
+}

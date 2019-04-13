@@ -4,9 +4,6 @@
 Handles syncing through long polling between apps and DB
 """
 
-# Import future
-from __future__ import print_function, absolute_import
-
 __author__		= "Chris Nasr"
 __copyright__	= "OuroborosCoding"
 __version__		= "1.0.0"
