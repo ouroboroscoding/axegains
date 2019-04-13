@@ -4,7 +4,7 @@
  * Classes and functions used by all forms
  *
  * @author Chris Nasr
- * @copyright FUEL for the FIRE
+ * @copyright OuroborosCoding
  * @create 2018-12-08
  */
 

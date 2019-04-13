@@ -4,9 +4,6 @@
 Handles everything related to NATF practice, matches, etc.
 """
 
-# Import future
-from __future__ import print_function, absolute_import
-
 __author__		= "Chris Nasr"
 __copyright__	= "OuroborosCoding"
 __version__		= "1.0.0"
@@ -59,6 +56,7 @@ REST.Server({
 	"/match/finish/bigaxe/target": {"methods": REST.UPDATE, "session": True},
 	"/match/finish/games": {"methods": REST.UPDATE, "session": True},
 	"/match/game": {"methods": REST.UPDATE, "session": True},
+	"/match/stats": {"methods": REST.READ, "session": True},
 	"/match/unfinished": {"methods": REST.READ, "session": True},
 
 	"/practice": {"methods": REST.CREATE, "session": True},

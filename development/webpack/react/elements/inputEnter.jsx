@@ -5,7 +5,7 @@
  * callback
  *
  * @author Chris Nasr
- * @copyright FUEL for the FIRE
+ * @copyright OuroborosCoding
  * @created 2018-12-01
  */
 

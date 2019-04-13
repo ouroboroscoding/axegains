@@ -1,3 +1,16 @@
+# coding=utf8
+""" Upgrades code
+
+Available classes/functions for running upgrades
+"""
+
+__author__		= "Chris Nasr"
+__copyright__	= "OuroborosCoding"
+__version__		= "1.0.0"
+__maintainer__	= "Chris Nasr"
+__email__		= "chris@fuelforthefire.ca"
+__created__		= "2019-03-30"
+
 # Python imports
 from time import time
 

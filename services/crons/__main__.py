@@ -1,7 +1,7 @@
 # coding=utf8
-""" Upgrades Entry
+"""Crons entry
 
-Handles running upgrade scripts
+Handles running cron scripts
 """
 
 __author__		= "Chris Nasr"
@@ -9,7 +9,7 @@ __copyright__	= "OuroborosCoding"
 __version__		= "1.0.0"
 __maintainer__	= "Chris Nasr"
 __email__		= "chris@fuelforthefire.ca"
-__created__		= "2019-03-30"
+__created__		= "2019-04-12"
 
 # Python imports
 import importlib
@@ -20,16 +20,10 @@ import sys
 # Pip imports
 from RestOC import Conf, Record_Base, Record_ReDB, REST, Services
 
-# Upgrade imports
-from . import UpgradeLog, run
-
 # If the version argument is missing
 if len(sys.argv) < 2:
-	print('Must specify the version to run:\n\tpython -m upgrades v1.0')
+	print('Must specify the cron to run:\n\tpython -m crons natf')
 	sys.exit(1)
-
-# Store the version
-sVer = sys.argv[1].replace('.', '_')
 
 # Load the config
 Conf.load('../config.json')
@@ -48,16 +42,16 @@ Services.register(
 	Conf.get(('services', 'salt'))
 )
 
-# Try to import the version
+# Store the cron
+sCron = sys.argv[1]
+
+# Try to import the cron
 try:
-	oVer = importlib.import_module('upgrades.%s' % sVer)
+	oCron = importlib.import_module('crons.%s' % sCron)
 except ImportError as e:
-	print('The given version "%s" is invalid.' % sVer)
+	print('The given cron "%s" is invalid.' % sCron)
 	print(e)
 	sys.exit(1)
 
-# Load or create the version file
-oLogFile = UpgradeLog('upgrades/%s/_upgrade.log' % sVer)
-
-# Run the version files
-run(oVer.modules, oLogFile)
+# Run the cron with whatever additional arguments were passed
+sys.exit(oCron.run(*(sys.argv[2:])))

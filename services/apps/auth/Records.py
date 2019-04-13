@@ -4,9 +4,6 @@
 Handles the record structures for the auth service
 """
 
-# Import future
-from __future__ import print_function, absolute_import
-
 __author__		= "Chris Nasr"
 __copyright__	= "OuroborosCoding"
 __version__		= "1.0.0"
@@ -84,8 +81,8 @@ class Favourites(Record_ReDB.Record):
 				t.insert({
 					"_thrower": thrower,
 					"ids": [favourite]
-				})) \
-				.run(oCon)
+				}).run(oCon)
+			)
 
 			# Return True if a record was changed
 			return dRes['replaced'] == 1 or dRes['inserted'] == 1

@@ -8,7 +8,7 @@
 		"table": "favourites"
 	},
 	"__name__": "Favourites",
-	"_thrower": {"__type__":"uuid", "__optional__":true},
+	"_thrower": {"__type__":"uuid"},
 	"ids": {
 		"__array__": "unique",
 		"__type__": "uuid"

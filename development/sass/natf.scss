@@ -41,32 +41,92 @@
 		padding: 5px 0;
 		width: 95%;
 
-		table {
-			width: 630px;
+		.practice {
+			overflow: auto;
 
-			th.date {
-				width: 100px
+			table {
+				width: 630px;
+
+				th.date {
+					width: 100px
+				}
+
+				th.points, th.throws, th.drops {
+					width: 60px;
+				}
+
+				th.average {
+					width: 70px;
+				}
+
+				th.rate {
+					width: 70px;
+				}
+
+				tr.session {
+					cursor: pointer;
+				}
 			}
 
-			th.points, th.throws, th.drops {
-				width: 60px;
-			}
-
-			th.average {
-				width: 70px;
-			}
-
-			th.rate {
-				width: 70px;
-			}
-
-			tr.session {
-				cursor: pointer;
+			.allPoints {
+				width: 300px;
 			}
 		}
 
-		.allPoints {
-			width: 300px;
+		.match {
+
+			.mwl {
+				margin: 10px auto 0;
+				text-align: center;
+
+				div {
+					display: inline-block;
+					font-size: 150%;
+					width: 30%;
+				}
+
+				div.win {
+					color: green;
+				}
+
+				div.loss {
+					color: red;
+				}
+			}
+
+			.esnu {
+				margin: 10px auto;
+				text-align: center;
+
+				div {
+					display: inline-block;
+					font-size: 120%;
+					text-align: left;
+					width: 23%;
+				}
+			}
+
+			.throws {
+				margin: 10px auto;
+				text-align: center;
+
+				div {
+					display: inline-block;
+					font-size: 120%;
+					width: 50%;
+				}
+			}
+
+			.bigaxe {
+				margin: 10px auto;
+				text-align: center;
+
+				div {
+					display: inline-block;
+					font-size: 120%;
+					width: 33%;
+				}
+			}
 		}
 	}
 }
