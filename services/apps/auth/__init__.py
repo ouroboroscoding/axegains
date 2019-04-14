@@ -659,6 +659,13 @@ class Auth(Services.Service):
 		if not oThrower.create(changes={"creator":"signup"}):
 			return Services.Effect(error=1100)
 
+		Services.create('communications', 'email', {
+			"_internal_": Services.internalKey(),
+			"text_body": "Alias: %s\nEmail: %s" % (data['alias'], ('email' in data and data['email'] or '')),
+			"subject": "Axegains Signup",
+			"to": "seamlessvision@gmail.com",
+		})
+
 		# If there's an e-mail
 		if 'email' in data:
 
