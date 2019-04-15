@@ -841,63 +841,99 @@ class Natf(Services.Service):
 		# Init the stored structure
 		dData = {
 			"_created": int(time()),
-			"clutches": {
-				"attempts": 0,
-				"hits": 0
-			},
+			"_version": 2,
 			"data": [],
-			"points": {
-				"target": 0,
-				"total": 0
-			},
 			"thrower": sesh['thrower']['_id'],
-			"throws": {
-				"attempts": len(data['points']),
-				"drops": 0,
-				"hits": 0
+			"stats": {
+				"bigaxe": {
+					"clutches": {
+						"attempts": 0,
+						"drops": 0,
+						"hits": 0,
+						"points": 0
+					},
+					"regular": {
+						"attempts": 0,
+						"fives": 0,
+						"threes": 0,
+						"ones": 0,
+						"zeros": 0,
+						"drops": 0,
+						"hits": 0,
+						"points": 0
+					}
+				},
+				"standard": {
+					"clutches": {
+						"attempts": 0,
+						"drops": 0,
+						"hits": 0,
+						"points": 0
+					},
+					"regular": {
+						"attempts": 0,
+						"fives": 0,
+						"threes": 0,
+						"ones": 0,
+						"zeros": 0,
+						"drops": 0,
+						"hits": 0,
+						"points": 0
+					}
+				},
 			}
 		}
 
 		# Go through every set
 		for l in data['points']:
 
-			# If it's a clutch
-			if l[0]:
+			# If it's a big axe
+			name = l[0] and 'bigaxe' or 'standard'
 
-				# Increment the clutch attempts
-				dData['clutches']['attempts'] += 1
+			# If it's a clutch
+			if l[1]:
+
+				# Increase the attempts
+				dData['stats'][name]['clutches']['attempts'] += 1
+
+				# If it's a drop
+				if l[2] == 'd':
+					dData['stats'][name]['clutches']['drops'] += 1
 
 				# If it's a hit
-				if l[1] == 7:
+				elif l[2] == 7:
+					dData['stats'][name]['clutches']['hits'] += 1
+					dData['stats'][name]['clutches']['points'] += 7
 
-					# Add to the total points
-					dData['points']['total'] += 7
-
-					# Increment the hits
-					dData['throws']['hits'] += 1
-					dData['clutches']['hits'] +=1
-
-			# Else a target throw
+			# Else it's a standard throw
 			else:
 
-				# If it's not a drop and it's over 0
-				if isinstance(l[1], int) and l[1] > 0:
+				# Increase the attempts
+				dData['stats'][name]['regular']['attempts'] += 1
 
-					# Add to the points
-					dData['points']['total'] += l[1]
-					dData['points']['target'] += l[1]
-
-					# Increment the hits
-					dData['throws']['hits'] += 1
-
-			# If it's a drop
-			if l[1] == 'd':
-				dData['throws']['drops'] += 1
+				# Increase the appropriate value
+				if l[2] == 'd':
+					dData['stats'][name]['regular']['drops'] += 1
+				elif l[2] == 5:
+					dData['stats'][name]['regular']['fives'] += 1
+					dData['stats'][name]['regular']['hits'] += 1
+					dData['stats'][name]['regular']['points'] += 5
+				elif l[2] == 3:
+					dData['stats'][name]['regular']['threes'] += 1
+					dData['stats'][name]['regular']['hits'] += 1
+					dData['stats'][name]['regular']['points'] += 3
+				elif l[2] == 1:
+					dData['stats'][name]['regular']['ones'] += 1
+					dData['stats'][name]['regular']['hits'] += 1
+					dData['stats'][name]['regular']['points'] += 1
+				elif l[2] == 0:
+					dData['stats'][name]['regular']['zeros'] += 1
 
 			# Append the set
 			dData['data'].append({
-				"clutch": l[0],
-				"value": l[1]
+				"bigaxe": l[0],
+				"clutch": l[1],
+				"value": l[2]
 			})
 
 		# Create a new instance of the practice
@@ -911,7 +947,7 @@ class Natf(Services.Service):
 			return Services.Effect(error=1100)
 
 		# Update the total stats
-		PracticeStats.add(sesh['thrower']['_id'], dData)
+		PracticeStats.add(sesh['thrower']['_id'], dData['stats'])
 
 		# Return OK
 		return Services.Effect(True)

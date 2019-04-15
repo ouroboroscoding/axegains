@@ -10,26 +10,53 @@
 	"__name__": "NATF_Practice",
 	"_id": {"__type__":"uuid", "__optional__":true},
 	"_created": "timestamp",
-	"clutches": {
-		"attempts": "uint",
-		"hits": "uint"
-	},
+	"_version": "uint",
+	"thrower": "uuid",
 	"data": {
 		"__array__": "duplicates",
+		"bigaxe": "bool",
 		"clutch": "bool",
 		"value": [
 			{"__type__": "uint", "__options__": [0,1,3,5,7]},
 			{"__type__": "string", "__options__": ["d"]}
 		]
 	},
-	"points": {
-		"target": "uint",
-		"total": "uint"
-	},
-	"thrower": "uuid",
-	"throws": {
-		"attempts": "uint",
-		"drops": "uint",
-		"hits": "uint"
+	"stats": {
+		"bigaxe": {
+			"clutches": {
+				"attempts": "uint",
+				"drops": "uint",
+				"hits": "uint",
+				"points": "uint"
+			},
+			"regular": {
+				"attempts": "uint",
+				"fives": "uint",
+				"threes": "uint",
+				"ones": "uint",
+				"zeros": "uint",
+				"drops": "uint",
+				"hits": "uint",
+				"points": "uint"
+			}
+		},
+		"standard": {
+			"clutches": {
+				"attempts": "uint",
+				"drops": "uint",
+				"hits": "uint",
+				"points": "uint"
+			},
+			"regular": {
+				"attempts": "uint",
+				"fives": "uint",
+				"threes": "uint",
+				"ones": "uint",
+				"zeros": "uint",
+				"drops": "uint",
+				"hits": "uint",
+				"points": "uint"
+			}
+		}
 	}
 }

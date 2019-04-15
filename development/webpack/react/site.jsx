@@ -85,6 +85,13 @@ class Site extends React.Component {
 					<div className="content">
 						<div>
 							<dl id="home">
+								<dt>v1.5.0</dt>
+								<dd>
+									<ul className="fa-ul">
+										<li><i className="fa-li fas fa-angle-double-right"></i>Big axe mode now available in NATF practice.</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Can now create custom practice sessions in NATF. Click on <i className="fas fa-user color-five"></i> to create your own.</li>
+									</ul>
+								</dd>
 								<dt>v1.4.0</dt>
 								<dd>
 									<ul className="fa-ul">

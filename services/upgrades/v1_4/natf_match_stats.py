@@ -1,7 +1,7 @@
 # Pip imports
 from RestOC import Record_ReDB
 
-# Auth imports
+# NATF imports
 from apps.natf.Records import Match, MatchStats
 
 # Entry point
