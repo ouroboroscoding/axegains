@@ -30,6 +30,7 @@ class Practice extends React.Component {
 
 		// Initialise the state
 		this.state = {
+			"bigaxe": false,
 			"clutchAttempts": 0,
 			"clutchHits": 0,
 			"mode": null,
@@ -40,6 +41,7 @@ class Practice extends React.Component {
 		};
 
 		// Bind methods
+		this.bigaxe = this.bigaxe.bind(this);
 		this.modeSelect = this.modeSelect.bind(this);
 		this.overwrite = this.overwrite.bind(this);
 		this.points = this.points.bind(this);
@@ -49,6 +51,11 @@ class Practice extends React.Component {
 		this.save = this.save.bind(this);
 		this.signin = this.signin.bind(this);
 		this.signout = this.signout.bind(this);
+	}
+
+	bigaxe(ev) {
+		ev.stopPropagation();
+		this.setState({"bigaxe": !this.state.bigaxe});
 	}
 
 	componentWillMount() {
@@ -62,14 +69,12 @@ class Practice extends React.Component {
 			var new_state = JSON.parse(localStorage['natf_practice']);
 			new_state.thrower = this.state.thrower;
 			this.setState(new_state, function() {
-				if(this.state.mode == 'supernatural') {
-					if(this.state.points.length % 5 == 4) {
-						this.refs.board.clutchMode = 'expected';
-					} else {
-						this.refs.board.clutchMode = 'none';
-					}
-				} else if(this.state.mode == 'clutch') {
+				if(this.state.mode == 'clutch') {
 					this.refs.board.clutchMode = 'expected';
+				} else if(this.state.mode == 'darkunicorn') {
+					this.refs.board.clutchMode = (this.state.points.length % 5 == 4) ? 'none' : 'expected';
+				} else if(this.state.mode == 'supernatural') {
+					this.refs.board.clutchMode = (this.state.points.length % 5 == 4) ? 'expected' : 'none';
 				} else {
 					this.refs.board.clutchMode = 'select';
 				}
@@ -95,12 +100,13 @@ class Practice extends React.Component {
 			"mode": ev.currentTarget.dataset.mode
 		}, function() {
 			switch(this.state.mode) {
+				case 'clutch':
+				case 'darkunicorn':
+					this.refs.board.clutchMode = 'expected'; break;
 				case 'free':
 					this.refs.board.clutchMode = 'select'; break;
 				case 'supernatural':
 					this.refs.board.clutchMode = 'none'; break;
-				case 'clutch':
-					this.refs.board.clutchMode = 'expected'; break;
 			}
 		});
 	}
@@ -108,22 +114,28 @@ class Practice extends React.Component {
 	overwrite(ev) {
 		this.setState({"overwrite": true}, function() {
 
-			// If the mode is free
-			if(this.state.mode == 'free') {
+			// If the mode is dark unicorn
+			if(this.state.mode == 'darkunicorn') {
+				this.refs.board.clutchMode = (this.state.points.length % 5 == 0) ? 'none' : 'expected';
+			}
+
+			// Else if the mode is free
+			else if(this.state.mode == 'free') {
 				this.refs.board.clutchMode = 'select';
 			}
 
 			// Else if the mode is supernatural
 			else if(this.state.mode == 'supernatural') {
-
-				// If we're divisible by 5
-				if(this.state.points.length % 5 == 0) {
-					this.refs.board.clutchMode = 'expected';
-				} else {
-					this.refs.board.clutchMode = 'none';
-				}
+				this.refs.board.clutchMode = (this.state.points.length % 5 == 0) ? 'expected' : 'none';
 			}
 		});
+	}
+
+	pointsClass(d) {
+		var l = [];
+		if(d[0]) l.push('bigaxe');
+		if(d[1]) l.push('clutch');
+		return l.join(' ');
 	}
 
 	points(clutch, value) {
@@ -155,7 +167,7 @@ class Practice extends React.Component {
 		}
 
 		// Add to the points list
-		this.state.points.push([clutch, (value == 'd' ? value : v)]);
+		this.state.points.push([this.state.bigaxe, clutch, (value == 'd' ? 'd' : v)]);
 
 		// If we got a clutch attempt
 		if(clutch) {
@@ -177,12 +189,10 @@ class Practice extends React.Component {
 			"points": this.state.points,
 			"totalPoints": this.state.totalPoints
 		}, function() {
-			if(this.state.mode == 'supernatural') {
-				if(this.state.points.length % 5 == 4) {
-					this.refs.board.clutchMode = 'expected';
-				} else {
-					this.refs.board.clutchMode = 'none';
-				}
+			if(this.state.mode == 'darkunicorn') {
+				this.refs.board.clutchMode = (this.state.points.length % 5 == 4) ? 'none' : 'expected';
+			} else if(this.state.mode == 'supernatural') {
+				this.refs.board.clutchMode = (this.state.points.length % 5 == 4) ? 'expected' : 'none';
 			}
 		});
 	}
@@ -217,11 +227,14 @@ class Practice extends React.Component {
 					<dd>In free practice any points are available at any time. You must select the clutch first if you wish to try for it.</dd>
 					<dt data-mode="supernatural" onClick={this.modeSelect}>Supernatural / Unicorn</dt>
 					<dd>In supernatural practice every fifth throw is for clutch, and it will be pre-selected for you on those turns.</dd>
+					<dt data-mode="darkunicorn" onClick={this.modeSelect}>Dark Unicorn</dt>
+					<dd>In dark unicorn practice the first four throws are for clutch, and the fifth throw is for a bullseye.</dd>
 					<dt data-mode="clutch" onClick={this.modeSelect}>Clutch</dt>
 					<dd>In clutch practice every throw is for the clutch, and it will be pre-selected every turn.</dd>
 				</dl>
 				<div style={{"display": self.state.mode == null ? 'none':'block'}}>
 					<Board ref="board" clutchMode={self.state.mode} onPoints={self.points} />
+					<div className={"bigaxe" + (this.state.bigaxe ? ' on' : '')} onClick={this.bigaxe}>BA</div>
 					{self.state.points.length > 0 &&
 						<React.Fragment>
 							<div className="averages">
@@ -235,9 +248,9 @@ class Practice extends React.Component {
 								}
 								{self.state.points.slice(-29).map(function(p, i) {
 									if(i == last) {
-										return <span key={i} className={"last " + (self.state.overwrite ? 'overwrite' : (p[0] ? 'clutch' : ''))} onClick={self.overwrite}>{p[1]}</span>
+										return <span key={i} className={"last " + (self.state.overwrite ? 'overwrite' : self.pointsClass(p))} onClick={self.overwrite}>{p[2]}</span>
 									} else {
-										return <span key={i} className={p[0] ? 'clutch':''}>{p[1]}</span>
+										return <span key={i} className={self.pointsClass(p)}>{p[2]}</span>
 									}
 								})}
 							</div>
@@ -254,7 +267,7 @@ class Practice extends React.Component {
 						>
 							<div className="allPoints">
 								{self.state.points.map(function(p, i) {
-									return <span key={i} className={p[0] ? 'clutch':''}>{p[1]}</span>
+									return <span key={i} className={self.pointsClass(p)}>{p[2]}</span>
 								})}
 							</div>
 						</Modal>

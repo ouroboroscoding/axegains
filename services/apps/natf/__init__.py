@@ -970,14 +970,12 @@ class Natf(Services.Service):
 		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Fetch the practice data
-		dPractice = Practice.get(data['id'], raw=['data'])
+		dPractice = Practice.get(data['id'], raw=['data', 'stats'])
 		if not dPractice:
 			return Services.Effect(error=(1104, data['id']))
 
 		# Return the data
-		return Services.Effect(
-			[[d['clutch'], d['value']] for d in dPractice['data']]
-		)
+		return Services.Effect(dPractice)
 
 	def practiceStats_read(self, data, sesh):
 		"""Practice Stats
@@ -996,137 +994,14 @@ class Natf(Services.Service):
 		if 'thrower' not in data:
 			data['thrower'] = sesh['thrower']['_id']
 
-		# How many to fetch
-		if 'all' in data and data['all']:
-			limit = None
-		else:
-			limit = 5
+		# Fetch the ids and created dates of all practices
+		lPractices = Practice.get(data['thrower'], index='thrower', raw=['_id', '_created'], orderby='!_created')
 
-		# Fetch some or all of the practice records
-		lRecs = Practice.get(
-			data['thrower'], index='thrower',
-			raw=['_id', '_created', 'clutches', 'points', 'throws'],
-			orderby='!_created',
-			limit=limit
-		)
+		# Fetch the overall stats
+		dOverall = PracticeStats.get(data['thrower'], raw=True)
 
-		# Fetch the total stats for the thrower
-		dRec = PracticeStats.get(data['thrower'], raw=['clutches', 'points', 'throws'])
-
-		# Init the return data
-		dRet = {
-			"total": dRec and dRec or {},
-			"last": []
-		}
-
-		# Go through the indexes of the records
-		for i in range(len(lRecs)):
-
-			# Target attempts / hits
-			lRecs[i]['target'] = {
-				"attempts": lRecs[i]['throws']['attempts'] - lRecs[i]['clutches']['attempts'],
-				"hits": lRecs[i]['throws']['hits'] - lRecs[i]['clutches']['hits']
-			}
-
-			# Calculate the averages
-			lRecs[i]['average'] = {}
-			lRecs[i]['average']['total'] = (lRecs[i]['throws']['attempts'] != 0 and
-				round(
-					lRecs[i]['points']['total'] / lRecs[i]['throws']['attempts'],
-					2
-				) or
-				0.0
-			)
-			lRecs[i]['average']['target'] = (lRecs[i]['target']['attempts'] != 0 and
-				round(
-					lRecs[i]['points']['target'] / lRecs[i]['target']['attempts'],
-					2
-				) or
-				0.0
-			)
-
-			# Calculate the rates
-			lRecs[i]['rate'] = {}
-			lRecs[i]['rate']['total'] = (lRecs[i]['throws']['attempts'] != 0 and
-				round(
-					100.0 * (lRecs[i]['throws']['hits'] / lRecs[i]['throws']['attempts']),
-					1
-				) or
-				0.0
-			)
-			lRecs[i]['rate']['target'] = (lRecs[i]['target']['attempts'] != 0 and
-				round(
-					100.0 * (lRecs[i]['target']['hits'] / lRecs[i]['target']['attempts']),
-					1
-				) or
-				0.0
-			)
-			lRecs[i]['rate']['clutch'] = (lRecs[i]['clutches']['attempts'] != 0 and
-				round(
-					100.0 * (lRecs[i]['clutches']['hits'] / lRecs[i]['clutches']['attempts']),
-					1
-				) or
-				0.0
-			)
-
-			# Insert the record at the beginning of the 'last' list
-			dRet['last'].append(lRecs[i])
-
-		# If there's any total stats data
-		if dRet['total']:
-
-			# Target attempts / hits
-			dRet['total']['target'] = {
-				"attempts": dRet['total']['throws']['attempts'] - dRet['total']['clutches']['attempts'],
-				"hits": dRet['total']['throws']['hits'] - dRet['total']['clutches']['hits']
-			}
-
-			# Calculate the averages
-			dRet['total']['average'] = {}
-			dRet['total']['average']['total'] = (dRet['total']['throws']['attempts'] != 0 and
-				round(
-					dRet['total']['points']['total'] / dRet['total']['throws']['attempts'],
-					2
-				) or
-				0.0
-			)
-			dRet['total']['average']['target'] = (dRet['total']['target']['attempts'] != 0 and
-				round(
-					dRet['total']['points']['target'] / dRet['total']['target']['attempts'],
-					2
-				) or
-				0.0
-			)
-
-			# Calculate the rates
-			dRet['total']['rate'] = {}
-			dRet['total']['rate']['total'] = (dRet['total']['throws']['attempts'] != 0 and
-				round(
-					(100.0 * (
-						dRet['total']['throws']['hits'] / dRet['total']['throws']['attempts']
-					)),
-					1
-				) or
-				0.0
-			)
-			dRet['total']['rate']['target'] = (dRet['total']['target']['attempts'] != 0 and
-				round(
-					(100.0 * (
-						dRet['total']['target']['hits'] / dRet['total']['target']['attempts']
-					)),
-					1
-				) or
-				0.0
-			)
-			dRet['total']['rate']['clutch'] = (dRet['total']['clutches']['attempts'] != 0 and
-				round(
-					(100.0 * (
-						dRet['total']['clutches']['hits'] / dRet['total']['clutches']['attempts']
-					)),
-					1
-				) or
-				0.0
-			)
-
-		# Return the data
-		return Services.Effect(dRet)
+		# Return both
+		return Services.Effect({
+			"overall": dOverall,
+			"practices": lPractices
+		})

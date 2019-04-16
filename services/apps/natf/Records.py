@@ -799,34 +799,38 @@ class PracticeStats(Record_ReDB.Record):
 				t.get(thrower).update({
 					"bigaxe": {
 						"clutches": {
-							"attempts": r.row['stats']['bigaxe']['clutches']['attempts'] + stats['bigaxe']['clutches']['attempts'],
-							"drops": r.row['stats']['bigaxe']['clutches']['drops'] + stats['bigaxe']['clutches']['drops'],
-							"hits": r.row['stats']['bigaxe']['clutches']['hits'] + stats['bigaxe']['clutches']['hits'],
-							"points": r.row['stats']['bigaxe']['clutches']['points'] + stats['bigaxe']['clutches']['points']
+							"attempts": Record_ReDB.r.row['bigaxe']['clutches']['attempts'] + stats['bigaxe']['clutches']['attempts'],
+							"drops": Record_ReDB.r.row['bigaxe']['clutches']['drops'] + stats['bigaxe']['clutches']['drops'],
+							"hits": Record_ReDB.r.row['bigaxe']['clutches']['hits'] + stats['bigaxe']['clutches']['hits'],
+							"points": Record_ReDB.r.row['bigaxe']['clutches']['points'] + stats['bigaxe']['clutches']['points']
 						},
 						"regular": {
-							"attempts": r.row['stats']['bigaxe']['regular']['attempts'] + stats['bigaxe']['regular']['attempts'],
-							"drops": r.row['stats']['bigaxe']['regular']['drops'] + stats['bigaxe']['regular']['drops'],
-							"fives": r.row['stats']['bigaxe']['regular']['fives'] + stats['bigaxe']['regular']['fives'],
-							"threes": r.row['stats']['bigaxe']['regular']['threes'] + stats['bigaxe']['regular']['threes'],
-							"ones": r.row['stats']['bigaxe']['regular']['ones'] + stats['bigaxe']['regular']['ones'],
-							"zeros": r.row['stats']['bigaxe']['regular']['zeros'] + stats['bigaxe']['regular']['zeros'],
+							"attempts": Record_ReDB.r.row['bigaxe']['regular']['attempts'] + stats['bigaxe']['regular']['attempts'],
+							"drops": Record_ReDB.r.row['bigaxe']['regular']['drops'] + stats['bigaxe']['regular']['drops'],
+							"fives": Record_ReDB.r.row['bigaxe']['regular']['fives'] + stats['bigaxe']['regular']['fives'],
+							"threes": Record_ReDB.r.row['bigaxe']['regular']['threes'] + stats['bigaxe']['regular']['threes'],
+							"ones": Record_ReDB.r.row['bigaxe']['regular']['ones'] + stats['bigaxe']['regular']['ones'],
+							"zeros": Record_ReDB.r.row['bigaxe']['regular']['zeros'] + stats['bigaxe']['regular']['zeros'],
+							"hits": Record_ReDB.r.row['bigaxe']['regular']['hits'] + stats['bigaxe']['regular']['hits'],
+							"points": Record_ReDB.r.row['bigaxe']['regular']['points'] + stats['bigaxe']['regular']['points']
 						}
 					},
 					"standard": {
 						"clutches": {
-							"attempts": r.row['stats']['standard']['clutches']['attempts'] + stats['standard']['clutches']['attempts'],
-							"drops": r.row['stats']['standard']['clutches']['drops'] + stats['standard']['clutches']['drops'],
-							"hits": r.row['stats']['standard']['clutches']['hits'] + stats['standard']['clutches']['hits'],
-							"points": r.row['stats']['standard']['clutches']['points'] + stats['standard']['clutches']['points']
+							"attempts": Record_ReDB.r.row['standard']['clutches']['attempts'] + stats['standard']['clutches']['attempts'],
+							"drops": Record_ReDB.r.row['standard']['clutches']['drops'] + stats['standard']['clutches']['drops'],
+							"hits": Record_ReDB.r.row['standard']['clutches']['hits'] + stats['standard']['clutches']['hits'],
+							"points": Record_ReDB.r.row['standard']['clutches']['points'] + stats['standard']['clutches']['points']
 						},
 						"regular": {
-							"attempts": r.row['stats']['standard']['regular']['attempts'] + stats['standard']['regular']['attempts'],
-							"drops": r.row['stats']['standard']['regular']['drops'] + stats['standard']['regular']['drops'],
-							"fives": r.row['stats']['standard']['regular']['fives'] + stats['standard']['regular']['fives'],
-							"threes": r.row['stats']['standard']['regular']['threes'] + stats['standard']['regular']['threes'],
-							"ones": r.row['stats']['standard']['regular']['ones'] + stats['standard']['regular']['ones'],
-							"zeros": r.row['stats']['standard']['regular']['zeros'] + stats['standard']['regular']['zeros'],
+							"attempts": Record_ReDB.r.row['standard']['regular']['attempts'] + stats['standard']['regular']['attempts'],
+							"drops": Record_ReDB.r.row['standard']['regular']['drops'] + stats['standard']['regular']['drops'],
+							"fives": Record_ReDB.r.row['standard']['regular']['fives'] + stats['standard']['regular']['fives'],
+							"threes": Record_ReDB.r.row['standard']['regular']['threes'] + stats['standard']['regular']['threes'],
+							"ones": Record_ReDB.r.row['standard']['regular']['ones'] + stats['standard']['regular']['ones'],
+							"zeros": Record_ReDB.r.row['standard']['regular']['zeros'] + stats['standard']['regular']['zeros'],
+							"hits": Record_ReDB.r.row['standard']['regular']['hits'] + stats['standard']['regular']['hits'],
+							"points": Record_ReDB.r.row['standard']['regular']['points'] + stats['standard']['regular']['points']
 						}
 					}
 				}).run(oCon),

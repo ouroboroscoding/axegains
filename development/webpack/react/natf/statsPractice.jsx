@@ -17,8 +17,93 @@ var Tools = require('../../generic/tools.js');
 // Site modules
 var Utils = require('../../utils.js');
 
-// Components
+// Generic Components
 var Modal = require('../elements/modal.jsx');
+
+// Components
+var ChartClutch = require('./chartClutch.jsx');
+var ChartRegular = require('./chartRegular.jsx');
+
+// Practice component
+class Practice extends React.Component {
+
+	constructor(props) {
+
+		// Call the parent constructor
+		super(props);
+	}
+
+	pointsClass(d) {
+		var l = [];
+		if(d.bigaxe) l.push('bigaxe');
+		if(d.clutch) l.push('clutch');
+		return l.join(' ');
+	}
+
+	render() {
+		var self = this;
+		var data = this.props.data;
+		return (
+			<React.Fragment>
+				<h2>All Throws</h2>
+				<div className="allPoints">
+					{data.data.map(function(p, i) {
+						return <span key={i} className={self.pointsClass(p)}>{"" + p.value}</span>
+					})}
+				</div>
+				<br />
+
+				<h2>Regular</h2>
+				<div className="throws">
+					<div>Regular</div>
+					<div>Clutches</div>
+				</div>
+				<div className="throws">
+					<div>{data.stats.standard.regular.attempts}</div>
+					<div>{data.stats.standard.clutches.attempts}</div>
+				</div>
+				<div className="throws">
+					<div>
+						<ChartRegular
+							height="150px"
+							data={[data.stats.standard.regular.fives, data.stats.standard.regular.threes, data.stats.standard.regular.ones, data.stats.standard.regular.zeros, data.stats.standard.regular.drops]}
+						/>
+					</div>
+					<div>
+						<ChartClutch
+							height="150px"
+							data={[data.stats.standard.clutches.hits, (data.stats.standard.clutches.attempts - (data.stats.standard.clutches.hits + data.stats.standard.clutches.drops)), data.stats.standard.clutches.drops]}
+						/>
+					</div>
+				</div>
+
+				<h2>Big Axe</h2>
+				<div className="throws">
+					<div>Regular</div>
+					<div>Clutches</div>
+				</div>
+				<div className="throws">
+					<div>{data.stats.bigaxe.regular.attempts}</div>
+					<div>{data.stats.bigaxe.clutches.attempts}</div>
+				</div>
+				<div className="throws">
+					<div>
+						<ChartRegular
+							height="150px"
+							data={[data.stats.bigaxe.regular.fives, data.stats.bigaxe.regular.threes, data.stats.bigaxe.regular.ones, data.stats.bigaxe.regular.zeros, data.stats.bigaxe.regular.drops]}
+						/>
+					</div>
+					<div>
+						<ChartClutch
+							height="150px"
+							data={[data.stats.bigaxe.clutches.hits, (data.stats.bigaxe.clutches.attempts - (data.stats.bigaxe.clutches.hits + data.stats.bigaxe.clutches.drops)), data.stats.bigaxe.clutches.drops]}
+						/>
+					</div>
+				</div>
+			</React.Fragment>
+		);
+	}
+}
 
 // StatsPractice component
 class StatsPractice extends React.Component {
@@ -30,9 +115,10 @@ class StatsPractice extends React.Component {
 
 		// Initialise the state
 		this.state = {
-			"data": null,
 			"all": false,
 			"one": false,
+			"overall": null,
+			"practices": [],
 			"thrower": props.thrower
 		};
 
@@ -102,8 +188,8 @@ class StatsPractice extends React.Component {
 
 				// Add the stats to the state
 				this.setState({
-					"practice": res.data,
-					"practice_all": all
+					"overall": res.data.overall,
+					"practices": res.data.practices
 				});
 			}
 
@@ -115,6 +201,14 @@ class StatsPractice extends React.Component {
 
 	one(ev) {
 
+		// Get the ID
+		var id = ev.currentTarget.value;
+
+		// If it's -1, do nothing
+		if(id == '-1') {
+			return;
+		}
+
 		// Save this
 		var self = this;
 
@@ -123,7 +217,7 @@ class StatsPractice extends React.Component {
 
 		// Fetch the practice data
 		Services.read('natf', 'practice/data', {
-			"id": ev.currentTarget.dataset.id
+			"id": id
 		}).done(res => {
 
 			// If there's an error
@@ -140,7 +234,7 @@ class StatsPractice extends React.Component {
 			if(res.data) {
 
 				// Add the stats to the state
-				this.setState({
+				self.setState({
 					"one": res.data
 				});
 			}
@@ -152,85 +246,90 @@ class StatsPractice extends React.Component {
 	}
 
 	oneHide() {
-		this.setState({"practice_data": false});
+		this.setState({"one": false});
 	}
 
 	render() {
-		var practice = this.state.data;
-		return <div />
-/*		return (
-			<div className="practice">
-				<h2>Practice</h2>
-				<table className="practice">
-					<thead>
-						<tr>
-							<th rowSpan="2" className="date"> </th>
-							<th rowSpan="2" className="points">Points</th>
-							<th rowSpan="2" className="throws">Throws</th>
-							<th rowSpan="2" className="drops">Drops</th>
-							<th colSpan="2">Average Points</th>
-							<th colSpan="3">Hit Rates</th>
-						</tr>
-						<tr>
-							<th className="average">Total</th>
-							<th className="average">Target</th>
-							<th className="rate">Total</th>
-							<th className="rate">Target</th>
-							<th className="rate">Clutch</th>
-						</tr>
-					</thead>
-					{Tools.empty(practice.total) ?
-						<tbody>
-							<tr><td colSpan="9">No practices recorded</td></tr>
-						</tbody>
-					:
-						<tbody>
-							<tr>
-								<td>Overall</td>
-								<td>{practice.total.points.total}</td>
-								<td>{practice.total.throws.attempts}</td>
-								<td>{practice.total.throws.drops}</td>
-								<td>{practice.total.average.total}</td>
-								<td>{practice.total.average.target}</td>
-								<td>{practice.total.rate.total}%</td>
-								<td>{practice.total.rate.target}%</td>
-								<td>{practice.total.rate.clutch}%</td>
-							</tr>
-							{practice.last.map(function(o, i) {
-								return (
-									<tr key={i} data-id={o._id} className="session" onClick={self.practiceData}>
-										<td>{Utils.date(o._created)}</td>
-										<td>{o.points.total}</td>
-										<td>{o.throws.attempts}</td>
-										<td>{o.throws.drops}</td>
-										<td>{o.average.total}</td>
-										<td>{o.average.target}</td>
-										<td>{o.rate.total}%</td>
-										<td>{o.rate.target}%</td>
-										<td>{o.rate.clutch}%</td>
-									</tr>
-								);
+		var overall = this.state.overall;
+
+		// If there's data
+		if(overall) {
+			return (
+				<div className="practice">
+
+					<h2>View Specific Practice</h2>
+					<p>
+						<select onChange={this.one}>
+							<option value="-1">Select a Practice</option>
+							{this.state.practices.map(function(p, i) {
+								return <option value={p['_id']}>{Utils.datetime(p['_created'])}</option>
 							})}
-						</tbody>
-					}
-				</table>
-				{!this.state.practice_all &&
-					<p className="link" onClick={this.practiceStatsAll}>Fetch All</p>
-				}
-				{this.state.practice_data &&
-					<Modal
-						title="Practice Data"
-						close={self.practiceDataHide}
-					>
-						<div className="allPoints">
-							{self.state.practice_data.map(function(p, i) {
-								return <span key={i} className={p[0] ? 'clutch':''}>{"" + p[1]}</span>
-							})}
+						</select>
+					</p>
+
+					<h2>Regular</h2>
+					<div className="throws">
+						<div>Regular</div>
+						<div>Clutches</div>
+					</div>
+					<div className="throws">
+						<div>{overall.standard.regular.attempts}</div>
+						<div>{overall.standard.clutches.attempts}</div>
+					</div>
+					<div className="throws">
+						<div>
+							<ChartRegular
+								height="150px"
+								data={[overall.standard.regular.fives, overall.standard.regular.threes, overall.standard.regular.ones, overall.standard.regular.zeros, overall.standard.regular.drops]}
+							/>
 						</div>
-					</Modal>
-				}
-			</div>
-		);*/
+						<div>
+							<ChartClutch
+								height="150px"
+								data={[overall.standard.clutches.hits, (overall.standard.clutches.attempts - (overall.standard.clutches.hits + overall.standard.clutches.drops)), overall.standard.clutches.drops]}
+							/>
+						</div>
+					</div>
+					<br />
+
+					<h2>Big Axe</h2>
+					<div className="throws">
+						<div>Regular</div>
+						<div>Clutches</div>
+					</div>
+					<div className="throws">
+						<div>{overall.bigaxe.regular.attempts}</div>
+						<div>{overall.bigaxe.clutches.attempts}</div>
+					</div>
+					<div className="throws">
+						<div>
+							<ChartRegular
+								height="150px"
+								data={[overall.bigaxe.regular.fives, overall.bigaxe.regular.threes, overall.bigaxe.regular.ones, overall.bigaxe.regular.zeros, overall.bigaxe.regular.drops]}
+							/>
+						</div>
+						<div>
+							<ChartClutch
+								height="150px"
+								data={[overall.bigaxe.clutches.hits, (overall.bigaxe.clutches.attempts - (overall.bigaxe.clutches.hits + overall.bigaxe.clutches.drops)), overall.bigaxe.clutches.drops]}
+							/>
+						</div>
+					</div>
+
+					{this.state.one &&
+						<Modal
+							title="Practice Throws"
+							close={this.oneHide}
+						>
+							<Practice data={this.state.one} />
+						</Modal>
+					}
+				</div>
+			);
+		}
+		else {
+			return <div />
+		}
 	}
 
 	signin(thrower) {

@@ -71,12 +71,10 @@ class Stats extends React.Component {
 				<Menu className="menu secondary" selected={self.state.org} onChange={self.menuChange}>
 					<Item name="natf">NATF</Item>
 				</Menu>
-				<div id="content">
-					<div>
-						{self.state.org == 'natf' &&
-							<Natf thrower={self.props.thrower} />
-						}
-					</div>
+				<div>
+					{self.state.org == 'natf' &&
+						<Natf thrower={self.props.thrower} />
+					}
 				</div>
 			</div>
 		);

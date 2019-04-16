@@ -58,6 +58,7 @@ def run():
 					dStats['bigaxe']['regular']['ones'] += d['bigaxe']['regular']['ones']
 					dStats['bigaxe']['regular']['zeros'] += d['bigaxe']['regular']['zeros']
 					dStats['bigaxe']['regular']['points'] += d['bigaxe']['regular']['points']
+					dStats['bigaxe']['regular']['hits'] += d['bigaxe']['regular']['hits']
 
 					dStats['standard']['clutches']['attempts'] += d['standard']['clutches']['attempts']
 					dStats['standard']['clutches']['drops'] += d['standard']['clutches']['drops']
@@ -71,6 +72,7 @@ def run():
 					dStats['standard']['regular']['ones'] += d['standard']['regular']['ones']
 					dStats['standard']['regular']['zeros'] += d['standard']['regular']['zeros']
 					dStats['standard']['regular']['points'] += d['standard']['regular']['points']
+					dStats['standard']['regular']['hits'] += d['standard']['regular']['hits']
 
 			# Add the thrower ID and version
 			dStats['_thrower'] = sThrower
