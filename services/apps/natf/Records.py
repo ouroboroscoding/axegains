@@ -788,7 +788,7 @@ class PracticeStats(Record_ReDB.Record):
 
 		# Add the version and thrower
 		stats['_version'] = 2
-		stats['thrower'] = thrower
+		stats['_thrower'] = thrower
 
 		# Get the structure
 		dStruct = cls.struct()
