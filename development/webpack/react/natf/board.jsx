@@ -24,7 +24,7 @@ class Board extends React.Component {
 		// Initialise the state
 		this.state = {
 			"clutchMode": props.clutchMode,
-			"selected": false
+			"selected": props.clutchMode == 'expected'
 		};
 
 		// Bind methods
@@ -68,6 +68,12 @@ class Board extends React.Component {
 			} else {
 				this.setState({"selected": true});
 			}
+		}
+	}
+
+	componentDidUpdate(prevProps) {
+		if(prevProps.clutchMode != this.props.clutchMode) {
+			this.clutchMode = this.props.clutchMode;
 		}
 	}
 

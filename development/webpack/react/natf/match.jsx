@@ -481,7 +481,7 @@ class Match extends React.Component {
 			Loader.show()
 
 			// Clone the match state
-			var ms = Tools.clone(self.state.matchState);
+			var ms = Tools.clone(this.state.matchState);
 
 			// Set the match state to waiting
 			ms.waiting = true;

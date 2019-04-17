@@ -63,10 +63,10 @@ class Thrower extends React.Component {
 				var error = ' ';
 				switch(res.error.code) {
 					case 1001:
-						Forms.errorAdd(self.refs.alias);
+						Forms.errorAdd(this.refs.alias);
 						break;
 					case 1200:
-						Forms.errorAdd(self.refs.alias);
+						Forms.errorAdd(this.refs.alias);
 						Events.trigger('error', 'Alias is already in use');
 						break;
 					default:
@@ -170,11 +170,11 @@ class Thrower extends React.Component {
 				var error = ' ';
 				switch(res.error.code) {
 					case 1001:
-						Forms.errorAdd(self.refs.passwd);
+						Forms.errorAdd(this.refs.passwd);
 						Events.trigger('error', 'Invalid password');
 						break;
 					case 1204:
-						Forms.errorAdd(self.refs.new_passwd);
+						Forms.errorAdd(this.refs.new_passwd);
 						Events.trigger('error', 'New password not strong enough');
 						break;
 					default:

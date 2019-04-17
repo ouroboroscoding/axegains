@@ -17,6 +17,9 @@ var Tools = require('../../generic/tools.js');
 // Site modules
 var Utils = require('../../utils.js');
 
+// Base components
+var Forms = require('../base/forms.jsx');
+
 // React components
 var Modal = require('../elements/modal.jsx');
 var Board = require('./board.jsx');
@@ -66,6 +69,12 @@ class Pattern extends React.Component {
 		this.setState({"throws": this.state.throws});
 	}
 
+	errors(errs) {
+		for(var k in errs) {
+			Forms.errorAdd(this.refs[k]);
+		}
+	}
+
 	descrChange(ev) {
 		this.setState({"descr": ev.currentTarget.value});
 	}
@@ -91,8 +100,8 @@ class Pattern extends React.Component {
 		var self = this;
 		return (
 			<div className="pattern form">
-				<p><input type="text" title="Pattern Title" placeholder="Pattern Title" value={this.state.title} onChange={this.titleChange} /></p>
-				<p><textarea title="Pattern Description" placeholder="Pattern Description" value={this.state.descr} onChange={this.descrChange} /></p>
+				<p><input ref="title" type="text" title="Pattern Title" placeholder="Pattern Title" value={this.state.title} onChange={this.titleChange} onClick={Forms.errorFocus} /></p>
+				<p><textarea ref="descr" title="Pattern Description" placeholder="Pattern Description" value={this.state.descr} onChange={this.descrChange} onClick={Forms.errorFocus} /></p>
 				<p><select value={this.state.throws.length} onChange={this.countChange}>
 					<option value={2}>2</option>
 					<option value={3}>3</option>
@@ -163,9 +172,11 @@ class Practice extends React.Component {
 		// Initialise the state
 		this.state = {
 			"bigaxe": false,
+			"clutch": 'select',
 			"clutchAttempts": 0,
 			"clutchHits": 0,
 			"mode": null,
+			"modeThrows": false,
 			"pattern": false,
 			"patterns": false,
 			"points": [],
@@ -208,17 +219,7 @@ class Practice extends React.Component {
 		if('natf_practice' in localStorage) {
 			var new_state = JSON.parse(localStorage['natf_practice']);
 			new_state.thrower = this.state.thrower;
-			this.setState(new_state, function() {
-				if(this.state.mode == 'clutch') {
-					this.refs.board.clutchMode = 'expected';
-				} else if(this.state.mode == 'darkunicorn') {
-					this.refs.board.clutchMode = (this.state.points.length % 5 == 4) ? 'none' : 'expected';
-				} else if(this.state.mode == 'supernatural') {
-					this.refs.board.clutchMode = (this.state.points.length % 5 == 4) ? 'expected' : 'none';
-				} else {
-					this.refs.board.clutchMode = 'select';
-				}
-			});
+			this.setState(new_state);
 			delete localStorage['natf_practice'];
 		}
 
@@ -243,19 +244,39 @@ class Practice extends React.Component {
 	}
 
 	modeSelect(ev) {
-		this.setState({
-			"mode": ev.currentTarget.dataset.mode
-		}, function() {
-			switch(this.state.mode) {
+
+		// If it's custom
+		var mode = ev.currentTarget.dataset.mode.split(':')
+		var throws = false;
+		if(mode[0] == 'custom') {
+			throws = Tools.afindo(this.state.patterns, '_id', mode[1]).throws;
+		}
+
+		// New state
+		var state = {
+			"mode": mode[0],
+			"modeThrows": throws
+		}
+
+		// If custom
+		if(state.mode == 'custom') {
+			state.bigaxe = state.modeThrows[0].bigaxe;
+			state.clutch = state.modeThrows[0].clutch ? 'expected' : 'none';
+		} else {
+			state.bigaxe = false;
+			switch(state.mode) {
 				case 'clutch':
 				case 'darkunicorn':
-					this.refs.board.clutchMode = 'expected'; break;
+					state.clutch = 'expected'; break;
 				case 'free':
-					this.refs.board.clutchMode = 'select'; break;
+					state.clutch = 'select'; break;
 				case 'supernatural':
-					this.refs.board.clutchMode = 'none'; break;
+					state.clutch = 'none'; break;
 			}
-		});
+		}
+
+		// Set the state
+		this.setState(state);
 	}
 
 	patternClose() {
@@ -275,7 +296,11 @@ class Practice extends React.Component {
 
 			// If there's an error
 			if(res.error && !Utils.serviceError(res.error)) {
-				Events.trigger('error', JSON.stringify(res.error));
+				if(res.error.code == 1001) {
+					this.refs.pattern.errors(res.error.msg);
+				} else {
+					Events.trigger('error', JSON.stringify(res.error));
+				}
 			}
 
 			// If there's a warning
@@ -434,23 +459,46 @@ class Practice extends React.Component {
 	}
 
 	overwrite(ev) {
-		this.setState({"overwrite": true}, function() {
 
-			// If the mode is dark unicorn
-			if(this.state.mode == 'darkunicorn') {
-				this.refs.board.clutchMode = (this.state.points.length % 5 == 0) ? 'none' : 'expected';
+		// New state
+		var state = {
+			"overwrite": true
+		}
+
+		// If we're in custom
+		var i = 0;
+		if(this.state.mode == 'custom') {
+
+			// Which throw is it?
+			i = (this.state.points.length % this.state.modeThrows.length) - 1;
+			if(i == -1) {
+				i += this.state.modeThrows.length;
 			}
 
-			// Else if the mode is free
-			else if(this.state.mode == 'free') {
-				this.refs.board.clutchMode = 'select';
-			}
+			// Is it big axe?
+			state.bigaxe = this.state.modeThrows[i].bigaxe;
 
-			// Else if the mode is supernatural
-			else if(this.state.mode == 'supernatural') {
-				this.refs.board.clutchMode = (this.state.points.length % 5 == 0) ? 'expected' : 'none';
+			// Is it clutch
+			state.clutch = this.state.modeThrows[i].clutch ? 'expected' : 'none';
+		}
+
+		// Else, predefined mode
+		else {
+			switch(this.state.mode) {
+				case 'darkunicorn':
+					state.clutch = (this.state.points.length % 5 == 0) ? 'none' : 'expected';
+					break;
+				case 'free':
+					state.clutch = 'select';
+					break;
+				case 'supernatural':
+					state.clutch = (this.state.points.length % 5 == 0) ? 'expected' : 'none';
+					break;
 			}
-		});
+		}
+
+		// Set the state
+		this.setState(state);
 	}
 
 	pointsClass(d) {
@@ -461,6 +509,15 @@ class Practice extends React.Component {
 	}
 
 	points(clutch, value) {
+
+		// Init the new state
+		var state = {
+			"clutchAttempts": this.state.clutchAttempts,
+			"clutchHits": this.state.clutchHits,
+			"overwrite": false,
+			"points": this.state.points,
+			"totalPoints": this.state.totalPoints
+		};
 
 		// Get the int version of the value
 		var v = parseInt(value);
@@ -473,29 +530,29 @@ class Practice extends React.Component {
 
 			// Backtrack the clutch stats
 			if(last[0]) {
-				this.state.clutchAttempts -= 1;
+				state.clutchAttempts -= 1;
 				if(last[1] == 7) {
-					this.state.clutchHits -= 1;
+					state.clutchHits -= 1;
 				}
 			}
 
 			// Backtrack the points stats
 			if(last[1] != 'd') {
-				this.state.totalPoints -= last[1];
+				state.totalPoints -= last[1];
 			}
 
 			// Remove the last item
-			this.state.points.pop();
+			state.points.pop();
 		}
 
 		// Add to the points list
-		this.state.points.push([this.state.bigaxe, clutch, (value == 'd' ? 'd' : v)]);
+		state.points.push([this.state.bigaxe, clutch, (value == 'd' ? 'd' : v)]);
 
 		// If we got a clutch attempt
 		if(clutch) {
-			this.state.clutchAttempts += 1;
+			state.clutchAttempts += 1;
 			if(value == 7) {
-				this.state.clutchHits += 1;
+				state.clutchHits += 1;
 			}
 		}
 
@@ -504,19 +561,31 @@ class Practice extends React.Component {
 			this.state.totalPoints += v;
 		}
 
-		this.setState({
-			"clutchAttempts": this.state.clutchAttempts,
-			"clutchHits": this.state.clutchHits,
-			"overwrite": false,
-			"points": this.state.points,
-			"totalPoints": this.state.totalPoints
-		}, function() {
-			if(this.state.mode == 'darkunicorn') {
-				this.refs.board.clutchMode = (this.state.points.length % 5 == 4) ? 'none' : 'expected';
-			} else if(this.state.mode == 'supernatural') {
-				this.refs.board.clutchMode = (this.state.points.length % 5 == 4) ? 'expected' : 'none';
-			}
-		});
+		// If we're in custom mode
+		if(this.state.mode == 'custom') {
+
+			// Which throw are we
+			var i = state.points.length % this.state.modeThrows.length;
+
+			// If it's bigaxe
+			state.bigaxe = this.state.modeThrows[i].bigaxe;
+
+			// If it's clutch
+			state.clutch = this.state.modeThrows[i].clutch ? 'expected' : 'none';
+		}
+
+		// Else if we're in dark unicorn mode
+		else if(this.state.mode == 'darkunicorn') {
+			state.clutch = (state.points.length % 5 == 4) ? 'none' : 'expected';
+		}
+
+		// Else if we're in supernatural mode
+		else if(this.state.mode == 'supernatural') {
+			state.clutch = (state.points.length % 5 == 4) ? 'expected' : 'none';
+		}
+
+		// Set the state
+		this.setState(state);
 	}
 
 	pointsHide() {
@@ -544,101 +613,107 @@ class Practice extends React.Component {
 
 		return (
 			<div className="natf">
-				{this.state.thrower &&
-					<div className="aright">
-						<i class="fas fa-plus" onClick={this.patternNew}></i>
-					</div>
-				}
-				<dl className="select" style={{"display": self.state.mode == null ? 'block':'none'}}>
-					{this.state.patterns && this.state.patterns.map(function(p, i) {
-						return (
-							<React.Fragment key={i}>
-								<dt data-mode={"custom:" + p._id} onClick={this.modeSelect}>
-									<span className="fright">
-										<i class="fas fa-edit" title="Edit Pattern" onClick={self.patternEdit.bind(self, p._id)}></i>
-										<i class="far fa-trash-alt" title="Delete Pattern" onClick={self.patternDelete.bind(self, p._id)}></i>
-									</span>
-									<span>{p.title}</span>
-								</dt>
-								<dd>{p.descr}</dd>
-							</React.Fragment>
-						);
-					})}
-					<dt data-mode="free" onClick={this.modeSelect}>Free Practice</dt>
-					<dd>Anything is avaialble at any time, you must select the clutch to score it.</dd>
-					<dt data-mode="supernatural" onClick={this.modeSelect}>81s / Supernaturals / Unicorns</dt>
-					<dd>Every fifth throw is for clutch, and it will be pre-selected for you on those turns.</dd>
-					<dt data-mode="darkunicorn" onClick={this.modeSelect}>Gretzky / Dark Unicorns</dt>
-					<dd>Four clutches and a bullseye.</dd>
-					<dt data-mode="clutch" onClick={this.modeSelect}>Clutch</dt>
-					<dd>Every throw is for the clutch and it's pre-selected every throw.</dd>
-				</dl>
-				{Tools.isObject(this.state.pattern) &&
-					<Modal
-						buttons={[{"name": "update pattern", "callback": this.patternUpdate}]}
-						close={this.patternClose}
-						title="Edit Pattern"
-						width="95%"
-					>
-						<Pattern
-							descr={this.state.pattern.descr}
-							ref="pattern"
-							throws={this.state.pattern.throws}
-							title={this.state.pattern.title}
-						/>
-					</Modal>
-				}
-				{this.state.pattern === true &&
-					<Modal
-						buttons={[{"name": "create pattern", "callback": this.patternCreate}]}
-						close={this.patternClose}
-						title="New Pattern"
-						width="95%"
-					>
-						<Pattern ref="pattern" />
-					</Modal>
-				}
-				<div style={{"display": self.state.mode == null ? 'none':'block'}}>
-					<Board ref="board" clutchMode={self.state.mode} onPoints={self.points} />
-					<div className={"bigaxe" + (this.state.bigaxe ? ' on' : '')} onClick={this.bigaxe}>BA</div>
-					{self.state.points.length > 0 &&
-						<React.Fragment>
-							<div className="averages">
-								<span className="clutches fright"><b>Clutch %: </b><span>{self.state.clutchAttempts == 0 ? "0.0" : ((self.state.clutchHits / self.state.clutchAttempts) * 100.0).toFixed(1)}</span></span>
-								<span className="average fleft"><b>Avg Throw: </b><span>{(self.state.totalPoints / self.state.points.length).toFixed(2)}</span></span>
-								<br />
+				{!this.state.mode &&
+					<React.Fragment>
+						{this.state.thrower &&
+							<div className="aright">
+								<i class="fas fa-plus" onClick={this.patternNew}></i>
 							</div>
-							<div className="points">
-								{self.state.points.length > 29 &&
-									<span key={-1} className="link bold" onClick={self.pointsShow}>...</span>
-								}
-								{self.state.points.slice(-29).map(function(p, i) {
-									if(i == last) {
-										return <span key={i} className={"last " + (self.state.overwrite ? 'overwrite' : self.pointsClass(p))} onClick={self.overwrite}>{p[2]}</span>
-									} else {
-										return <span key={i} className={self.pointsClass(p)}>{p[2]}</span>
+						}
+						<dl className="select">
+							{this.state.patterns && this.state.patterns.map(function(p, i) {
+								return (
+									<React.Fragment key={i}>
+										<dt data-mode={"custom:" + p._id} onClick={self.modeSelect}>
+											<div className="fright">
+												<i class="fas fa-edit" title="Edit Pattern" onClick={self.patternEdit.bind(self, p._id)}></i>
+												<i class="far fa-trash-alt" title="Delete Pattern" onClick={self.patternDelete.bind(self, p._id)}></i>
+											</div>
+											<span>{p.title}</span>
+										</dt>
+										<dd>{p.descr}</dd>
+									</React.Fragment>
+								);
+							})}
+							<dt data-mode="free" onClick={this.modeSelect}>Free Practice</dt>
+							<dd>Anything is avaialble at any time, you must select the clutch to score it.</dd>
+							<dt data-mode="supernatural" onClick={this.modeSelect}>81s / Supernaturals / Unicorns</dt>
+							<dd>Every fifth throw is for clutch, and it will be pre-selected for you on those turns.</dd>
+							<dt data-mode="darkunicorn" onClick={this.modeSelect}>Gretzky / Dark Unicorns</dt>
+							<dd>Four clutches and a bullseye.</dd>
+							<dt data-mode="clutch" onClick={this.modeSelect}>Clutch</dt>
+							<dd>Every throw is for the clutch and it's pre-selected every throw.</dd>
+						</dl>
+						{Tools.isObject(this.state.pattern) &&
+							<Modal
+								buttons={[{"name": "update pattern", "callback": this.patternUpdate}]}
+								close={this.patternClose}
+								title="Edit Pattern"
+								width="95%"
+							>
+								<Pattern
+									descr={this.state.pattern.descr}
+									ref="pattern"
+									throws={this.state.pattern.throws}
+									title={this.state.pattern.title}
+								/>
+							</Modal>
+						}
+						{this.state.pattern === true &&
+							<Modal
+								buttons={[{"name": "create pattern", "callback": this.patternCreate}]}
+								close={this.patternClose}
+								title="New Pattern"
+								width="95%"
+							>
+								<Pattern ref="pattern" />
+							</Modal>
+						}
+					</React.Fragment>
+				}
+				{this.state.mode &&
+					<React.Fragment>
+						<Board ref="board" clutchMode={self.state.clutch} onPoints={self.points} />
+						<div className={"bigaxe" + (this.state.bigaxe ? ' on' : '')} onClick={this.bigaxe}>BA</div>
+						{self.state.points.length > 0 &&
+							<React.Fragment>
+								<div className="averages">
+									<span className="clutches fright"><b>Clutch %: </b><span>{self.state.clutchAttempts == 0 ? "0.0" : ((self.state.clutchHits / self.state.clutchAttempts) * 100.0).toFixed(1)}</span></span>
+									<span className="average fleft"><b>Avg Throw: </b><span>{(self.state.totalPoints / self.state.points.length).toFixed(2)}</span></span>
+									<br />
+								</div>
+								<div className="points">
+									{self.state.points.length > 29 &&
+										<span key={-1} className="link bold" onClick={self.pointsShow}>...</span>
 									}
-								})}
-							</div>
-						</React.Fragment>
-					}
-					<div className="reset fright" onClick={self.reset}>Reset</div>
-					{(this.state.thrower && this.state.points.length > 0) &&
-						<div className="save fleft" onClick={self.save}>Save & Reset</div>
-					}
-					{self.state.showPoints &&
-						<Modal
-							title="All points this practice"
-							close={self.pointsHide}
-						>
-							<div className="allPoints">
-								{self.state.points.map(function(p, i) {
-									return <span key={i} className={self.pointsClass(p)}>{p[2]}</span>
-								})}
-							</div>
-						</Modal>
-					}
-				</div>
+									{self.state.points.slice(-29).map(function(p, i) {
+										if(i == last) {
+											return <span key={i} className={"last " + (self.state.overwrite ? 'overwrite' : self.pointsClass(p))} onClick={self.overwrite}>{p[2]}</span>
+										} else {
+											return <span key={i} className={self.pointsClass(p)}>{p[2]}</span>
+										}
+									})}
+								</div>
+							</React.Fragment>
+						}
+						<div className="reset fright" onClick={self.reset}>Reset</div>
+						{(this.state.thrower && this.state.points.length > 0) &&
+							<div className="save fleft" onClick={self.save}>Save & Reset</div>
+						}
+						{self.state.showPoints &&
+							<Modal
+								title="All points this practice"
+								close={self.pointsHide}
+							>
+								<div className="allPoints">
+									{self.state.points.map(function(p, i) {
+										return <span key={i} className={self.pointsClass(p)}>{p[2]}</span>
+									})}
+								</div>
+							</Modal>
+						}
+					</React.Fragment>
+				}
 			</div>
 		);
 	}
