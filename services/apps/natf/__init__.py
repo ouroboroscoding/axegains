@@ -22,7 +22,7 @@ from RestOC import Conf, DictHelper, Errors, Record_ReDB, Services, Sesh
 from shared import Sync
 
 # Service imports
-from .Records import Match, MatchStats, Practice, PracticeStats
+from .Records import Match, MatchStats, Practice, PracticePattern, PracticeStats
 
 class Natf(Services.Service):
 	"""NATF Service class
@@ -32,7 +32,7 @@ class Natf(Services.Service):
 	Extends: shared.Services.Service
 	"""
 
-	_install = [Match, Practice, PracticeStats]
+	_install = [Match, MatchStats, Practice, PracticePattern, PracticeStats]
 	"""Record types called in install"""
 
 	def initialise(self):
@@ -841,63 +841,99 @@ class Natf(Services.Service):
 		# Init the stored structure
 		dData = {
 			"_created": int(time()),
-			"clutches": {
-				"attempts": 0,
-				"hits": 0
-			},
+			"_version": 2,
 			"data": [],
-			"points": {
-				"target": 0,
-				"total": 0
-			},
 			"thrower": sesh['thrower']['_id'],
-			"throws": {
-				"attempts": len(data['points']),
-				"drops": 0,
-				"hits": 0
+			"stats": {
+				"bigaxe": {
+					"clutches": {
+						"attempts": 0,
+						"drops": 0,
+						"hits": 0,
+						"points": 0
+					},
+					"regular": {
+						"attempts": 0,
+						"fives": 0,
+						"threes": 0,
+						"ones": 0,
+						"zeros": 0,
+						"drops": 0,
+						"hits": 0,
+						"points": 0
+					}
+				},
+				"standard": {
+					"clutches": {
+						"attempts": 0,
+						"drops": 0,
+						"hits": 0,
+						"points": 0
+					},
+					"regular": {
+						"attempts": 0,
+						"fives": 0,
+						"threes": 0,
+						"ones": 0,
+						"zeros": 0,
+						"drops": 0,
+						"hits": 0,
+						"points": 0
+					}
+				},
 			}
 		}
 
 		# Go through every set
 		for l in data['points']:
 
-			# If it's a clutch
-			if l[0]:
+			# If it's a big axe
+			name = l[0] and 'bigaxe' or 'standard'
 
-				# Increment the clutch attempts
-				dData['clutches']['attempts'] += 1
+			# If it's a clutch
+			if l[1]:
+
+				# Increase the attempts
+				dData['stats'][name]['clutches']['attempts'] += 1
+
+				# If it's a drop
+				if l[2] == 'd':
+					dData['stats'][name]['clutches']['drops'] += 1
 
 				# If it's a hit
-				if l[1] == 7:
+				elif l[2] == 7:
+					dData['stats'][name]['clutches']['hits'] += 1
+					dData['stats'][name]['clutches']['points'] += 7
 
-					# Add to the total points
-					dData['points']['total'] += 7
-
-					# Increment the hits
-					dData['throws']['hits'] += 1
-					dData['clutches']['hits'] +=1
-
-			# Else a target throw
+			# Else it's a standard throw
 			else:
 
-				# If it's not a drop and it's over 0
-				if isinstance(l[1], int) and l[1] > 0:
+				# Increase the attempts
+				dData['stats'][name]['regular']['attempts'] += 1
 
-					# Add to the points
-					dData['points']['total'] += l[1]
-					dData['points']['target'] += l[1]
-
-					# Increment the hits
-					dData['throws']['hits'] += 1
-
-			# If it's a drop
-			if l[1] == 'd':
-				dData['throws']['drops'] += 1
+				# Increase the appropriate value
+				if l[2] == 'd':
+					dData['stats'][name]['regular']['drops'] += 1
+				elif l[2] == 5:
+					dData['stats'][name]['regular']['fives'] += 1
+					dData['stats'][name]['regular']['hits'] += 1
+					dData['stats'][name]['regular']['points'] += 5
+				elif l[2] == 3:
+					dData['stats'][name]['regular']['threes'] += 1
+					dData['stats'][name]['regular']['hits'] += 1
+					dData['stats'][name]['regular']['points'] += 3
+				elif l[2] == 1:
+					dData['stats'][name]['regular']['ones'] += 1
+					dData['stats'][name]['regular']['hits'] += 1
+					dData['stats'][name]['regular']['points'] += 1
+				elif l[2] == 0:
+					dData['stats'][name]['regular']['zeros'] += 1
 
 			# Append the set
 			dData['data'].append({
-				"clutch": l[0],
-				"value": l[1]
+				"bigaxe": l[0],
+				"clutch": l[1],
+				"value": l[2]
 			})
 
 		# Create a new instance of the practice
@@ -911,7 +947,7 @@ class Natf(Services.Service):
 			return Services.Effect(error=1100)
 
 		# Update the total stats
-		PracticeStats.add(sesh['thrower']['_id'], dData)
+		PracticeStats.add(sesh['thrower']['_id'], dData['stats'])
 
 		# Return OK
 		return Services.Effect(True)
@@ -934,13 +970,145 @@ class Natf(Services.Service):
 		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Fetch the practice data
-		dPractice = Practice.get(data['id'], raw=['data'])
+		dPractice = Practice.get(data['id'], raw=['data', 'stats'])
 		if not dPractice:
-			return Services.Effect(error=(1104, data['id']))
+			return Services.Effect(error=(1104, 'practice:%s' % data['id']))
 
 		# Return the data
+		return Services.Effect(dPractice)
+
+	def practicePattern_create(self, data, sesh):
+		"""Practice Pattern (Create)
+
+		Creates a new Practice Pattern for the current thrower
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['title', 'descr', 'throws'])
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
+
+		# Create the instance
+		try:
+			oPattern = PracticePattern({
+				"_created": int(time()),
+				"thrower": sesh['thrower']['_id'],
+				"title": data['title'],
+				"descr": data['descr'],
+				"throws": data['throws']
+			})
+		except ValueError as e:
+			return Services.Effect(error=(1001, e.args[0]))
+
+		# Store the instance
+		if not oPattern.create():
+			return Services.Effect(error=1100)
+
+		# Return the new ID
+		return Services.Effect(oPattern['_id'])
+
+	def practicePattern_delete(self, data, sesh):
+		"""Practice Pattern (Delete)
+
+		Deletes an existing Practice Pattern for the current thrower
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['id'])
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
+
+		# Find the pattern
+		oPattern = PracticePattern.get(data['id'])
+		if not oPattern:
+			return Services.Effect(error=(1104, 'practice_pattern:%s' % data['id']))
+
+		# If the user has no rights
+		if oPattern['thrower'] != sesh['thrower']['_id']:
+			return Services.Effect(error=1000)
+
+		# Delete the pattern
+		if not oPattern.delete():
+			return Services.Effect(False)
+
+		# Return OK
+		return Services.Effect(True)
+
+	def practicePattern_update(self, data, sesh):
+		"""Practice Pattern (Update)
+
+		Replaces an existing Practice Pattern for the current thrower
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['_id'])
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
+
+		# Find the pattern
+		oPattern = PracticePattern.get(data['_id'])
+		if not oPattern:
+			return Services.Effect(error=(1104, 'practice_pattern:%s' % data['_id']))
+
+		# If the user has no rights
+		if oPattern['thrower'] != sesh['thrower']['_id']:
+			return Services.Effect(error=1000)
+
+		# Remove fields that can't be changed
+		del data['_id']
+		if '_created' in data: del data['_created']
+		if 'thrower' in data: del data['thrower']
+
+		# Update whatever is left, catch any invalid values
+		lErrors = []
+		for k in data:
+			try: oPattern[k] = data[k]
+			except ValueError as e: lErrors.extend(e.args[0])
+
+		# If there's any errors
+		if lErrors:
+			return Services.Effect(error=(103, lErrors))
+
+		# Update the pattern
+		oPattern.save()
+
+		# Return OK
+		return Services.Effect(True)
+
+	def practicePatterns_read(self, data, sesh):
+		"""Practice Patterns
+
+		Fetches the list of patterns beloning to the logged in thrower
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Fetch all patterns for the current thrower and return them
 		return Services.Effect(
-			[[d['clutch'], d['value']] for d in dPractice['data']]
+			PracticePattern.get(sesh['thrower']['_id'], index='thrower', raw=True, orderby='title')
 		)
 
 	def practiceStats_read(self, data, sesh):
@@ -960,137 +1128,14 @@ class Natf(Services.Service):
 		if 'thrower' not in data:
 			data['thrower'] = sesh['thrower']['_id']
 
-		# How many to fetch
-		if 'all' in data and data['all']:
-			limit = None
-		else:
-			limit = 5
+		# Fetch the ids and created dates of all practices
+		lPractices = Practice.get(data['thrower'], index='thrower', raw=['_id', '_created'], orderby='!_created')
 
-		# Fetch some or all of the practice records
-		lRecs = Practice.get(
-			data['thrower'], index='thrower',
-			raw=['_id', '_created', 'clutches', 'points', 'throws'],
-			orderby='!_created',
-			limit=limit
-		)
+		# Fetch the overall stats
+		dOverall = PracticeStats.get(data['thrower'], raw=True)
 
-		# Fetch the total stats for the thrower
-		dRec = PracticeStats.get(data['thrower'], raw=['clutches', 'points', 'throws'])
-
-		# Init the return data
-		dRet = {
-			"total": dRec and dRec or {},
-			"last": []
-		}
-
-		# Go through the indexes of the records
-		for i in range(len(lRecs)):
-
-			# Target attempts / hits
-			lRecs[i]['target'] = {
-				"attempts": lRecs[i]['throws']['attempts'] - lRecs[i]['clutches']['attempts'],
-				"hits": lRecs[i]['throws']['hits'] - lRecs[i]['clutches']['hits']
-			}
-
-			# Calculate the averages
-			lRecs[i]['average'] = {}
-			lRecs[i]['average']['total'] = (lRecs[i]['throws']['attempts'] != 0 and
-				round(
-					lRecs[i]['points']['total'] / lRecs[i]['throws']['attempts'],
-					2
-				) or
-				0.0
-			)
-			lRecs[i]['average']['target'] = (lRecs[i]['target']['attempts'] != 0 and
-				round(
-					lRecs[i]['points']['target'] / lRecs[i]['target']['attempts'],
-					2
-				) or
-				0.0
-			)
-
-			# Calculate the rates
-			lRecs[i]['rate'] = {}
-			lRecs[i]['rate']['total'] = (lRecs[i]['throws']['attempts'] != 0 and
-				round(
-					100.0 * (lRecs[i]['throws']['hits'] / lRecs[i]['throws']['attempts']),
-					1
-				) or
-				0.0
-			)
-			lRecs[i]['rate']['target'] = (lRecs[i]['target']['attempts'] != 0 and
-				round(
-					100.0 * (lRecs[i]['target']['hits'] / lRecs[i]['target']['attempts']),
-					1
-				) or
-				0.0
-			)
-			lRecs[i]['rate']['clutch'] = (lRecs[i]['clutches']['attempts'] != 0 and
-				round(
-					100.0 * (lRecs[i]['clutches']['hits'] / lRecs[i]['clutches']['attempts']),
-					1
-				) or
-				0.0
-			)
-
-			# Insert the record at the beginning of the 'last' list
-			dRet['last'].append(lRecs[i])
-
-		# If there's any total stats data
-		if dRet['total']:
-
-			# Target attempts / hits
-			dRet['total']['target'] = {
-				"attempts": dRet['total']['throws']['attempts'] - dRet['total']['clutches']['attempts'],
-				"hits": dRet['total']['throws']['hits'] - dRet['total']['clutches']['hits']
-			}
-
-			# Calculate the averages
-			dRet['total']['average'] = {}
-			dRet['total']['average']['total'] = (dRet['total']['throws']['attempts'] != 0 and
-				round(
-					dRet['total']['points']['total'] / dRet['total']['throws']['attempts'],
-					2
-				) or
-				0.0
-			)
-			dRet['total']['average']['target'] = (dRet['total']['target']['attempts'] != 0 and
-				round(
-					dRet['total']['points']['target'] / dRet['total']['target']['attempts'],
-					2
-				) or
-				0.0
-			)
-
-			# Calculate the rates
-			dRet['total']['rate'] = {}
-			dRet['total']['rate']['total'] = (dRet['total']['throws']['attempts'] != 0 and
-				round(
-					(100.0 * (
-						dRet['total']['throws']['hits'] / dRet['total']['throws']['attempts']
-					)),
-					1
-				) or
-				0.0
-			)
-			dRet['total']['rate']['target'] = (dRet['total']['target']['attempts'] != 0 and
-				round(
-					(100.0 * (
-						dRet['total']['target']['hits'] / dRet['total']['target']['attempts']
-					)),
-					1
-				) or
-				0.0
-			)
-			dRet['total']['rate']['clutch'] = (dRet['total']['clutches']['attempts'] != 0 and
-				round(
-					(100.0 * (
-						dRet['total']['clutches']['hits'] / dRet['total']['clutches']['attempts']
-					)),
-					1
-				) or
-				0.0
-			)
-
-		# Return the data
-		return Services.Effect(dRet)
+		# Return both
+		return Services.Effect({
+			"overall": dOverall,
+			"practices": lPractices
+		})

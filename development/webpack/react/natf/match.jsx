@@ -69,9 +69,6 @@ class Match extends React.Component {
 
 	bigaxeFinish() {
 
-		// Store this
-		var self = this;
-
 		// Show the loader
 		Loader.show();
 
@@ -84,7 +81,7 @@ class Match extends React.Component {
 		}
 
 		// Clone the match state
-		var ms = self.state.matchState
+		var ms = this.state.matchState
 
 		// Remove the finish and set the waiting
 		ms.bigaxe_can_finish = false;
@@ -365,9 +362,6 @@ class Match extends React.Component {
 
 	existingDelete(ev) {
 
-		// Store this
-		var self = this;
-
 		// Show the loader
 		Loader.show();
 
@@ -384,11 +378,11 @@ class Match extends React.Component {
 
 				// If the thrower can't delete that record, or it's finished
 				if(res.error.code == 1000) {
-					self.existingRemove(id);
+					this.existingRemove(id);
 				}
 				// If it's already deleted
 				else if(res.error.code == 1104) {
-					self.existingRemove(id);
+					this.existingRemove(id);
 				}
 				// Unknown error
 				else {
@@ -403,7 +397,7 @@ class Match extends React.Component {
 
 			// If there's data
 			if(res.data) {
-				self.existingRemove(id);
+				this.existingRemove(id);
 			}
 
 		}).always(() => {
@@ -413,9 +407,6 @@ class Match extends React.Component {
 	}
 
 	existingFetch() {
-
-		// Store this
-		var self = this;
 
 		// Show the loader
 		Loader.show();
@@ -441,7 +432,7 @@ class Match extends React.Component {
 				if(res.data.length) {
 
 					// Set the state
-					self.setState({
+					this.setState({
 						"mode": "existing",
 						"existing": res.data
 					})
@@ -486,14 +477,11 @@ class Match extends React.Component {
 		// If we're on game 3
 		if(ms.game == "3") {
 
-			// Store this
-			var self = this;
-
 			// Show the loader
 			Loader.show()
 
 			// Clone the match state
-			var ms = Tools.clone(self.state.matchState);
+			var ms = Tools.clone(this.state.matchState);
 
 			// Set the match state to waiting
 			ms.waiting = true;
@@ -627,9 +615,6 @@ class Match extends React.Component {
 					this.matchCallback
 				)
 
-				// Save this
-				var self = this;
-
 				// Fetch the match
 				Services.read('natf', 'match', {
 					"id": id[1]
@@ -664,7 +649,7 @@ class Match extends React.Component {
 						}
 
 						// Are we initiator or opponent?
-						var t = res.data.initiator == self.state.thrower._id ? 'i' : 'o';
+						var t = res.data.initiator == this.state.thrower._id ? 'i' : 'o';
 
 						// Make sure each game has an intiator and opponent
 						for(var k in res.data.games) {
@@ -676,10 +661,10 @@ class Match extends React.Component {
 						}
 
 						// Calculate the match state
-						var ms = self.calculateMatchState(res.data);
+						var ms = this.calculateMatchState(res.data);
 
 						// Store it in the state
-						self.setState({
+						this.setState({
 							"alias": t == 'i' ? res.data['opponent_alias'] : res.data['initiator_alias'],
 							"bigaxe": res.data.bigaxe,
 							"games": res.data.games,
@@ -693,9 +678,9 @@ class Match extends React.Component {
 							//	points mode, allow clutches
 							if((ms.mode == 'games' && ms.throw == '5') ||
 								ms.mode == 'bigaxe_points') {
-								self.refs.board.clutchMode = 'select';
+								this.refs.board.clutchMode = 'select';
 							} else {
-								self.refs.board.clutchMode = 'none';
+								this.refs.board.clutchMode = 'none';
 							}
 						});
 					}
@@ -962,9 +947,6 @@ class Match extends React.Component {
 
 	points(clutch, value) {
 
-		// Store this
-		var self = this;
-
 		// Clone match state
 		var ms = Tools.clone(this.state.matchState);
 
@@ -1011,10 +993,10 @@ class Match extends React.Component {
 				if(res.data) {
 
 					// If the overwrite flag is set
-					if(self.state.overwrite) {
+					if(this.state.overwrite) {
 						var t = "6"
 						for(t of ["1", "2", "3", "4", "5", "6"]) {
-							if(typeof games[ms.game][self.state.is][t] == 'undefined') {
+							if(typeof games[ms.game][this.state.is][t] == 'undefined') {
 								break;
 							}
 						}
@@ -1024,10 +1006,10 @@ class Match extends React.Component {
 					}
 
 					// Set the board mode
-					self.refs.board.clutchMode = ms.throw == '5' ? 'select' : 'none';
+					this.refs.board.clutchMode = ms.throw == '5' ? 'select' : 'none';
 
 					// Update the state
-					self.setState({
+					this.setState({
 						"games": games,
 						"matchState": ms,
 						"overwrite": false
@@ -1107,10 +1089,10 @@ class Match extends React.Component {
 					if(res.data) {
 
 						// If the overwrite flag is set
-						if(self.state.overwrite) {
+						if(this.state.overwrite) {
 							var t = 0;
 							for(; true; ++t) {
-								if(typeof bigaxe['target'][self.state.is][t] == 'undefined') {
+								if(typeof bigaxe['target'][this.state.is][t] == 'undefined') {
 									break;
 								}
 							}
@@ -1120,10 +1102,10 @@ class Match extends React.Component {
 						}
 
 						// Calculate the throws so we can know if we're done
-						ms.bigaxe_can_finish = self.calculateBigAxeFinished('target', self.state);
+						ms.bigaxe_can_finish = this.calculateBigAxeFinished('target', this.state);
 
 						// Set the new state
-						self.setState({
+						this.setState({
 							"bigaxe": bigaxe,
 							"matchState": ms,
 							"overwrite": false
@@ -1190,10 +1172,10 @@ class Match extends React.Component {
 					if(res.data) {
 
 						// If the overwrite flag is set
-						if(self.state.overwrite) {
+						if(this.state.overwrite) {
 							var t = 0;
 							for(; true; ++t) {
-								if(typeof bigaxe['points'][self.state.is][t] == 'undefined') {
+								if(typeof bigaxe['points'][this.state.is][t] == 'undefined') {
 									break;
 								}
 							}
@@ -1203,10 +1185,10 @@ class Match extends React.Component {
 						}
 
 						// Calculate the throws so we can know if we're done
-						ms.bigaxe_can_finish = self.calculateBigAxeFinished('points', self.state);
+						ms.bigaxe_can_finish = this.calculateBigAxeFinished('points', this.state);
 
 						// Set the new state
-						self.setState({
+						this.setState({
 							"bigaxe": bigaxe,
 							"matchState": ms,
 							"overwrite": false
@@ -1568,9 +1550,6 @@ class Match extends React.Component {
 	requestCancel() {
 		if(this.state.mode == 'request') {
 
-			// Store this
-			var self = this;
-
 			// Show the loader
 			Loader.show();
 
@@ -1584,7 +1563,7 @@ class Match extends React.Component {
 
 					// If it's already deleted
 					if(res.error.code != 1104) {
-						self.requestReset();
+						this.requestReset();
 					} else {
 						Events.trigger('error', JSON.stringify(res.error));
 					}
@@ -1597,7 +1576,7 @@ class Match extends React.Component {
 
 				// If there's data
 				if(res.data) {
-					self.requestReset();
+					this.requestReset();
 				}
 
 			}).always(() => {
@@ -1608,9 +1587,6 @@ class Match extends React.Component {
 	}
 
 	requestCreate(opponent) {
-
-		// Store this
-		var self = this;
 
 		// Show the loader
 		Loader.show();

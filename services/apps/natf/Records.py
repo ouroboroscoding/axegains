@@ -33,6 +33,12 @@ _mdPracticeConf = Record_ReDB.Record.generateConfig(
 	'rethinkdb', Conf.get(("rethinkdb", "axegains"))
 )
 
+# PracticePattern structure and config
+_mdPracticePatternConf = Record_ReDB.Record.generateConfig(
+	Tree.fromFile('../json/definitions/natf/practice_pattern.json'),
+	'rethinkdb', Conf.get(("rethinkdb", "axegains"))
+)
+
 # PracticeStats structure and config
 _mdPracticeStatsConf = Record_ReDB.Record.generateConfig(
 	Tree.fromFile('../json/definitions/natf/practice_stats.json'),
@@ -780,6 +786,10 @@ class PracticeStats(Record_ReDB.Record):
 			bool
 		"""
 
+		# Add the version and thrower
+		stats['_version'] = 2
+		stats['_thrower'] = thrower
+
 		# Get the structure
 		dStruct = cls.struct()
 
@@ -793,36 +803,44 @@ class PracticeStats(Record_ReDB.Record):
 			dRes = Record_ReDB.r.branch(
 				t.get(thrower).ne(None),
 				t.get(thrower).update({
-					"clutches": {
-						"attempts": Record_ReDB.r.row['clutches']['attempts'] + stats['clutches']['attempts'],
-						"hits": Record_ReDB.r.row['clutches']['hits'] + stats['clutches']['hits']
+					"bigaxe": {
+						"clutches": {
+							"attempts": Record_ReDB.r.row['bigaxe']['clutches']['attempts'] + stats['bigaxe']['clutches']['attempts'],
+							"drops": Record_ReDB.r.row['bigaxe']['clutches']['drops'] + stats['bigaxe']['clutches']['drops'],
+							"hits": Record_ReDB.r.row['bigaxe']['clutches']['hits'] + stats['bigaxe']['clutches']['hits'],
+							"points": Record_ReDB.r.row['bigaxe']['clutches']['points'] + stats['bigaxe']['clutches']['points']
+						},
+						"regular": {
+							"attempts": Record_ReDB.r.row['bigaxe']['regular']['attempts'] + stats['bigaxe']['regular']['attempts'],
+							"drops": Record_ReDB.r.row['bigaxe']['regular']['drops'] + stats['bigaxe']['regular']['drops'],
+							"fives": Record_ReDB.r.row['bigaxe']['regular']['fives'] + stats['bigaxe']['regular']['fives'],
+							"threes": Record_ReDB.r.row['bigaxe']['regular']['threes'] + stats['bigaxe']['regular']['threes'],
+							"ones": Record_ReDB.r.row['bigaxe']['regular']['ones'] + stats['bigaxe']['regular']['ones'],
+							"zeros": Record_ReDB.r.row['bigaxe']['regular']['zeros'] + stats['bigaxe']['regular']['zeros'],
+							"hits": Record_ReDB.r.row['bigaxe']['regular']['hits'] + stats['bigaxe']['regular']['hits'],
+							"points": Record_ReDB.r.row['bigaxe']['regular']['points'] + stats['bigaxe']['regular']['points']
+						}
 					},
-					"points": {
-						"target": Record_ReDB.r.row['points']['target'] + stats['points']['target'],
-						"total": Record_ReDB.r.row['points']['total'] + stats['points']['total']
-					},
-					"throws": {
-						"attempts": Record_ReDB.r.row['throws']['attempts'] + stats['throws']['attempts'],
-						"drops": Record_ReDB.r.row['throws']['drops'] + stats['throws']['drops'],
-						"hits": Record_ReDB.r.row['throws']['hits'] + stats['throws']['hits']
+					"standard": {
+						"clutches": {
+							"attempts": Record_ReDB.r.row['standard']['clutches']['attempts'] + stats['standard']['clutches']['attempts'],
+							"drops": Record_ReDB.r.row['standard']['clutches']['drops'] + stats['standard']['clutches']['drops'],
+							"hits": Record_ReDB.r.row['standard']['clutches']['hits'] + stats['standard']['clutches']['hits'],
+							"points": Record_ReDB.r.row['standard']['clutches']['points'] + stats['standard']['clutches']['points']
+						},
+						"regular": {
+							"attempts": Record_ReDB.r.row['standard']['regular']['attempts'] + stats['standard']['regular']['attempts'],
+							"drops": Record_ReDB.r.row['standard']['regular']['drops'] + stats['standard']['regular']['drops'],
+							"fives": Record_ReDB.r.row['standard']['regular']['fives'] + stats['standard']['regular']['fives'],
+							"threes": Record_ReDB.r.row['standard']['regular']['threes'] + stats['standard']['regular']['threes'],
+							"ones": Record_ReDB.r.row['standard']['regular']['ones'] + stats['standard']['regular']['ones'],
+							"zeros": Record_ReDB.r.row['standard']['regular']['zeros'] + stats['standard']['regular']['zeros'],
+							"hits": Record_ReDB.r.row['standard']['regular']['hits'] + stats['standard']['regular']['hits'],
+							"points": Record_ReDB.r.row['standard']['regular']['points'] + stats['standard']['regular']['points']
+						}
 					}
 				}).run(oCon),
-				t.insert({
-					"_thrower": thrower,
-					"clutches": {
-						"attempts": stats['clutches']['attempts'],
-						"hits": stats['clutches']['hits']
-					},
-					"points": {
-						"target": stats['points']['target'],
-						"total": stats['points']['total']
-					},
-					"throws": {
-						"attempts": stats['throws']['attempts'],
-						"drops": stats['throws']['drops'],
-						"hits": stats['throws']['hits']
-					}
-				}).run(oCon)
+				t.insert(stats).run(oCon)
 			)
 
 			# Return true if something was updated
@@ -838,3 +856,22 @@ class PracticeStats(Record_ReDB.Record):
 			dict
 		"""
 		return _mdPracticeStatsConf
+
+class PracticePattern(Record_ReDB.Record):
+	"""Practice Pattern
+
+	Represents a practice session pattern
+
+	Extends: RestOC.Record_ReDB.Record
+	"""
+
+	@classmethod
+	def config(cls):
+		"""Config
+
+		Returns the configuration data associated with the record type
+
+		Returns:
+			dict
+		"""
+		return _mdPracticePatternConf

@@ -57,9 +57,6 @@ class OpponentRow extends React.Component {
 		// Stop any further events
 		ev.stopPropagation();
 
-		// Store this
-		var self = this;
-
 		// Show the loader
 		Loader.show();
 
@@ -80,7 +77,7 @@ class OpponentRow extends React.Component {
 
 			// If there's data
 			if(res.data) {
-				self.setState({"favourite": true});
+				this.setState({"favourite": true});
 			}
 
 		}).always(() => {
@@ -93,9 +90,6 @@ class OpponentRow extends React.Component {
 
 		// Stop any further events
 		ev.stopPropagation();
-
-		// Store this
-		var self = this;
 
 		// Show the loader
 		Loader.show();
@@ -117,7 +111,7 @@ class OpponentRow extends React.Component {
 
 			// If there's data
 			if(res.data) {
-				self.setState({"favourite": false});
+				this.setState({"favourite": false});
 			}
 
 		}).always(() => {
@@ -186,9 +180,6 @@ class Opponent extends React.Component {
 
 	favourites() {
 
-		// Store this
-		var self = this;
-
 		// Show the loader
 		Loader.show();
 
@@ -212,7 +203,7 @@ class Opponent extends React.Component {
 				res.data.sort(aliasSort);
 
 				// Store the favourites
-				self.setState({"favourites": res.data});
+				this.setState({"favourites": res.data});
 			}
 
 		}).always(() => {
@@ -270,9 +261,6 @@ class Opponent extends React.Component {
 			return;
 		}
 
-		// Store this
-		var self = this;
-
 		// Show the loader
 		Loader.show();
 
@@ -298,7 +286,7 @@ class Opponent extends React.Component {
 				res.data.sort(aliasSort);
 
 				// Store the favourites
-				self.setState({"search": res.data});
+				this.setState({"search": res.data});
 			}
 
 		}).always(() => {

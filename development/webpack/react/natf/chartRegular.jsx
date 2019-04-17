@@ -1,15 +1,15 @@
 /**
- * Chart: Pie
+ * NATF Chart: Regular
  *
- * Manages a Chart.js pie chart
+ * Shows the chart for regular (target) throws
  *
  * @author Chris Nasr
  * @copyright OuroborosCoding
- * @created 2019-04-13
+ * @created 2019-04-15
  */
 
-// Chart Pie component
-class ChartPie extends React.Component {
+// Regular component
+class ChartRegular extends React.Component {
 
 	constructor(props) {
 
@@ -17,7 +17,7 @@ class ChartPie extends React.Component {
 		super(props);
 
 		// Initialise the state
-		this.state = {}
+		this.state = {};
 
 		// Chart
 		this.chart = null;
@@ -26,7 +26,13 @@ class ChartPie extends React.Component {
 	componentDidMount() {
 		this.chart = new Chart(this.refs.chart.getContext('2d'), {
 			"type": "pie",
-			"data": this.props.data,
+			"data": {
+				"labels": ["Fives", "Threes", "Ones", "Zeros", "Drops"],
+				"datasets": [{
+					"data": this.props.data,
+					"backgroundColor": ["rgb(0,0,0,0.9)", "rgb(255,0,0,0.9)", "rgb(0,0,255,0.9)", "rgb(100,100,100,0.5)", "rgb(200,200,200,0.5)"]
+				}]
+			},
 			"options": {
 				"layout": {"padding": 0},
 				"legend": {"display": false},
@@ -37,7 +43,7 @@ class ChartPie extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		this.chart.data = this.props.data;
+		this.chart.data.datasets[0].data = this.props.data;
 		this.chart.update();
 	}
 
@@ -53,4 +59,4 @@ class ChartPie extends React.Component {
 }
 
 // Export the component
-module.exports = ChartPie;
+module.exports = ChartRegular;

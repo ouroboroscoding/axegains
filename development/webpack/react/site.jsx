@@ -62,7 +62,6 @@ class Site extends React.Component {
 	}
 
 	render() {
-		var self = this;
 
 		// Stupid react
 		var items = [
@@ -78,13 +77,20 @@ class Site extends React.Component {
 		return (
 			<div id="site">
 				<Header />
-				<Menu ref="menu" className="menu primary" selected={self.state.page} onChange={self.pageChange}>
+				<Menu ref="menu" className="menu primary" selected={this.state.page} onChange={this.pageChange}>
 					{items}
 				</Menu>
-				{self.state.page == 'home' &&
+				{this.state.page == 'home' &&
 					<div className="content">
 						<div>
 							<dl id="home">
+								<dt>v1.5.0</dt>
+								<dd>
+									<ul className="fa-ul">
+										<li><i className="fa-li fas fa-angle-double-right"></i>Big axe mode now available in NATF practice.</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Can now create custom practice patterns in NATF practice. When signed in, click on the <i class="fas fa-plus color-one"></i> to add your own.</li>
+									</ul>
+								</dd>
 								<dt>v1.4.0</dt>
 								<dd>
 									<ul className="fa-ul">
@@ -127,14 +133,14 @@ class Site extends React.Component {
 						</div>
 					</div>
 				}
-				{self.state.page == 'practice' &&
-					<Practice thrower={self.state.thrower} />
+				{this.state.page == 'practice' &&
+					<Practice thrower={this.state.thrower} />
 				}
-				{self.state.page == 'match' &&
-					<Match thrower={self.state.thrower} />
+				{this.state.page == 'match' &&
+					<Match thrower={this.state.thrower} />
 				}
-				{self.state.page == 'stats' &&
-					<Stats thrower={self.state.thrower} />
+				{this.state.page == 'stats' &&
+					<Stats thrower={this.state.thrower} />
 				}
 				<Popups />
 				<Messages />

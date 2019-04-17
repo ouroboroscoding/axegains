@@ -31,9 +31,8 @@ class Menu extends React.PureComponent
 	}
 
 	itemClick(name) {
-		var self = this;
 		this.setState({selected: name}, () => {
-			self.props.onChange(name);
+			this.props.onChange(name);
 		});
 	}
 

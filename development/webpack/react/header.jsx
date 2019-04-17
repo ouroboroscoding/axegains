@@ -106,9 +106,6 @@ class Header extends React.Component {
 			return;
 		}
 
-		// Store this
-		var self = this;
-
 		// Show loader
 		Loader.show();
 
@@ -142,7 +139,7 @@ class Header extends React.Component {
 				Events.trigger('success', 'Submitted, please check your e-mail');
 
 				// Change state
-				self.setState({
+				this.setState({
 					"forgot": '',
 					"resend": false
 				});
@@ -170,9 +167,6 @@ class Header extends React.Component {
 			Forms.errorAdd(this.refs.forgot_repeat_passwd);
 			return;
 		}
-
-		// Store this
-		var self = this;
 
 		// Show the loader
 		Loader.show();
@@ -216,7 +210,7 @@ class Header extends React.Component {
 				Events.trigger('success', 'Password successfully changed, please login.');
 
 				// Change state
-				self.setState({
+				this.setState({
 					"forgot": false,
 					"modal": false
 				});
@@ -321,9 +315,6 @@ class Header extends React.Component {
 
 	signin(ev) {
 
-		// Store this
-		var self = this;
-
 		// Show loader
 		Loader.show();
 
@@ -343,14 +334,14 @@ class Header extends React.Component {
 					case 1001:
 						// Go through each message and make the ref red
 						for(var i in res.error.msg) {
-							Forms.errorAdd(self.refs[i]);
+							Forms.errorAdd(this.refs[i]);
 						}
 						break;
 					case 1201:
 						Events.trigger('error', 'Alias or password invalid');
 						break;
 					case 1204:
-						Forms.errorAdd(self.refs['signup_passwd']);
+						Forms.errorAdd(this.refs['signup_passwd']);
 						Events.trigger('error', 'Password not strong enough');
 						break;
 					default:
@@ -460,9 +451,6 @@ class Header extends React.Component {
 			return;
 		}
 
-		// Store this
-		var self = this;
-
 		// Show loader
 		Loader.show();
 
@@ -495,19 +483,19 @@ class Header extends React.Component {
 							} else if(i == 'passwd') {
 								i = 'signup_passwd';
 							}
-							Forms.errorAdd(self.refs[i]);
+							Forms.errorAdd(this.refs[i]);
 						}
 						break;
 					case 1200:
-						Forms.errorAdd(self.refs['signup_alias']);
+						Forms.errorAdd(this.refs['signup_alias']);
 						Events.trigger('error', 'Alias is already in use');
 						break;
 					case 1204:
-						Forms.errorAdd(self.refs['signup_passwd']);
+						Forms.errorAdd(this.refs['signup_passwd']);
 						Events.trigger('error', 'Password not strong enough');
 						break;
 					case 1206:
-						Forms.errorAdd(self.refs['email']);
+						Forms.errorAdd(this.refs['email']);
 						Events.trigger('error', 'E-mail already in use');
 						break;
 					default:
@@ -528,7 +516,7 @@ class Header extends React.Component {
 				Services.session(res.data.session);
 
 				// Revert to sign in and show success message
-				self.setState({
+				this.setState({
 					"modal": false,
 					"thrower": res.data.thrower
 				});
