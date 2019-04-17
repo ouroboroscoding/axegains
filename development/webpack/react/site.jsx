@@ -62,7 +62,6 @@ class Site extends React.Component {
 	}
 
 	render() {
-		var self = this;
 
 		// Stupid react
 		var items = [
@@ -78,10 +77,10 @@ class Site extends React.Component {
 		return (
 			<div id="site">
 				<Header />
-				<Menu ref="menu" className="menu primary" selected={self.state.page} onChange={self.pageChange}>
+				<Menu ref="menu" className="menu primary" selected={this.state.page} onChange={this.pageChange}>
 					{items}
 				</Menu>
-				{self.state.page == 'home' &&
+				{this.state.page == 'home' &&
 					<div className="content">
 						<div>
 							<dl id="home">
@@ -134,14 +133,14 @@ class Site extends React.Component {
 						</div>
 					</div>
 				}
-				{self.state.page == 'practice' &&
-					<Practice thrower={self.state.thrower} />
+				{this.state.page == 'practice' &&
+					<Practice thrower={this.state.thrower} />
 				}
-				{self.state.page == 'match' &&
-					<Match thrower={self.state.thrower} />
+				{this.state.page == 'match' &&
+					<Match thrower={this.state.thrower} />
 				}
-				{self.state.page == 'stats' &&
-					<Stats thrower={self.state.thrower} />
+				{this.state.page == 'stats' &&
+					<Stats thrower={this.state.thrower} />
 				}
 				<Popups />
 				<Messages />

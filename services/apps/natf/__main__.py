@@ -61,6 +61,8 @@ REST.Server({
 
 	"/practice": {"methods": REST.CREATE, "session": True},
 	"/practice/data": {"methods": REST.READ, "session": True},
+	"/practice/pattern": {"methods": REST.CREATE | REST.DELETE | REST.UPDATE, "session": True},
+	"/practice/patterns": {"methods": REST.READ, "session": True},
 	"/practice/stats": {"methods": REST.READ, "session": True}
 
 }, 'natf', "https?://(.*\\.)?%s" % Conf.get(("domain","primary")).replace('.', '\\.')).run(

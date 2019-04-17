@@ -14,6 +14,48 @@
 var Tools = {
 
 	/**
+	 * Array Find Index
+	 *
+	 * Finds a specific object in an array based on key name and value and
+	 * returns its index
+	 *
+	 * @name afindi
+	 * @param array a				The value to look through
+	 * @param str k					The name of the key to check
+	 * @param mixed v				The value to check against
+	 * @return object
+	 */
+	afindi: function(a, k, v) {
+		for(var i = 0; i < a.length; ++i) {
+			if(a[i][k] == v) {
+				return i;
+			}
+		}
+		return -1;
+	},
+
+	/**
+	 * Array Find Object
+	 *
+	 * Finds a specific object in an array based on key name and value and
+	 * returns it
+	 *
+	 * @name afindo
+	 * @param array a				The value to look through
+	 * @param str k					The name of the key to check
+	 * @param mixed v				The value to check against
+	 * @return object
+	 */
+	afindo: function(a, k, v) {
+		for(var i = 0; i < a.length; ++i) {
+			if(a[i][k] == v) {
+				return a[i];
+			}
+		}
+		return null;
+	},
+
+	/**
 	 * Clone
 	 *
 	 * Deep clone any type of object, returning a new one

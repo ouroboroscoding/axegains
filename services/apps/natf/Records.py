@@ -33,6 +33,12 @@ _mdPracticeConf = Record_ReDB.Record.generateConfig(
 	'rethinkdb', Conf.get(("rethinkdb", "axegains"))
 )
 
+# PracticePattern structure and config
+_mdPracticePatternConf = Record_ReDB.Record.generateConfig(
+	Tree.fromFile('../json/definitions/natf/practice_pattern.json'),
+	'rethinkdb', Conf.get(("rethinkdb", "axegains"))
+)
+
 # PracticeStats structure and config
 _mdPracticeStatsConf = Record_ReDB.Record.generateConfig(
 	Tree.fromFile('../json/definitions/natf/practice_stats.json'),
@@ -850,3 +856,22 @@ class PracticeStats(Record_ReDB.Record):
 			dict
 		"""
 		return _mdPracticeStatsConf
+
+class PracticePattern(Record_ReDB.Record):
+	"""Practice Pattern
+
+	Represents a practice session pattern
+
+	Extends: RestOC.Record_ReDB.Record
+	"""
+
+	@classmethod
+	def config(cls):
+		"""Config
+
+		Returns the configuration data associated with the record type
+
+		Returns:
+			dict
+		"""
+		return _mdPracticePatternConf

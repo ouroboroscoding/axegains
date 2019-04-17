@@ -50,9 +50,6 @@ class Thrower extends React.Component {
 			return;
 		}
 
-		// Store this
-		var self = this;
-
 		// Show the loader
 		Loader.show();
 
@@ -102,9 +99,6 @@ class Thrower extends React.Component {
 
 	email() {
 
-		// Store this
-		var self = this;
-
 		// Show the loader
 		Loader.show();
 
@@ -119,10 +113,10 @@ class Thrower extends React.Component {
 				var error = ' ';
 				switch(res.error.code) {
 					case 1001:
-						Forms.errorAdd(self.refs.email);
+						Forms.errorAdd(this.refs.email);
 						break;
 					case 1206:
-						Forms.errorAdd(self.refs['email']);
+						Forms.errorAdd(this.refs['email']);
 						Events.trigger('error', 'E-mail already in use');
 						break;
 					default:
@@ -143,7 +137,7 @@ class Thrower extends React.Component {
 				Events.trigger('success', 'Successfully changed your email.');
 
 				// Reset password
-				self.refs.email_passwd.value = '';
+				this.refs.email_passwd.value = '';
 			}
 
 		}).always(() => {
@@ -161,9 +155,6 @@ class Thrower extends React.Component {
 			Events.trigger('error', 'Passwords do not match');
 			return;
 		}
-
-		// Store this
-		var self = this;
 
 		// Show loader
 		Loader.show();
@@ -211,7 +202,6 @@ class Thrower extends React.Component {
 	}
 
 	render() {
-
 		return (
 			<React.Fragment>
 				<div className="form">

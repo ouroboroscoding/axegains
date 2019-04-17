@@ -22,7 +22,7 @@ from RestOC import Conf, DictHelper, Errors, Record_ReDB, Services, Sesh
 from shared import Sync
 
 # Service imports
-from .Records import Match, MatchStats, Practice, PracticeStats
+from .Records import Match, MatchStats, Practice, PracticePattern, PracticeStats
 
 class Natf(Services.Service):
 	"""NATF Service class
@@ -32,7 +32,7 @@ class Natf(Services.Service):
 	Extends: shared.Services.Service
 	"""
 
-	_install = [Match, Practice, PracticeStats]
+	_install = [Match, MatchStats, Practice, PracticePattern, PracticeStats]
 	"""Record types called in install"""
 
 	def initialise(self):
@@ -972,10 +972,144 @@ class Natf(Services.Service):
 		# Fetch the practice data
 		dPractice = Practice.get(data['id'], raw=['data', 'stats'])
 		if not dPractice:
-			return Services.Effect(error=(1104, data['id']))
+			return Services.Effect(error=(1104, 'practice:%s' % data['id']))
 
 		# Return the data
 		return Services.Effect(dPractice)
+
+	def practicePattern_create(self, data, sesh):
+		"""Practice Pattern (Create)
+
+		Creates a new Practice Pattern for the current thrower
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['title', 'descr', 'throws'])
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
+
+		# Create the instance
+		try:
+			oPattern = PracticePattern({
+				"_created": int(time()),
+				"thrower": sesh['thrower']['_id'],
+				"title": data['title'],
+				"descr": data['descr'],
+				"throws": data['throws']
+			})
+		except ValueError as e:
+			return Services.Effect(error=(1001, e.args[0]))
+
+		# Store the instance
+		if not oPattern.create():
+			return Services.Effect(error=1100)
+
+		# Return the new ID
+		return Services.Effect(oPattern['_id'])
+
+	def practicePattern_delete(self, data, sesh):
+		"""Practice Pattern (Delete)
+
+		Deletes an existing Practice Pattern for the current thrower
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['id'])
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
+
+		# Find the pattern
+		oPattern = PracticePattern.get(data['id'])
+		if not oPattern:
+			return Services.Effect(error=(1104, 'practice_pattern:%s' % data['id']))
+
+		# If the user has no rights
+		if oPattern['thrower'] != sesh['thrower']['_id']:
+			return Services.Effect(error=1000)
+
+		# Delete the pattern
+		if not oPattern.delete():
+			return Services.Effect(False)
+
+		# Return OK
+		return Services.Effect(True)
+
+	def practicePattern_update(self, data, sesh):
+		"""Practice Pattern (Update)
+
+		Replaces an existing Practice Pattern for the current thrower
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['_id'])
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
+
+		# Find the pattern
+		oPattern = PracticePattern.get(data['_id'])
+		if not oPattern:
+			return Services.Effect(error=(1104, 'practice_pattern:%s' % data['_id']))
+
+		# If the user has no rights
+		if oPattern['thrower'] != sesh['thrower']['_id']:
+			return Services.Effect(error=1000)
+
+		# Remove fields that can't be changed
+		del data['_id']
+		if '_created' in data: del data['_created']
+		if 'thrower' in data: del data['thrower']
+
+		# Update whatever is left, catch any invalid values
+		lErrors = []
+		for k in data:
+			try: oPattern[k] = data[k]
+			except ValueError as e: lErrors.extend(e.args[0])
+
+		# If there's any errors
+		if lErrors:
+			return Services.Effect(error=(103, lErrors))
+
+		# Update the pattern
+		oPattern.save()
+
+		# Return OK
+		return Services.Effect(True)
+
+	def practicePatterns_read(self, data, sesh):
+		"""Practice Patterns
+
+		Fetches the list of patterns beloning to the logged in thrower
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- Session associated with the request
+
+		Returns:
+			Services.Effect
+		"""
+
+		# Fetch all patterns for the current thrower and return them
+		return Services.Effect(
+			PracticePattern.get(sesh['thrower']['_id'], index='thrower', raw=True, orderby='title')
+		)
 
 	def practiceStats_read(self, data, sesh):
 		"""Practice Stats

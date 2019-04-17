@@ -106,9 +106,6 @@ class Header extends React.Component {
 			return;
 		}
 
-		// Store this
-		var self = this;
-
 		// Show loader
 		Loader.show();
 
@@ -142,7 +139,7 @@ class Header extends React.Component {
 				Events.trigger('success', 'Submitted, please check your e-mail');
 
 				// Change state
-				self.setState({
+				this.setState({
 					"forgot": '',
 					"resend": false
 				});

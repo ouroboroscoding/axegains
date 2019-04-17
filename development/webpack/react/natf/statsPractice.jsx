@@ -162,9 +162,6 @@ class StatsPractice extends React.Component {
 			all = false
 		}
 
-		// Save this
-		var self = this;
-
 		// Show the loader
 		Loader.show();
 
@@ -209,9 +206,6 @@ class StatsPractice extends React.Component {
 			return;
 		}
 
-		// Save this
-		var self = this;
-
 		// Show the loader
 		Loader.show();
 
@@ -234,7 +228,7 @@ class StatsPractice extends React.Component {
 			if(res.data) {
 
 				// Add the stats to the state
-				self.setState({
+				this.setState({
 					"one": res.data
 				});
 			}

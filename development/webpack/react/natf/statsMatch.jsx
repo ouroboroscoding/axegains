@@ -65,9 +65,6 @@ class StatsMatch extends React.Component {
 
 	fetch() {
 
-		// Save this
-		var self = this;
-
 		// Show the loader
 		Loader.show();
 
