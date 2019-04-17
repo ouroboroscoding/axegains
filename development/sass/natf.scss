@@ -1,9 +1,62 @@
 #practice {
 
 	.natf {
-
 		margin: 0 auto;
 		width: 304px;
+
+		div.aright {
+			margin-top: 5px;
+
+			i {
+				color: $color-1;
+			}
+		}
+
+		dl.select {
+			dt {
+				i {
+					margin-left: 10px;
+				}
+			}
+		}
+
+		div.bigaxe {
+			background-color: blue;
+			border: 1px solid blue;
+			color: white;
+			display: inline-block;
+			margin-top: 5px;
+			padding: 6px 0 4px;
+			position: relative;
+			text-align: center;
+			top: -30px;
+			width: 50px;
+			vertical-align: top;
+		}
+
+		div.bigaxe.on {
+			background-color: white;
+			color: blue;
+		}
+
+		div.pattern {
+
+			div.throw {
+				border: 1px solid $color-1;
+				padding: 5px;
+				margin-bottom: 5px;
+
+				span {
+					display: inline-block;
+					width: 80px;
+				}
+
+				input[type=radio] {
+					vertical-align: bottom;
+					height: 16px;
+				}
+			}
+		}
 
 		.points {
 			border: 2px solid black;
@@ -40,6 +93,28 @@
 		overflow: auto;
 		padding: 5px 0;
 		width: 95%;
+
+		.throws {
+			margin: 10px auto;
+			text-align: center;
+
+			div {
+				display: inline-block;
+				font-size: 120%;
+				width: 50%;
+			}
+		}
+
+		.bigaxe {
+			margin: 10px auto;
+			text-align: center;
+
+			div {
+				display: inline-block;
+				font-size: 120%;
+				width: 33%;
+			}
+		}
 
 		.practice {
 			overflow: auto;
@@ -103,28 +178,6 @@
 					font-size: 120%;
 					text-align: left;
 					width: 23%;
-				}
-			}
-
-			.throws {
-				margin: 10px auto;
-				text-align: center;
-
-				div {
-					display: inline-block;
-					font-size: 120%;
-					width: 50%;
-				}
-			}
-
-			.bigaxe {
-				margin: 10px auto;
-				text-align: center;
-
-				div {
-					display: inline-block;
-					font-size: 120%;
-					width: 33%;
 				}
 			}
 		}
@@ -307,6 +360,15 @@
 		span.clutch {
 			background-color: green;
 			color: white;
+		}
+
+		span.bigaxe {
+			background-color: blue;
+			color: white;
+		}
+
+		span.bigaxe.clutch {
+			background-color: #00cccc;
 		}
 	}
 }

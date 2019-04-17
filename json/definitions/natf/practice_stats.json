@@ -9,17 +9,41 @@
 	},
 	"__name__": "NATF_Practice_Stats",
 	"_thrower": {"__type__":"uuid"},
-	"clutches": {
-		"attempts": "uint",
-		"hits": "uint"
+	"_version": "uint",
+	"bigaxe": {
+		"clutches": {
+			"attempts": "uint",
+			"drops": "uint",
+			"hits": "uint",
+			"points": "uint"
+		},
+		"regular": {
+			"attempts": "uint",
+			"fives": "uint",
+			"threes": "uint",
+			"ones": "uint",
+			"zeros": "uint",
+			"drops": "uint",
+			"hits": "uint",
+			"points": "uint"
+		}
 	},
-	"points": {
-		"target": "uint",
-		"total": "uint"
-	},
-	"throws": {
-		"attempts": "uint",
-		"drops": "uint",
-		"hits": "uint"
+	"standard": {
+		"clutches": {
+			"attempts": "uint",
+			"drops": "uint",
+			"hits": "uint",
+			"points": "uint"
+		},
+		"regular": {
+			"attempts": "uint",
+			"fives": "uint",
+			"threes": "uint",
+			"ones": "uint",
+			"zeros": "uint",
+			"drops": "uint",
+			"hits": "uint",
+			"points": "uint"
+		}
 	}
 }

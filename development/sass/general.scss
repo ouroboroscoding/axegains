@@ -95,6 +95,7 @@ table {
 div.form {
 
 	input[type=text], input[type=password], select, textarea {
+		box-sizing: border-box;
 		width: 100%;
 	}
 
@@ -102,9 +103,13 @@ div.form {
 		color: white;
 	}
 
-	input.error, select.error {
+	input.error, select.error, textarea.error {
 		background-color: $color-error;
 		border-color: red;
+		color: white;
+	}
+
+	textarea.error::placeholder {
 		color: white;
 	}
 }

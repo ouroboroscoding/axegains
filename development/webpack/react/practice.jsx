@@ -65,16 +65,15 @@ class Practice extends React.Component {
 	}
 
 	render() {
-		var self = this;
 		return (
 			<div id="practice">
-				<Menu className="menu secondary" selected={self.state.org} onChange={self.menuChange}>
+				<Menu className="menu secondary" selected={this.state.org} onChange={this.menuChange}>
 					<Item name="natf">NATF</Item>
 				</Menu>
 				<div id="content">
 					<div>
-						{self.state.org == 'natf' &&
-							<Natf thrower={self.props.thrower} />
+						{this.state.org == 'natf' &&
+							<Natf thrower={this.props.thrower} />
 						}
 					</div>
 				</div>

@@ -24,7 +24,7 @@ class Board extends React.Component {
 		// Initialise the state
 		this.state = {
 			"clutchMode": props.clutchMode,
-			"selected": false
+			"selected": props.clutchMode == 'expected'
 		};
 
 		// Bind methods
@@ -68,6 +68,12 @@ class Board extends React.Component {
 			} else {
 				this.setState({"selected": true});
 			}
+		}
+	}
+
+	componentDidUpdate(prevProps) {
+		if(prevProps.clutchMode != this.props.clutchMode) {
+			this.clutchMode = this.props.clutchMode;
 		}
 	}
 
@@ -146,15 +152,14 @@ class Board extends React.Component {
 	}
 
 	render() {
-		var self = this;
 		return (
-			<div className="board" data-value={0} onClick={self.pointClick}>
-				<div className={"clutch left" + (self.state.selected ? ' selected' : '')} onClick={self.clutchClick}></div>
-				<div className="drop" onClick={self.dropClick}>DROP</div>
-				<div className={"clutch right" + (self.state.selected ? ' selected' : '')} onClick={self.clutchClick}></div>
-				<div className="one" data-value={1} onClick={self.pointClick}>
-					<div className="three" data-value={3} onClick={self.pointClick}>
-						<div className="five" data-value={5} onClick={self.pointClick}></div>
+			<div className="board" data-value={0} onClick={this.pointClick}>
+				<div className={"clutch left" + (this.state.selected ? ' selected' : '')} onClick={this.clutchClick}></div>
+				<div className="drop" onClick={this.dropClick}>DROP</div>
+				<div className={"clutch right" + (this.state.selected ? ' selected' : '')} onClick={this.clutchClick}></div>
+				<div className="one" data-value={1} onClick={this.pointClick}>
+					<div className="three" data-value={3} onClick={this.pointClick}>
+						<div className="five" data-value={5} onClick={this.pointClick}></div>
 					</div>
 				</div>
 			</div>
