@@ -24,6 +24,7 @@ var Forms = require('../base/forms.jsx');
 var Modal = require('../elements/modal.jsx');
 var Board = require('./board.jsx');
 
+// Pattern component
 class Pattern extends React.Component {
 
 	constructor(props) {
@@ -132,8 +133,6 @@ class Pattern extends React.Component {
 					<option value={28}>28</option>
 					<option value={29}>29</option>
 					<option value={30}>30</option>
-					<option value={31}>31</option>
-					<option value={32}>32</option>
 				</select></p>
 				{this.state.throws.map(function(t, i) {
 					return (

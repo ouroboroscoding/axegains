@@ -1,0 +1,48 @@
+{
+	"__rethinkdb__": {
+		"db": "axegains",
+		"host": "primary",
+		"indexes": {
+			"thrower": null
+		},
+		"table": "watl_practice"
+	},
+	"__name__": "WATL_Practice",
+	"_id": {"__type__":"uuid", "__optional__":true},
+	"_created": "timestamp",
+	"thrower": "uuid",
+	"data": {
+		"__array__": "duplicates",
+		"killshot": {"__type__": "string", "__options__": ["0", "L", "R"]},
+		"value": [
+			{"__type__": "uint", "__options__": [0,1,2,3,4,6,8]},
+			{"__type__": "string", "__options__": ["d"]}
+		]
+	},
+	"stats": {
+		"ks_left": {
+			"attempts": "uint",
+			"drops": "uint",
+			"hits": "uint",
+			"points": "uint"
+		},
+		"ks_right": {
+			"attempts": "uint",
+			"drops": "uint",
+			"hits": "uint",
+			"points": "uint"
+		},
+		"regular": {
+			"attempts": "uint",
+			"sixes": "uint",
+			"fours": "uint",
+			"threes": "uint",
+			"twos": "uint",
+			"ones": "uint",
+			"zeros": "uint",
+			"drops": "uint",
+			"hits": "uint",
+			"points": "uint"
+		}
+	}
+}

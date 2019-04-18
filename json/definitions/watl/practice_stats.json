@@ -1,0 +1,37 @@
+{
+	"__rethinkdb__": {
+		"auto_primary": false,
+		"db": "axegains",
+		"host": "primary",
+		"indexes": {},
+		"primary": "_thrower",
+		"table": "watl_practice_stats"
+	},
+	"__name__": "WATL_Practice_Stats",
+	"_thrower": {"__type__":"uuid"},
+	"ksLeft": {
+		"attempts": "uint",
+		"drops": "uint",
+		"hits": "uint",
+		"points": "uint"
+	},
+	"ksRight": {
+		"attempts": "uint",
+		"drops": "uint",
+		"hits": "uint",
+		"points": "uint"
+	},
+	"regular": {
+		"attempts": "uint",
+		"sixes": "uint",
+		"fours": "uint",
+		"threes": "uint",
+		"twos": "uint",
+		"ones": "uint",
+		"zeros": "uint",
+		"drops": "uint",
+		"hits": "uint",
+		"points": "uint"
+	}
+
+}

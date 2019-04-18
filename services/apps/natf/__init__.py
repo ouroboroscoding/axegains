@@ -880,7 +880,7 @@ class Natf(Services.Service):
 						"hits": 0,
 						"points": 0
 					}
-				},
+				}
 			}
 		}
 
