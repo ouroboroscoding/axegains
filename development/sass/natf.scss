@@ -119,30 +119,6 @@
 		.practice {
 			overflow: auto;
 
-			table {
-				width: 630px;
-
-				th.date {
-					width: 100px
-				}
-
-				th.points, th.throws, th.drops {
-					width: 60px;
-				}
-
-				th.average {
-					width: 70px;
-				}
-
-				th.rate {
-					width: 70px;
-				}
-
-				tr.session {
-					cursor: pointer;
-				}
-			}
-
 			.allPoints {
 				width: 300px;
 			}

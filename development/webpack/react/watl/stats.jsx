@@ -62,7 +62,7 @@ class Stats extends React.Component {
 					<Item name="practice">Practice</Item>
 				</Menu>
 				<div id="content">
-					<div className="natf">
+					<div className="watl">
 						{self.state.which == 'practice' &&
 							<Practice thrower={self.props.thrower} />
 						}

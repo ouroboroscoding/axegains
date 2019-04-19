@@ -75,7 +75,6 @@ class PracticeStats(Record_ReDB.Record):
 		"""
 
 		# Add the version and thrower
-		stats['_version'] = 2
 		stats['_thrower'] = thrower
 
 		# Get the structure
@@ -92,28 +91,28 @@ class PracticeStats(Record_ReDB.Record):
 				t.get(thrower).ne(None),
 				t.get(thrower).update({
 					"ksLeft": {
-						"attempts": Record_ReDB.r.row['bigaxe']['clutches']['attempts'] + stats['bigaxe']['clutches']['attempts'],
-						"drops": Record_ReDB.r.row['bigaxe']['clutches']['drops'] + stats['bigaxe']['clutches']['drops'],
-						"hits": Record_ReDB.r.row['bigaxe']['clutches']['hits'] + stats['bigaxe']['clutches']['hits'],
-						"points": Record_ReDB.r.row['bigaxe']['clutches']['points'] + stats['bigaxe']['clutches']['points']
+						"attempts": Record_ReDB.r.row['ksLeft']['attempts'] + stats['ksLeft']['attempts'],
+						"drops": Record_ReDB.r.row['ksLeft']['drops'] + stats['ksLeft']['drops'],
+						"hits": Record_ReDB.r.row['ksLeft']['hits'] + stats['ksLeft']['hits'],
+						"points": Record_ReDB.r.row['ksLeft']['points'] + stats['ksLeft']['points']
 					},
 					"ksRight": {
-						"attempts": Record_ReDB.r.row['bigaxe']['clutches']['attempts'] + stats['bigaxe']['clutches']['attempts'],
-						"drops": Record_ReDB.r.row['bigaxe']['clutches']['drops'] + stats['bigaxe']['clutches']['drops'],
-						"hits": Record_ReDB.r.row['bigaxe']['clutches']['hits'] + stats['bigaxe']['clutches']['hits'],
-						"points": Record_ReDB.r.row['bigaxe']['clutches']['points'] + stats['bigaxe']['clutches']['points']
+						"attempts": Record_ReDB.r.row['ksRight']['attempts'] + stats['ksRight']['attempts'],
+						"drops": Record_ReDB.r.row['ksRight']['drops'] + stats['ksRight']['drops'],
+						"hits": Record_ReDB.r.row['ksRight']['hits'] + stats['ksRight']['hits'],
+						"points": Record_ReDB.r.row['ksRight']['points'] + stats['ksRight']['points']
 					},
 					"regular": {
-						"attempts": Record_ReDB.r.row['bigaxe']['regular']['attempts'] + stats['bigaxe']['regular']['attempts'],
-						"drops": Record_ReDB.r.row['bigaxe']['regular']['drops'] + stats['bigaxe']['regular']['drops'],
-						"sixes": Record_ReDB.r.row['bigaxe']['regular']['sixes'] + stats['bigaxe']['regular']['sixes'],
-						"fours": Record_ReDB.r.row['bigaxe']['regular']['fours'] + stats['bigaxe']['regular']['fours'],
-						"threes": Record_ReDB.r.row['bigaxe']['regular']['threes'] + stats['bigaxe']['regular']['threes'],
-						"twos": Record_ReDB.r.row['bigaxe']['regular']['twos'] + stats['bigaxe']['regular']['twos'],
-						"ones": Record_ReDB.r.row['bigaxe']['regular']['ones'] + stats['bigaxe']['regular']['ones'],
-						"zeros": Record_ReDB.r.row['bigaxe']['regular']['zeros'] + stats['bigaxe']['regular']['zeros'],
-						"hits": Record_ReDB.r.row['bigaxe']['regular']['hits'] + stats['bigaxe']['regular']['hits'],
-						"points": Record_ReDB.r.row['bigaxe']['regular']['points'] + stats['bigaxe']['regular']['points']
+						"attempts": Record_ReDB.r.row['regular']['attempts'] + stats['regular']['attempts'],
+						"drops": Record_ReDB.r.row['regular']['drops'] + stats['regular']['drops'],
+						"sixes": Record_ReDB.r.row['regular']['sixes'] + stats['regular']['sixes'],
+						"fours": Record_ReDB.r.row['regular']['fours'] + stats['regular']['fours'],
+						"threes": Record_ReDB.r.row['regular']['threes'] + stats['regular']['threes'],
+						"twos": Record_ReDB.r.row['regular']['twos'] + stats['regular']['twos'],
+						"ones": Record_ReDB.r.row['regular']['ones'] + stats['regular']['ones'],
+						"zeros": Record_ReDB.r.row['regular']['zeros'] + stats['regular']['zeros'],
+						"hits": Record_ReDB.r.row['regular']['hits'] + stats['regular']['hits'],
+						"points": Record_ReDB.r.row['regular']['points'] + stats['regular']['points']
 					}
 				}).run(oCon),
 				t.insert(stats).run(oCon)

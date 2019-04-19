@@ -30,7 +30,7 @@ class ChartRegular extends React.Component {
 				"labels": ["Sixes", "Fours", "Threes", "Twos", "Ones", "Zeros", "Drops"],
 				"datasets": [{
 					"data": this.props.data,
-					"backgroundColor": ["rgb(255,0,0,0.9)", "rgb(255,0,0,0.9)", "rgb(255,0,0,0.9)", "rgb(0,0,255,0.9)", "rgb(255,0,0,0.9)", "rgb(100,100,100,0.5)", "rgb(200,200,200,0.5)"]
+					"backgroundColor": ["rgb(255,0,0,0.9)", "rgb(30,30,30,0.9)", "rgb(60,60,60,0.9)", "rgb(90,90,90,0.9)", "rgb(120,120,120,0.9)", "rgb(150,150,150,0.5)", "rgb(200,200,200,0.5)"]
 				}]
 			},
 			"options": {

@@ -141,6 +141,10 @@ class Watl(Services.Service):
 					dData['stats']['ksLeft']['hits'] += 1
 					dData['stats']['ksLeft']['points'] += 8
 
+				# Add the points
+				else:
+					dData['stats']['ksLeft']['points'] += l[1]
+
 			elif l[0] == 'R':
 
 				# Increase the attempts
@@ -154,6 +158,10 @@ class Watl(Services.Service):
 				elif l[1] == 8:
 					dData['stats']['ksRight']['hits'] += 1
 					dData['stats']['ksRight']['points'] += 8
+
+				# Add the points
+				else:
+					dData['stats']['ksRight']['points'] += l[1]
 
 			# Else it's a standard throw
 			else:

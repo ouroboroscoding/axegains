@@ -30,7 +30,7 @@ class Practice extends React.Component {
 
 		// Initialise the state
 		this.state = {
-			"org": Hash.get('org', 'natf')
+			"org": Hash.get('org', this.props.thrower.org || 'natf')
 		};
 
 		// Bind methods
@@ -59,7 +59,7 @@ class Practice extends React.Component {
 	orgChange(org) {
 		if(org != this.state.org) {
 			if(org == null) {
-				org = 'natf';
+				org = this.props.thrower.org || 'natf';
 			}
 			this.setState({"org": org});
 		}

@@ -527,7 +527,8 @@ class Auth(Services.Service):
 		"""
 		return Services.Effect({
 			"_id": sesh['thrower']['_id'],
-			"alias": sesh['thrower']['alias']
+			"alias": sesh['thrower']['alias'],
+			"org": sesh['thrower']['org']
 		})
 
 	def signin_create(self, data):
@@ -569,7 +570,8 @@ class Auth(Services.Service):
 			"session": oSesh.id(),
 			"thrower": {
 				"_id": oSesh['thrower']['_id'],
-				"alias": oSesh['thrower']['alias']
+				"alias": oSesh['thrower']['alias'],
+				"org": oSesh['thrower']['org']
 			}
 		})
 
@@ -638,6 +640,7 @@ class Auth(Services.Service):
 			"_created": int(time()),
 			"alias": data['alias'],
 			"locale": data['locale'],
+			"org": 'org' in data and data['org'] or 'natf',
 			"passwd": Thrower.passwordHash(data['passwd']),
 			"verified": StrHelper.random(32, '_0x')
 		}
@@ -703,7 +706,8 @@ class Auth(Services.Service):
 			"session": oSesh.id(),
 			"thrower": {
 				"_id": oSesh['thrower']['_id'],
-				"alias": oSesh['thrower']['alias']
+				"alias": oSesh['thrower']['alias'],
+				"org": oSesh['thrower']['org']
 			}
 		})
 
@@ -840,6 +844,44 @@ class Auth(Services.Service):
 		})
 		if oEffect.errorExists():
 			return oEffect
+
+		# Return OK
+		return Services.Effect(True)
+
+	def throwerOrg_update(self, data, sesh):
+		"""Thrower Org
+
+		Changes the default organisation for the current signed in user
+
+		Arguments:
+			data {dict} -- Data sent with the request
+			sesh {Sesh._Session} -- The session associated with the user
+
+		Returns:
+			Effect
+		"""
+
+		# Verify fields
+		try: DictHelper.eval(data, ['org'])
+		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
+
+		# Find the thrower
+		oThrower = Thrower.get(sesh['thrower']['_id'])
+		if not oThrower:
+			return Services.Effect(error=1104)
+
+		# Set the new org
+		try:
+			oThrower['org'] = data['org']
+		except ValueError:
+			return Services.Effect(error=(1000, [('org', 'invalid')]))
+
+		# Save
+		oThrower.save(changes={"creator":sesh['thrower']['_id']})
+
+		# Update the session
+		sesh['thrower']['org'] = data['org']
+		sesh.save()
 
 		# Return OK
 		return Services.Effect(True)

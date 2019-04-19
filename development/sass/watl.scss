@@ -67,6 +67,35 @@
 	}
 }
 
+#stats {
+
+	.watl {
+		margin: 0 auto;
+		overflow: auto;
+		padding: 5px 0;
+		width: 95%;
+
+		.throws {
+			margin: 10px auto;
+			text-align: center;
+
+			div {
+				display: inline-block;
+				font-size: 120%;
+				width: 33%;
+			}
+		}
+
+		.practice {
+			overflow: auto;
+
+			.allPoints {
+				width: 300px;
+			}
+		}
+	}
+}
+
 .watl {
 
 	.board {
