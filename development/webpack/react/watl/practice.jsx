@@ -1,11 +1,11 @@
 /**
- * NATF Practice
+ * WATL Practice
  *
- * Manages tracking and storing practice on an NATF board
+ * Manages tracking and storing practice on an WATL board
  *
  * @author Chris Nasr
  * @copyright OuroborosCoding
- * @created 2019-03-20
+ * @created 2019-04-18
  */
 
 // Generic modules
@@ -35,17 +35,14 @@ class Pattern extends React.Component {
 		// Initialise the state
 		this.state = {
 			"descr": props.descr || '',
-			"throws": props.throws || [
-				{"bigaxe": false, "clutch": false},
-				{"bigaxe": false, "clutch": false}
-			],
+			"throws": props.throws || ["0", "0"],
 			"title": props.title || ''
 		}
 
 		// Bind methods
 		this.countChange = this.countChange.bind(this);
 		this.descrChange = this.descrChange.bind(this);
-		this.radioClick = this.radioClick.bind(this);
+		this.selectClick = this.selectClick.bind(this);
 		this.titleChange = this.titleChange.bind(this);
 	}
 
@@ -57,7 +54,7 @@ class Pattern extends React.Component {
 		// If the value is more than
 		if(count > this.state.throws.length) {
 			for(var i = this.state.throws.length; i < count; ++i) {
-				this.state.throws.push({"bigaxe": false, "clutch": false});
+				this.state.throws.push("0");
 			}
 		}
 
@@ -84,16 +81,14 @@ class Pattern extends React.Component {
 		this.setState({"title": ev.currentTarget.value});
 	}
 
-	radioClick(ev) {
+	selectClick(ev) {
 
 		// Pull out the index and type
 		var name = ev.currentTarget.name.split('.');
 		var index = parseInt(name[1]);
-		var type = name[0];
-		var value = ev.currentTarget.value == 'true';
 
 		// Set the state
-		this.state.throws[index][type] = value;
+		this.state.throws[index] = ev.currentTarget.value;
 		this.setState({"throws": this.state.throws});
 	}
 
@@ -139,14 +134,12 @@ class Pattern extends React.Component {
 						<div key={i} className="throw">
 							<h3>{"Throw #" + (i+1)}</h3>
 							<p>
-								<span>Big Axe: </span>
-								<label><input type="radio" name={"bigaxe." + i} value="true" checked={t.bigaxe} onClick={self.radioClick} /> True</label>
-								<label><input type="radio" name={"bigaxe." + i} value="false" checked={!t.bigaxe} onClick={self.radioClick} /> False</label>
-							</p>
-							<p>
-								<span>Clutch: </span>
-								<label><input type="radio" name={"clutch." + i} value="true" checked={t.clutch} onClick={self.radioClick} /> True</label>
-								<label><input type="radio" name={"clutch." + i} value="false" checked={!t.clutch} onClick={self.radioClick} /> False</label>
+								<span>Killshot: </span>
+								<select name={"throw." + i} value={t} onChange={self.selectClick}>
+									<option value="0">None</option>
+									<option value="L">Left</option>
+									<option value="R">Right</option>
+								</select>
 							</p>
 						</div>
 					);
@@ -170,10 +163,11 @@ class Practice extends React.Component {
 
 		// Initialise the state
 		this.state = {
-			"bigaxe": false,
-			"clutch": 'select',
-			"clutchAttempts": 0,
-			"clutchHits": 0,
+			"killshot": 'select',
+			"kslAttempts": 0,
+			"kslHits": 0,
+			"ksrAttempts": 0,
+			"ksrHits": 0,
 			"mode": null,
 			"modeThrows": false,
 			"pattern": false,
@@ -182,10 +176,9 @@ class Practice extends React.Component {
 			"showPoints": false,
 			"thrower": props.thrower,
 			"totalPoints": 0
-		};
+		}
 
 		// Bind methods
-		this.bigaxe = this.bigaxe.bind(this);
 		this.modeSelect = this.modeSelect.bind(this);
 		this.overwrite = this.overwrite.bind(this);
 		this.patternClose = this.patternClose.bind(this);
@@ -203,11 +196,6 @@ class Practice extends React.Component {
 		this.signout = this.signout.bind(this);
 	}
 
-	bigaxe(ev) {
-		ev.stopPropagation();
-		this.setState({"bigaxe": !this.state.bigaxe});
-	}
-
 	componentWillMount() {
 
 		// Track any signin/signout events
@@ -215,11 +203,11 @@ class Practice extends React.Component {
 		Events.add('signout', this.signout);
 
 		// If we have data in local storage
-		if('natf_practice' in localStorage) {
-			var new_state = JSON.parse(localStorage['natf_practice']);
+		if('watl_practice' in localStorage) {
+			var new_state = JSON.parse(localStorage['watl_practice']);
 			new_state.thrower = this.state.thrower;
 			this.setState(new_state);
-			delete localStorage['natf_practice'];
+			delete localStorage['watl_practice'];
 		}
 
 		// If there's a thrower
@@ -238,7 +226,7 @@ class Practice extends React.Component {
 
 		// If we have points, store them in local storage
 		if(this.state.points.length) {
-			localStorage['natf_practice'] = JSON.stringify(this.state);
+			localStorage['watl_practice'] = JSON.stringify(this.state);
 		}
 	}
 
@@ -259,18 +247,22 @@ class Practice extends React.Component {
 
 		// If custom
 		if(state.mode == 'custom') {
-			state.bigaxe = state.modeThrows[0].bigaxe;
-			state.clutch = state.modeThrows[0].clutch ? 'expected' : 'none';
+			if(state.modeThrows[0] == 'L') {
+				state.killshot = 'expected_left';
+			} else if(state.modeThrows[0] == 'R') {
+				state.killshot = 'expected_right';
+			} else {
+				state.killshot = 'none';
+			}
 		} else {
-			state.bigaxe = false;
 			switch(state.mode) {
-				case 'clutch':
-				case 'darkunicorn':
-					state.clutch = 'expected'; break;
 				case 'free':
-					state.clutch = 'select'; break;
-				case 'supernatural':
-					state.clutch = 'none'; break;
+					state.killshot = 'select';
+					break;
+				case 'perfect_left':
+				case 'perfect_right':
+					state.killshot = 'none';
+					break;
 			}
 		}
 
@@ -295,24 +287,37 @@ class Practice extends React.Component {
 				i += this.state.modeThrows.length;
 			}
 
-			// Is it big axe?
-			state.bigaxe = this.state.modeThrows[i].bigaxe;
-
-			// Is it clutch
-			state.clutch = this.state.modeThrows[i].clutch ? 'expected' : 'none';
+			// Is there a killshot
+			if(this.state.modeThrows[i] == 'L') {
+				state.killshot = 'expected_left';
+			} else if(this.state.modeThrows[i] == 'R') {
+				state.killshot = 'expected_right';
+			} else {
+				state.killshot = 'none';
+			}
 		}
 
 		// Else, predefined mode
 		else {
+			var i = this.state.points.length % 10;
 			switch(this.state.mode) {
-				case 'darkunicorn':
-					state.clutch = (this.state.points.length % 5 == 0) ? 'none' : 'expected';
+				case 'perfect_left':
+					if(i == 5) {
+						state.killshot = 'expected_left';
+					} else if(i == 0) {
+						state.killshot = 'expected_right';
+					} else {
+						state.killshot = 'none';
+					}
 					break;
-				case 'free':
-					state.clutch = 'select';
-					break;
-				case 'supernatural':
-					state.clutch = (this.state.points.length % 5 == 0) ? 'expected' : 'none';
+				case 'perfect_right':
+					if(i == 0) {
+						state.killshot = 'expected_left';
+					} else if(i == 5) {
+						state.killshot = 'expected_right';
+					} else {
+						state.killshot = 'none';
+					}
 					break;
 			}
 		}
@@ -334,7 +339,7 @@ class Practice extends React.Component {
 		pattern = this.refs.pattern.pattern;
 
 		// Send the data to the service
-		Services.create('natf', 'practice/pattern', pattern).done(res => {
+		Services.create('watl', 'practice/pattern', pattern).done(res => {
 
 			// If there's an error
 			if(res.error && !Utils.serviceError(res.error)) {
@@ -378,7 +383,7 @@ class Practice extends React.Component {
 			Loader.show();
 
 			// Delete it
-			Services.delete('natf', 'practice/pattern', {
+			Services.delete('watl', 'practice/pattern', {
 				"id": id
 			}).done(res => {
 
@@ -429,7 +434,7 @@ class Practice extends React.Component {
 		Loader.show();
 
 		// Fetch the patterns from the service
-		Services.read('natf', 'practice/patterns', {}).done(res => {
+		Services.read('watl', 'practice/patterns', {}).done(res => {
 
 			// If there's an error
 			if(res.error && !Utils.serviceError(res.error)) {
@@ -466,7 +471,7 @@ class Practice extends React.Component {
 		pattern._id = this.state.pattern._id;
 
 		// Send the data to the service
-		Services.update('natf', 'practice/pattern', pattern).done(res => {
+		Services.update('watl', 'practice/pattern', pattern).done(res => {
 
 			// If there's an error
 			if(res.error && !Utils.serviceError(res.error)) {
@@ -500,12 +505,14 @@ class Practice extends React.Component {
 		});
 	}
 
-	points(clutch, value) {
+	points(killshot, value) {
 
 		// Init the new state
 		var state = {
-			"clutchAttempts": this.state.clutchAttempts,
-			"clutchHits": this.state.clutchHits,
+			"kslAttempts": this.state.kslAttempts,
+			"kslHits": this.state.kslHits,
+			"ksrAttempts": this.state.ksrAttempts,
+			"ksrHits": this.state.ksrHits,
 			"overwrite": false,
 			"points": this.state.points,
 			"totalPoints": this.state.totalPoints
@@ -520,16 +527,22 @@ class Practice extends React.Component {
 			// Grab the last value
 			var last = this.state.points[this.state.points.length-1];
 
-			// Backtrack the clutch stats
-			if(last[1]) {
-				state.clutchAttempts -= 1;
-				if(last[2] == 7) {
-					state.clutchHits -= 1;
+			// Backtrack the killshot stats
+			if(last[0] == 'L') {
+				state.kslAttempts -= 1;
+				if(last[1] == 8) {
+					state.kslHits -= 1;
+				}
+			}
+			else if(last[0] == 'R') {
+				state.ksrAttempts -= 1;
+				if(last[1] == 8) {
+					state.ksrHits -= 1;
 				}
 			}
 
 			// Backtrack the points stats
-			if(last[2] != 'd') {
+			if(last[1] != 'd') {
 				state.totalPoints -= last[1];
 			}
 
@@ -538,13 +551,19 @@ class Practice extends React.Component {
 		}
 
 		// Add to the points list
-		state.points.push([this.state.bigaxe, clutch, (value == 'd' ? 'd' : v)]);
+		state.points.push([killshot, (value == 'd' ? 'd' : v)]);
 
-		// If we got a clutch attempt
-		if(clutch) {
-			state.clutchAttempts += 1;
-			if(value == 7) {
-				state.clutchHits += 1;
+		// If we got a killshot attempt
+		if(killshot == 'L') {
+			state.kslAttempts += 1;
+			if(value == 8) {
+				state.kslHits += 1;
+			}
+		}
+		else if(killshot == 'R') {
+			state.ksrAttempts += 1;
+			if(value == 8) {
+				state.ksrHits += 1;
 			}
 		}
 
@@ -559,32 +578,42 @@ class Practice extends React.Component {
 			// Which throw are we
 			var i = state.points.length % this.state.modeThrows.length;
 
-			// If it's bigaxe
-			state.bigaxe = this.state.modeThrows[i].bigaxe;
-
-			// If it's clutch
-			state.clutch = this.state.modeThrows[i].clutch ? 'expected' : 'none';
+			// Is there a killshot
+			if(this.state.modeThrows[i] == 'L') {
+				state.killshot = 'expected_left';
+			} else if(this.state.modeThrows[i] == 'R') {
+				state.killshot = 'expected_right';
+			} else {
+				state.killshot = 'none';
+			}
 		}
-
-		// Else if we're in dark unicorn mode
-		else if(this.state.mode == 'darkunicorn') {
-			state.clutch = (state.points.length % 5 == 4) ? 'none' : 'expected';
-		}
-
-		// Else if we're in supernatural mode
-		else if(this.state.mode == 'supernatural') {
-			state.clutch = (state.points.length % 5 == 4) ? 'expected' : 'none';
+		// Else, predefined mode
+		else {
+			var i = state.points.length % 10;
+			switch(this.state.mode) {
+				case 'perfect_left':
+					if(i == 4) {
+						state.killshot = 'expected_left';
+					} else if(i == 9) {
+						state.killshot = 'expected_right';
+					} else {
+						state.killshot = 'none';
+					}
+					break;
+				case 'perfect_right':
+					if(i == 9) {
+						state.killshot = 'expected_left';
+					} else if(i == 4) {
+						state.killshot = 'expected_right';
+					} else {
+						state.killshot = 'none';
+					}
+					break;
+			}
 		}
 
 		// Set the state
 		this.setState(state);
-	}
-
-	pointsClass(d) {
-		var l = [];
-		if(d[0]) l.push('bigaxe');
-		if(d[1]) l.push('clutch');
-		return l.join(' ');
 	}
 
 	pointsHide() {
@@ -611,7 +640,7 @@ class Practice extends React.Component {
 		}
 
 		return (
-			<div className="natf">
+			<div className="watl">
 				{!this.state.mode &&
 					<React.Fragment>
 						{this.state.thrower &&
@@ -635,13 +664,11 @@ class Practice extends React.Component {
 								);
 							})}
 							<dt data-mode="free" onClick={this.modeSelect}>Free Practice</dt>
-							<dd>Anything is avaialble at any time, you must select the clutch to score it.</dd>
-							<dt data-mode="supernatural" onClick={this.modeSelect}>81s / Supernaturals / Unicorns</dt>
-							<dd>Every fifth throw is for clutch, and it will be pre-selected for you on those turns.</dd>
-							<dt data-mode="darkunicorn" onClick={this.modeSelect}>Gretzky / Dark Unicorns</dt>
-							<dd>Four clutches and a bullseye.</dd>
-							<dt data-mode="clutch" onClick={this.modeSelect}>Clutch</dt>
-							<dd>Every throw is for the clutch and it's pre-selected every throw.</dd>
+							<dd>Anything is avaialble at any time, you must select a killshot to score it.</dd>
+							<dt data-mode="perfect_left" onClick={this.modeSelect}>Perfect game, left then right</dt>
+							<dd>The fifth and tenth throws are for killshot, first left, then right.</dd>
+							<dt data-mode="perfect_right" onClick={this.modeSelect}>Perfect game, right then left</dt>
+							<dd>The fifth and tenth throws are for killshot, first right, then left.</dd>
 						</dl>
 						{Tools.isObject(this.state.pattern) &&
 							<Modal
@@ -672,12 +699,10 @@ class Practice extends React.Component {
 				}
 				{this.state.mode &&
 					<React.Fragment>
-						<Board ref="board" clutchMode={self.state.clutch} onPoints={self.points} />
-						<div className={"bigaxe" + (this.state.bigaxe ? ' on' : '')} onClick={this.bigaxe}>BA</div>
+						<Board ref="board" mode={self.state.killshot} onPoints={self.points} />
 						{self.state.points.length > 0 &&
 							<React.Fragment>
 								<div className="averages">
-									<span className="clutches fright"><b>Clutch %: </b><span>{self.state.clutchAttempts == 0 ? "0.0" : ((self.state.clutchHits / self.state.clutchAttempts) * 100.0).toFixed(1)}</span></span>
 									<span className="average fleft"><b>Avg Throw: </b><span>{(self.state.totalPoints / self.state.points.length).toFixed(2)}</span></span>
 									<br />
 								</div>
@@ -687,9 +712,9 @@ class Practice extends React.Component {
 									}
 									{self.state.points.slice(-29).map(function(p, i) {
 										if(i == last) {
-											return <span key={i} className={"last " + (self.state.overwrite ? 'overwrite' : self.pointsClass(p))} onClick={self.overwrite}>{p[2]}</span>
+											return <span key={i} className={"last " + (self.state.overwrite ? 'overwrite' : ((p[0] != '0') ? 'killshot' : ''))} onClick={self.overwrite}>{p[1]}</span>
 										} else {
-											return <span key={i} className={self.pointsClass(p)}>{p[2]}</span>
+											return <span key={i} className={(p[0] != '0') ? 'killshot' : ''}>{p[1]}</span>
 										}
 									})}
 								</div>
@@ -706,7 +731,7 @@ class Practice extends React.Component {
 							>
 								<div className="allPoints">
 									{self.state.points.map(function(p, i) {
-										return <span key={i} className={self.pointsClass(p)}>{p[2]}</span>
+										return <span key={i} className={(p[0] != '0') ? 'killshot' : ''}>{p[1]}</span>
 									})}
 								</div>
 							</Modal>
@@ -731,8 +756,10 @@ class Practice extends React.Component {
 		// If we can reset
 		if(reset) {
 			this.setState({
-				"clutchAttempts": 0,
-				"clutchHits": 0,
+				"kslAttempts": 0,
+				"kslHits": 0,
+				"ksrAttempts": 0,
+				"ksrHits": 0,
 				"mode": null,
 				"points": [],
 				"showPoints": false,
@@ -747,7 +774,7 @@ class Practice extends React.Component {
 		Loader.show();
 
 		// Send the practice to the NATF service
-		Services.create('natf', 'practice', {
+		Services.create('watl', 'practice', {
 			"points": this.state.points
 		}).done(res => {
 
@@ -769,8 +796,10 @@ class Practice extends React.Component {
 
 				// Reset
 				this.setState({
-					"clutchAttempts": 0,
-					"clutchHits": 0,
+					"kslAttempts": 0,
+					"kslHits": 0,
+					"ksrAttempts": 0,
+					"ksrHits": 0,
 					"mode": null,
 					"points": [],
 					"showPoints": false,

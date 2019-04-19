@@ -10,7 +10,7 @@ def run():
 	# Create the new stats table
 	print('Creating `natf_practice_pattern` table')
 	if not PracticePattern.tableCreate():
-		return False;
+		return False
 
 	# Return OK
 	return True

@@ -10,7 +10,7 @@ def run():
 	# Create the new stats table
 	print('Creating `natf_match_stats` table')
 	if not MatchStats.tableCreate():
-		return False;
+		return False
 
 	# Get a connection to the host
 	dStruct = Match.struct()

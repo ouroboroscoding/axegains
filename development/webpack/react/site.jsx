@@ -84,6 +84,13 @@ class Site extends React.Component {
 					<div className="content">
 						<div>
 							<dl id="home">
+								<dt>v1.6.0</dt>
+								<dd>
+									<ul className="fa-ul">
+										<li><i className="fa-li fas fa-angle-double-right"></i>WATL Practice mode now availble, including practice patterns and stats.</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Can now choose your preferred organisation, NATF or WATL, in account (<i className="fas fa-user color-five"></i>) page.</li>
+									</ul>
+								</dd>
 								<dt>v1.5.0</dt>
 								<dd>
 									<ul className="fa-ul">

@@ -15,6 +15,7 @@
 	"alias": {"__type__":"string", "__regex__":"^\\S{3,32}$"},
 	"passwd": {"__type__":"string", "__regex__":"^[0-9a-fA-F]{72}$"},
 	"locale":{"__type__": "string", "__regex__":"^[a-z]{2}-[A-Z]{2}$"},
+	"org": {"__type__": "string", "__options__": ["natf", "watl"]},
 	"email": {"__type__":"string", "__optional__":true},
 	"verified": [
 		{"__type__": "bool"},

@@ -18,6 +18,7 @@ var {Menu, Item} = require('./elements/menu.jsx');
 
 // Site components
 var Natf = require('./natf/practice.jsx');
+var Watl = require('./watl/practice.jsx');
 
 // Practice component
 class Practice extends React.Component {
@@ -29,7 +30,7 @@ class Practice extends React.Component {
 
 		// Initialise the state
 		this.state = {
-			"org": Hash.get('org', 'natf')
+			"org": Hash.get('org', this.props.thrower.org || 'natf')
 		};
 
 		// Bind methods
@@ -58,7 +59,7 @@ class Practice extends React.Component {
 	orgChange(org) {
 		if(org != this.state.org) {
 			if(org == null) {
-				org = 'natf';
+				org = this.props.thrower.org || 'natf';
 			}
 			this.setState({"org": org});
 		}
@@ -69,11 +70,15 @@ class Practice extends React.Component {
 			<div id="practice">
 				<Menu className="menu secondary" selected={this.state.org} onChange={this.menuChange}>
 					<Item name="natf">NATF</Item>
+					<Item name="watl">WATL</Item>
 				</Menu>
 				<div id="content">
 					<div>
 						{this.state.org == 'natf' &&
 							<Natf thrower={this.props.thrower} />
+						}
+						{this.state.org == 'watl' &&
+							<Watl thrower={this.props.thrower} />
 						}
 					</div>
 				</div>

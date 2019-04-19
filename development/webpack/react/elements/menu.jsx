@@ -30,6 +30,12 @@ class Menu extends React.PureComponent
 		this.itemClick = this.itemClick.bind(this);
 	}
 
+	componentDidUpdate(prevProps) {
+		if(prevProps.selected != this.props.selected) {
+			this.setState({selected: this.props.selected});
+		}
+	}
+
 	itemClick(name) {
 		this.setState({selected: name}, () => {
 			this.props.onChange(name);
