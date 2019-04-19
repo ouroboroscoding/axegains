@@ -278,6 +278,49 @@ class Practice extends React.Component {
 		this.setState(state);
 	}
 
+	overwrite(ev) {
+
+		// New state
+		var state = {
+			"overwrite": true
+		}
+
+		// If we're in custom
+		var i = 0;
+		if(this.state.mode == 'custom') {
+
+			// Which throw is it?
+			i = (this.state.points.length % this.state.modeThrows.length) - 1;
+			if(i == -1) {
+				i += this.state.modeThrows.length;
+			}
+
+			// Is it big axe?
+			state.bigaxe = this.state.modeThrows[i].bigaxe;
+
+			// Is it clutch
+			state.clutch = this.state.modeThrows[i].clutch ? 'expected' : 'none';
+		}
+
+		// Else, predefined mode
+		else {
+			switch(this.state.mode) {
+				case 'darkunicorn':
+					state.clutch = (this.state.points.length % 5 == 0) ? 'none' : 'expected';
+					break;
+				case 'free':
+					state.clutch = 'select';
+					break;
+				case 'supernatural':
+					state.clutch = (this.state.points.length % 5 == 0) ? 'expected' : 'none';
+					break;
+			}
+		}
+
+		// Set the state
+		this.setState(state);
+	}
+
 	patternClose() {
 		this.setState({"pattern": false});
 	}
@@ -457,56 +500,6 @@ class Practice extends React.Component {
 		});
 	}
 
-	overwrite(ev) {
-
-		// New state
-		var state = {
-			"overwrite": true
-		}
-
-		// If we're in custom
-		var i = 0;
-		if(this.state.mode == 'custom') {
-
-			// Which throw is it?
-			i = (this.state.points.length % this.state.modeThrows.length) - 1;
-			if(i == -1) {
-				i += this.state.modeThrows.length;
-			}
-
-			// Is it big axe?
-			state.bigaxe = this.state.modeThrows[i].bigaxe;
-
-			// Is it clutch
-			state.clutch = this.state.modeThrows[i].clutch ? 'expected' : 'none';
-		}
-
-		// Else, predefined mode
-		else {
-			switch(this.state.mode) {
-				case 'darkunicorn':
-					state.clutch = (this.state.points.length % 5 == 0) ? 'none' : 'expected';
-					break;
-				case 'free':
-					state.clutch = 'select';
-					break;
-				case 'supernatural':
-					state.clutch = (this.state.points.length % 5 == 0) ? 'expected' : 'none';
-					break;
-			}
-		}
-
-		// Set the state
-		this.setState(state);
-	}
-
-	pointsClass(d) {
-		var l = [];
-		if(d[0]) l.push('bigaxe');
-		if(d[1]) l.push('clutch');
-		return l.join(' ');
-	}
-
 	points(clutch, value) {
 
 		// Init the new state
@@ -528,15 +521,15 @@ class Practice extends React.Component {
 			var last = this.state.points[this.state.points.length-1];
 
 			// Backtrack the clutch stats
-			if(last[0]) {
+			if(last[1]) {
 				state.clutchAttempts -= 1;
-				if(last[1] == 7) {
+				if(last[2] == 7) {
 					state.clutchHits -= 1;
 				}
 			}
 
 			// Backtrack the points stats
-			if(last[1] != 'd') {
+			if(last[2] != 'd') {
 				state.totalPoints -= last[1];
 			}
 
@@ -585,6 +578,13 @@ class Practice extends React.Component {
 
 		// Set the state
 		this.setState(state);
+	}
+
+	pointsClass(d) {
+		var l = [];
+		if(d[0]) l.push('bigaxe');
+		if(d[1]) l.push('clutch');
+		return l.join(' ');
 	}
 
 	pointsHide() {
@@ -800,8 +800,6 @@ class Practice extends React.Component {
 			"patterns": false,
 			"thrower": false
 		});
-
-
 	}
 }
 

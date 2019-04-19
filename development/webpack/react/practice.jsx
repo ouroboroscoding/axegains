@@ -70,6 +70,7 @@ class Practice extends React.Component {
 			<div id="practice">
 				<Menu className="menu secondary" selected={this.state.org} onChange={this.menuChange}>
 					<Item name="natf">NATF</Item>
+					<Item name="watl">WATL</Item>
 				</Menu>
 				<div id="content">
 					<div>

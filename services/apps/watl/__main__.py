@@ -19,7 +19,7 @@ from RestOC import Conf, Record_Base, Record_ReDB, REST, \
 					Services, Sesh
 
 # App imports
-from apps.natf import Natf
+from apps.watl import Watl
 
 # Load the config
 Conf.load('../config.json')
@@ -44,7 +44,7 @@ if 'AXE_VERBOSE' in os.environ and os.environ['AXE_VERBOSE'] == '1':
 # Register all necessary services
 Services.register({
 	"auth": None,
-	"watl": Natf()
+	"watl": Watl()
 }, oRestConf, Conf.get(('services', 'salt')))
 
 # Create the HTTP server and map requests to service

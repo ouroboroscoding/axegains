@@ -1,0 +1,216 @@
+#practice {
+
+	.watl {
+		margin: 0 auto;
+		width: 304px;
+
+		div.aright {
+			margin-top: 5px;
+
+			i {
+				color: $color-1;
+			}
+		}
+
+		dl.select {
+			dt {
+				i {
+					margin-left: 10px;
+				}
+			}
+		}
+
+		div.pattern {
+
+			div.throw {
+				border: 1px solid $color-1;
+				padding: 5px;
+				margin-bottom: 5px;
+
+				span {
+					display: inline-block;
+					width: 80px;
+				}
+
+				input[type=radio] {
+					vertical-align: bottom;
+					height: 16px;
+				}
+			}
+		}
+
+		.points {
+			border: 2px solid black;
+			margin: 5px 0;
+
+			.last {
+				cursor: pointer;
+			}
+
+			.overwrite {
+				background-color: red;
+				color: white;
+			}
+		}
+
+		.allPoints {
+			width: 300px;
+		}
+
+		.averages {
+			margin: 10px 0 0 0;
+		}
+
+		.reset, .save {
+			cursor: pointer;
+		}
+	}
+}
+
+.watl {
+
+	.board {
+		background-color: white;
+		height: 350px;
+		margin: 0 auto;
+		width: 300px;
+
+		.killshot {
+			background-color: blue;
+			border: 5px solid blue;
+			border-radius: 50%;
+			display: inline-block;
+			height: 30px;
+			position: absolute;
+			top: 38px;
+			width: 30px;
+		}
+
+		.killshot.left {
+			left: 38px;
+		}
+
+		.killshot.right {
+			right: 38px;
+		}
+
+		.killshot.selected {
+			border: 5px solid black;
+		}
+
+		.killshot.invalid {
+			border: 5px solid red;
+		}
+
+		.drop {
+			background-color: grey;
+			border: 1px solid grey;
+			color: white;
+			display: inline-block;
+			margin: 5px 115px 10px 115px;
+			padding: 6px 0 4px 0;
+			position: relative;
+			text-align: center;
+			width: 70px;
+			vertical-align: top;
+		}
+
+		.drop.active {
+			background-color: white;
+			border: 1px solid black;
+			color: grey;
+		}
+
+		.one {
+			background-color: white;
+			border: 5px solid black;
+			border-radius: 50%;
+			height: 300px;
+			position: relative;
+			width: 300px;
+		}
+
+		.one.active {
+			background-color: black;
+		}
+
+		.two {
+			background-color: white;
+			border: 5px solid black;
+			border-radius: 50%;
+			height: 80%;
+			left: 10%;
+			position: relative;
+			top: 10%;
+			width: 80%;
+		}
+
+		.two.active {
+			background-color: black;
+		}
+
+		.three {
+			background-color: white;
+			border: 5px solid black;
+			border-radius: 50%;
+			height: 74%;
+			left: 13%;
+			position: relative;
+			top: 13%;
+			width: 74%;
+		}
+
+		.three.active {
+			background-color: black;
+		}
+
+		.four {
+			background-color: white;
+			border: 5px solid black;
+			border-radius: 50%;
+			height: 62%;
+			left: 19%;
+			position: relative;
+			top: 19%;
+			width: 62%;
+		}
+
+		.four.active {
+			background-color: black;
+		}
+
+		.six {
+			background-color: red;
+			border: 5px solid red;
+			border-radius: 50%;
+			height: 40%;
+			left: 30%;
+			position: relative;
+			top: 30%;
+			width: 40%;
+		}
+
+		.six.active {
+			background-color: white;
+		}
+	}
+
+	.board.active {
+		background-color: grey;
+	}
+
+	.points, .allPoints {
+
+		span {
+			display: inline-block;
+			padding: 3px 0;
+			text-align: center;
+			width: 30px;
+		}
+
+		span.killshot {
+			background-color: blue;
+			color: white;
+		}
+	}
+}
