@@ -5,18 +5,20 @@
 		"indexes": {
 			"thrower": null
 		},
-		"table": "natf_practice_pattern"
+		"table": "watl_practice_pattern"
 	},
-	"__name__": "NATF_Practice_Pattern",
+	"__name__": "WATL_Practice_Pattern",
 	"_id": {"__type__": "uuid", "__optional__": true},
 	"_created": "timestamp",
 	"thrower": "uuid",
 	"title": {"__type__": "string", "__maximum__": 64},
 	"descr": {"__type__": "string", "__maximum__": 512},
 	"throws": {
-		"__array__": "duplicates",
-		"__maximum__": 30,
-		"bigaxe": "bool",
-		"clutch": "bool"
+		"__array__": {
+			"type": "duplicates",
+			"maximum": 30
+		},
+		"__type__": "string",
+		"__options__": ["0", "L", "R"]
 	}
 }

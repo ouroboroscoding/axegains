@@ -73,6 +73,7 @@ REST.Server({
 	"/thrower/alias": {"methods": REST.UPDATE, "session": True},
 	"/thrower/aliases": {"methods": REST.READ},
 	"/thrower/email": {"methods": REST.UPDATE, "session": True},
+	"/thrower/org": {"methods": REST.UPDATE, "session": True},
 	"/thrower/passwd": {"methods": REST.UPDATE, "session": True},
 	"/thrower/verify": {"methods": REST.UPDATE}
 
