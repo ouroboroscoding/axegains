@@ -183,7 +183,7 @@ class Board extends React.Component {
 		// If there's a clutch selected
 		var accepted = true;
 		if(this.state.killshot) {
-			accepted = this.props.onPoints(this.state.killshot, parseInt(target.dataset.value));
+			accepted = this.props.onPoints(this.state.killshot, 0);
 			if(accepted !== false) {
 				this.setState({"killshot": false});
 			}
