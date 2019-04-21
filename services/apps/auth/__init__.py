@@ -195,7 +195,7 @@ class Auth(Services.Service):
 			"type": 'match_request',
 			"_id": oRequest['_id'],
 			"initiator": sesh['thrower']['_id'],
-			"alias": dOpponent['alias'],
+			"alias": sesh['thrower']['alias'],
 			"org": data['org']
 		})
 
