@@ -23,6 +23,7 @@ class Board extends React.Component {
 
 		// Initialise the state
 		this.state = {
+			"atw": false,
 			"clutchMode": props.clutchMode,
 			"selected": props.clutchMode == 'expected'
 		};
@@ -154,12 +155,36 @@ class Board extends React.Component {
 	render() {
 		return (
 			<div className="board" data-value={0} onClick={this.pointClick}>
-				<div className={"clutch left" + (this.state.selected ? ' selected' : '')} onClick={this.clutchClick}></div>
+				<div className={"clutch left" + (this.state.selected ? ' selected' : '')} onClick={this.clutchClick}>
+					{this.state.atw == 6 &&
+						<div className="atw" data-value="CL" onClick={this.atw}></div>
+					}
+				</div>
 				<div className="drop" onClick={this.dropClick}>DROP</div>
-				<div className={"clutch right" + (this.state.selected ? ' selected' : '')} onClick={this.clutchClick}></div>
+				<div className={"clutch right" + (this.state.selected ? ' selected' : '')} onClick={this.clutchClick}>
+					{this.state.atw == 6 &&
+						<div className="atw" data-value="CL" onClick={this.atw}></div>
+					}
+				</div>
 				<div className="one" data-value={1} onClick={this.pointClick}>
+					{this.state.atw == 1 &&
+						<div className="left atw" data-value="L1" onClick={this.atw}></div>
+					}
+					{this.state.atw == 5 &&
+						<div className="right atw" data-value="R1" onClick={this.atw}></div>
+					}
 					<div className="three" data-value={3} onClick={this.pointClick}>
-						<div className="five" data-value={5} onClick={this.pointClick}></div>
+						{this.state.atw == 2 &&
+							<div className="left atw" data-value="L3" onClick={this.atw}></div>
+						}
+						{this.state.atw == 4 &&
+							<div className="right atw" data-value="R3" onClick={this.atw}></div>
+						}
+						<div className="five" data-value={5} onClick={this.pointClick}>
+							{this.state.atw == 3 &&
+								<div className="atw" data-value="BE" onClick={this.atw}></div>
+							}
+						</div>
 					</div>
 				</div>
 			</div>
