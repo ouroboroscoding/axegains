@@ -962,14 +962,8 @@ class Match extends React.Component {
 			// Show the loader
 			Loader.show();
 
-			// Clone the games and match state
-			var games = Tools.clone(this.state.games);
-
 			// Get the value or value/clutch
 			var value = (ms.throw == '5') ? {"clutch": clutch, "value": value} : value;
-
-			// Store the point value
-			games[ms.game][this.state.is][ms.throw] = value;
 
 			// Save the value and notify the opponent
 			Services.update('natf', 'match/game', {
@@ -991,6 +985,12 @@ class Match extends React.Component {
 
 				// If there's data
 				if(res.data) {
+
+					// Clone the games and match state
+					var games = Tools.clone(this.state.games);
+
+					// Store the point value
+					games[ms.game][this.state.is][ms.throw] = value;
 
 					// If the overwrite flag is set
 					if(this.state.overwrite) {
@@ -1026,7 +1026,7 @@ class Match extends React.Component {
 		else {
 
 			// Clone the bigaxe state
-			var bigaxe = Tools.clone(this.state.bigaxe);
+			var bigaxe = this.state.bigaxe;
 
 			// Opponent is opposite of thrower
 			var sO = this.state.is == 'i' ? 'o' : 'i';
