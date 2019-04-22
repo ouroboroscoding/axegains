@@ -59,7 +59,7 @@ class Stats extends React.Component {
 		var self = this;
 		return (
 			<React.Fragment>
-				<Menu className="menu primary" selected={self.state.which} onChange={self.whichChange}>
+				<Menu className="menu secondary" selected={self.state.which} onChange={self.whichChange}>
 					<Item name="practice">Practice</Item>
 					<Item name="match">Matches</Item>
 				</Menu>

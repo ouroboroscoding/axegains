@@ -30,11 +30,11 @@ var Utils = {
 		var d = new Date(ts*1000);
 		var t = ['', '', ''];
 		t[0] += d.getHours();
-		if(t[0].length == 1) t[0] = '0' + 'H';
+		if(t[0].length == 1) t[0] = '0' + t[0];
 		t[1] += d.getMinutes();
-		if(t[1].length == 1) t[1] = '0' + 'H';
+		if(t[1].length == 1) t[1] = '0' + t[1];
 		t[2] += d.getSeconds();
-		if(t[2].length == 1) t[2] = '0' + 'H';
+		if(t[2].length == 1) t[2] = '0' + t[2];
 		return Utils.date(ts) + ' ' + t.join(':')
 	},
 

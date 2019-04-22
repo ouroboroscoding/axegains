@@ -13,10 +13,24 @@ header {
 		font-size: 150%;
 	}
 
+	.subtitle {
+		font-size: 80%;
+
+		a {
+			color: white;
+			text-decoration: none;
+		}
+	}
+
 	.actions {
 		i {
 			margin-left: 10px;
 			margin-bottom: 10px;
+		}
+
+		select {
+			margin-right: 5px;
+			vertical-align: top;
 		}
 	}
 }

@@ -18,11 +18,12 @@ var Tools = require('../../generic/tools.js');
 var Utils = require('../../utils.js');
 
 // Generic Components
+var Graph = require('../elements/graph.jsx');
 var Modal = require('../elements/modal.jsx');
 
 // Components
-var ChartClutch = require('./chartClutch.jsx');
-var ChartRegular = require('./chartRegular.jsx');
+var PieClutch = require('./pieClutch.jsx');
+var PieRegular = require('./pieRegular.jsx');
 
 // Practice component
 class Practice extends React.Component {
@@ -53,9 +54,9 @@ class Practice extends React.Component {
 				</div>
 				<br />
 
-				<h2>Regular</h2>
+				<h2>Hatchet</h2>
 				<div className="throws">
-					<div>Regular</div>
+					<div>Target</div>
 					<div>Clutches</div>
 				</div>
 				<div className="throws">
@@ -64,13 +65,13 @@ class Practice extends React.Component {
 				</div>
 				<div className="throws">
 					<div>
-						<ChartRegular
+						<PieRegular
 							height="150px"
 							data={[data.stats.standard.regular.fives, data.stats.standard.regular.threes, data.stats.standard.regular.ones, data.stats.standard.regular.zeros, data.stats.standard.regular.drops]}
 						/>
 					</div>
 					<div>
-						<ChartClutch
+						<PieClutch
 							height="150px"
 							data={[data.stats.standard.clutches.hits, (data.stats.standard.clutches.attempts - (data.stats.standard.clutches.hits + data.stats.standard.clutches.drops)), data.stats.standard.clutches.drops]}
 						/>
@@ -79,7 +80,7 @@ class Practice extends React.Component {
 
 				<h2>Big Axe</h2>
 				<div className="throws">
-					<div>Regular</div>
+					<div>Target</div>
 					<div>Clutches</div>
 				</div>
 				<div className="throws">
@@ -88,13 +89,13 @@ class Practice extends React.Component {
 				</div>
 				<div className="throws">
 					<div>
-						<ChartRegular
+						<PieRegular
 							height="150px"
 							data={[data.stats.bigaxe.regular.fives, data.stats.bigaxe.regular.threes, data.stats.bigaxe.regular.ones, data.stats.bigaxe.regular.zeros, data.stats.bigaxe.regular.drops]}
 						/>
 					</div>
 					<div>
-						<ChartClutch
+						<PieClutch
 							height="150px"
 							data={[data.stats.bigaxe.clutches.hits, (data.stats.bigaxe.clutches.attempts - (data.stats.bigaxe.clutches.hits + data.stats.bigaxe.clutches.drops)), data.stats.bigaxe.clutches.drops]}
 						/>
@@ -185,6 +186,7 @@ class StatsPractice extends React.Component {
 
 				// Add the stats to the state
 				this.setState({
+					"graphs": this.processGraphs(res.data.graphs),
 					"overall": res.data.overall,
 					"practices": res.data.practices
 				});
@@ -243,6 +245,119 @@ class StatsPractice extends React.Component {
 		this.setState({"one": false});
 	}
 
+	processGraphs(data) {
+
+		// Init the return data
+		var ret = {
+			"standard": {
+				"regular": {
+					"labels": [],
+					"datasets": [
+						{"label": "Fives", "data": [], "fill": false, "borderColor": "rgb(0,0,0,0.9)", "lineTension": 0.1},
+						{"label": "Threes", "data": [], "fill": false, "borderColor": "rgb(255,0,0,0.9)", "lineTension": 0.1},
+						{"label": "Ones", "data": [], "fill": false, "borderColor": "rgb(0,0,255,0.9)", "lineTension": 0.1},
+						{"label": "Zeros", "data": [], "fill": false, "borderColor": "rgb(100,100,100,0.5)", "lineTension": 0.1},
+						{"label": "Drops", "data": [], "fill": false, "borderColor": "rgb(200,200,200,0.5)", "lineTension": 0.1},
+					]
+				},
+				"clutches": {
+					"labels": [],
+					"datasets": [
+						{"label": "Hits", "data": [], "fill": false, "borderColor": "rgb(0,255,0,0.9)", "lineTension": 0.1},
+						{"label": "Misses", "data": [], "fill": false, "borderColor": "rgb(100,100,100,0.5)", "lineTension": 0.1},
+						{"label": "Drops", "data": [], "fill": false, "borderColor": "rgb(200,200,200,0.5)", "lineTension": 0.1},
+					]
+				}
+			},
+			"bigaxe": {
+				"regular": {
+					"labels": [],
+					"datasets": [
+						{"label": "Fives", "data": [], "fill": false, "borderColor": "rgb(0,0,0,0.9)", "lineTension": 0.1},
+						{"label": "Threes", "data": [], "fill": false, "borderColor": "rgb(255,0,0,0.9)", "lineTension": 0.1},
+						{"label": "Ones", "data": [], "fill": false, "borderColor": "rgb(0,0,255,0.9)", "lineTension": 0.1},
+						{"label": "Zeros", "data": [], "fill": false, "borderColor": "rgb(100,100,100,0.5)", "lineTension": 0.1},
+						{"label": "Drops", "data": [], "fill": false, "borderColor": "rgb(200,200,200,0.5)", "lineTension": 0.1},
+					]
+				},
+				"clutches": {
+					"labels": [],
+					"datasets": [
+						{"label": "Hits", "data": [], "fill": false, "borderColor": "rgb(0,255,0,0.9)", "lineTension": 0.1},
+						{"label": "Misses", "data": [], "fill": false, "borderColor": "rgb(100,100,100,0.5)", "lineTension": 0.1},
+						{"label": "Drops", "data": [], "fill": false, "borderColor": "rgb(200,200,200,0.5)", "lineTension": 0.1},
+					]
+				}
+			}
+		}
+
+		// Go through each set of stats backwards
+		for(var i = data.length-1; i >= 0; --i) {
+
+			// Add the labels
+			var ts = Utils.date(data[i]._created);
+			ret.standard.regular.labels.push(ts);
+			ret.standard.clutches.labels.push(ts);
+			ret.bigaxe.regular.labels.push(ts);
+			ret.bigaxe.clutches.labels.push(ts);
+
+			// Calculate the hatchet target percentages
+			if(data[i].stats.standard.regular.attempts == 0) {
+				ret.standard.regular.datasets[0].data.push(0.0);
+				ret.standard.regular.datasets[1].data.push(0.0);
+				ret.standard.regular.datasets[2].data.push(0.0);
+				ret.standard.regular.datasets[3].data.push(0.0);
+				ret.standard.regular.datasets[4].data.push(0.0);
+			} else {
+				ret.standard.regular.datasets[0].data.push(((data[i].stats.standard.regular.fives / data[i].stats.standard.regular.attempts) * 100.0).toFixed(1));
+				ret.standard.regular.datasets[1].data.push(((data[i].stats.standard.regular.threes / data[i].stats.standard.regular.attempts) * 100.0).toFixed(1));
+				ret.standard.regular.datasets[2].data.push(((data[i].stats.standard.regular.ones / data[i].stats.standard.regular.attempts) * 100.0).toFixed(1));
+				ret.standard.regular.datasets[3].data.push(((data[i].stats.standard.regular.zeros / data[i].stats.standard.regular.attempts) * 100.0).toFixed(1));
+				ret.standard.regular.datasets[4].data.push(((data[i].stats.standard.regular.drops / data[i].stats.standard.regular.attempts) * 100.0).toFixed(1));
+			}
+
+			// Calculate the hatchet clutch percentages
+			if(data[i].stats.standard.clutches.attempts == 0) {
+				ret.standard.clutches.datasets[0].data.push(0.0);
+				ret.standard.clutches.datasets[1].data.push(0.0);
+				ret.standard.clutches.datasets[2].data.push(0.0);
+			} else {
+				ret.standard.clutches.datasets[0].data.push(((data[i].stats.standard.clutches.hits / data[i].stats.standard.clutches.attempts) * 100.0).toFixed(1));
+				ret.standard.clutches.datasets[1].data.push((((data[i].stats.standard.clutches.attempts - (data[i].stats.standard.clutches.drops + data[i].stats.standard.clutches.hits)) / data[i].stats.standard.clutches.attempts) * 100.0).toFixed(1));
+				ret.standard.clutches.datasets[2].data.push(((data[i].stats.standard.clutches.drops / data[i].stats.standard.clutches.attempts) * 100.0).toFixed(1));
+			}
+
+			// Calculate the bigaxe target percentages
+			if(data[i].stats.bigaxe.regular.attempts == 0) {
+				ret.bigaxe.regular.datasets[0].data.push(0.0);
+				ret.bigaxe.regular.datasets[1].data.push(0.0);
+				ret.bigaxe.regular.datasets[2].data.push(0.0);
+				ret.bigaxe.regular.datasets[3].data.push(0.0);
+				ret.bigaxe.regular.datasets[4].data.push(0.0);
+			} else {
+				ret.bigaxe.regular.datasets[0].data.push(((data[i].stats.bigaxe.regular.fives / data[i].stats.bigaxe.regular.attempts) * 100.0).toFixed(1));
+				ret.bigaxe.regular.datasets[1].data.push(((data[i].stats.bigaxe.regular.threes / data[i].stats.bigaxe.regular.attempts) * 100.0).toFixed(1));
+				ret.bigaxe.regular.datasets[2].data.push(((data[i].stats.bigaxe.regular.ones / data[i].stats.bigaxe.regular.attempts) * 100.0).toFixed(1));
+				ret.bigaxe.regular.datasets[3].data.push(((data[i].stats.bigaxe.regular.zeros / data[i].stats.bigaxe.regular.attempts) * 100.0).toFixed(1));
+				ret.bigaxe.regular.datasets[4].data.push(((data[i].stats.bigaxe.regular.drops / data[i].stats.bigaxe.regular.attempts) * 100.0).toFixed(1));
+			}
+
+			// Calculate the bigaxe clutch percentages
+			if(data[i].stats.bigaxe.clutches.attempts == 0) {
+				ret.bigaxe.clutches.datasets[0].data.push(0.0);
+				ret.bigaxe.clutches.datasets[1].data.push(0.0);
+				ret.bigaxe.clutches.datasets[2].data.push(0.0);
+			} else {
+				ret.bigaxe.clutches.datasets[0].data.push(((data[i].stats.bigaxe.clutches.hits / data[i].stats.bigaxe.clutches.attempts) * 100.0).toFixed(1));
+				ret.bigaxe.clutches.datasets[1].data.push((((data[i].stats.bigaxe.clutches.attempts - (data[i].stats.bigaxe.clutches.drops + data[i].stats.bigaxe.clutches.hits)) / data[i].stats.bigaxe.clutches.attempts) * 100.0).toFixed(1));
+				ret.bigaxe.clutches.datasets[2].data.push(((data[i].stats.bigaxe.clutches.drops / data[i].stats.bigaxe.clutches.attempts) * 100.0).toFixed(1));
+			}
+		}
+
+		// Return the processed data
+		return ret;
+	}
+
 	render() {
 		var overall = this.state.overall;
 
@@ -261,9 +376,9 @@ class StatsPractice extends React.Component {
 						</select>
 					</p>
 
-					<h2>Regular</h2>
+					<h2>Hatchet</h2>
 					<div className="throws">
-						<div>Regular</div>
+						<div>Target</div>
 						<div>Clutches</div>
 					</div>
 					<div className="throws">
@@ -272,23 +387,31 @@ class StatsPractice extends React.Component {
 					</div>
 					<div className="throws">
 						<div>
-							<ChartRegular
+							<PieRegular
 								height="150px"
 								data={[overall.standard.regular.fives, overall.standard.regular.threes, overall.standard.regular.ones, overall.standard.regular.zeros, overall.standard.regular.drops]}
 							/>
 						</div>
 						<div>
-							<ChartClutch
+							<PieClutch
 								height="150px"
 								data={[overall.standard.clutches.hits, (overall.standard.clutches.attempts - (overall.standard.clutches.hits + overall.standard.clutches.drops)), overall.standard.clutches.drops]}
 							/>
 						</div>
 					</div>
+					<div className="title">Target</div>
+					<div>
+						<Graph data={this.state.graphs.standard.regular} />
+					</div>
+					<div className="title">Clutches</div>
+					<div>
+						<Graph data={this.state.graphs.standard.clutches} />
+					</div>
 					<br />
 
 					<h2>Big Axe</h2>
 					<div className="throws">
-						<div>Regular</div>
+						<div>Target</div>
 						<div>Clutches</div>
 					</div>
 					<div className="throws">
@@ -297,17 +420,25 @@ class StatsPractice extends React.Component {
 					</div>
 					<div className="throws">
 						<div>
-							<ChartRegular
+							<PieRegular
 								height="150px"
 								data={[overall.bigaxe.regular.fives, overall.bigaxe.regular.threes, overall.bigaxe.regular.ones, overall.bigaxe.regular.zeros, overall.bigaxe.regular.drops]}
 							/>
 						</div>
 						<div>
-							<ChartClutch
+							<PieClutch
 								height="150px"
 								data={[overall.bigaxe.clutches.hits, (overall.bigaxe.clutches.attempts - (overall.bigaxe.clutches.hits + overall.bigaxe.clutches.drops)), overall.bigaxe.clutches.drops]}
 							/>
 						</div>
+					</div>
+					<div className="title">Target</div>
+					<div>
+						<Graph data={this.state.graphs.bigaxe.regular} />
+					</div>
+					<div className="title">Clutches</div>
+					<div>
+						<Graph data={this.state.graphs.bigaxe.clutches} />
 					</div>
 
 					{this.state.one &&

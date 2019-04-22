@@ -35,8 +35,9 @@ class Header extends React.Component {
 			"account": false,
 			"forgot": false,
 			"modal": false,
+			"org": Hash.get('org', props.thrower.org || 'natf'),
 			"resend": false,
-			"thrower": false
+			"thrower": props.thrower || false
 		};
 
 		// Bind methods
@@ -46,6 +47,8 @@ class Header extends React.Component {
 		this.forgotPasswordSubmit = this.forgotPasswordSubmit.bind(this);
 		this.forgotResend = this.forgotResend.bind(this);
 		this.home = this.home.bind(this);
+		this.orgChange = this.orgChange.bind(this);
+		this.orgHash = this.orgHash.bind(this);
 		this.signin = this.signin.bind(this);
 		this.signinShow = this.signinShow.bind(this);
 		this.signinTrigger = this.signinTrigger.bind(this);
@@ -65,6 +68,9 @@ class Header extends React.Component {
 		Events.add('signin', this.signinTrigger);
 		Events.add('signout', this.signoutTrigger);
 
+		// Watch any org hash changes
+		Hash.watch('org', this.orgHash);
+
 		// If we have a forgot key in the hash
 		var key = Hash.get('forgot')
 		if(key) {
@@ -80,6 +86,9 @@ class Header extends React.Component {
 		// Stop tracking any signin/signout events
 		Events.remove('signin', this.signinTrigger);
 		Events.remove('signout', this.signoutTrigger);
+
+		// Stop watch any org hash changes
+		Hash.unwatch('org', this.orgHash);
 	}
 
 	forgotShow(ev) {
@@ -236,11 +245,27 @@ class Header extends React.Component {
 		Hash.set("page", null);
 	}
 
+	orgChange(ev) {
+		this.setState({"org": ev.currentTarget.value}, function() {
+			Hash.set('org', this.state.org);
+		})
+	}
+
+	orgHash(org) {
+		if(org != this.state.org) {
+			this.setState({"org": org});
+		}
+	}
+
 	render() {
 		var self = this;
 		return (
 			<header>
 				<div className="actions fright aright">
+					<select value={this.state.org} onChange={this.orgChange}>
+						<option value="natf">NATF</option>
+						<option value="watl">WATL</option>
+					</select>
 					{self.state.thrower ?
 						<React.Fragment>
 							<i className="fas fa-user" title="Account" onClick={self.accountShow}></i>
@@ -252,9 +277,11 @@ class Header extends React.Component {
 							<i className="fas fa-sign-in-alt" title="Sign In" onClick={self.signinShow}></i>
 						</React.Fragment>
 					}
-					<br />
+				</div>
+				<div className="orgs fright">
 				</div>
 				<h1 style={{"cursor": "pointer"}} onClick={this.home}>AxeGains.com</h1>
+				<div className="subtitle">By <a href="http://ouroboroscoding.com/" target="_blank">OuroborosCoding</a></div>
 				{self.state.modal == 'signin' &&
 					<div id="signin" className="form">
 						<p><input ref="alias" type="text" title="alias" placeholder="alias" onClick={Forms.errorFocus} /></p>
@@ -383,7 +410,10 @@ class Header extends React.Component {
 		// Hide any modals and set the thrower
 		this.setState({
 			"modal": false,
-			"thrower": thrower
+			"org": thrower.org,
+			"thrower": thrower,
+		}, function() {
+			Hash.set('org', this.state.org);
 		});
 	}
 

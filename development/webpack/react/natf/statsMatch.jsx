@@ -18,9 +18,9 @@ var Tools = require('../../generic/tools.js');
 var Utils = require('../../utils.js');
 
 // Components
-var ChartClutch = require('./chartClutch.jsx');
-var ChartPaint = require('./chartPaint.jsx');
-var ChartRegular = require('./chartRegular.jsx');
+var PieClutch = require('./pieClutch.jsx');
+var PiePaint = require('./piePaint.jsx');
+var PieRegular = require('./pieRegular.jsx');
 
 // StatsMatch component
 class StatsMatch extends React.Component {
@@ -60,7 +60,6 @@ class StatsMatch extends React.Component {
 		// Stop tracking signin / signout
 		Events.remove('signin', this.signin);
 		Events.remove('signout', this.signout);
-
 	}
 
 	fetch() {
@@ -136,13 +135,13 @@ class StatsMatch extends React.Component {
 					</div>
 					<div className="throws">
 						<div>
-							<ChartRegular
+							<PieRegular
 								height="150px"
 								data={[match.regular.fives, match.regular.threes, match.regular.ones, match.regular.zeros, match.regular.drops]}
 							/>
 						</div>
 						<div>
-							<ChartClutch
+							<PieClutch
 								height="150px"
 								data={[match.clutches.hits, (match.clutches.attempts - (match.clutches.hits + match.clutches.drops)), match.clutches.drops]}
 							/>
@@ -172,19 +171,19 @@ class StatsMatch extends React.Component {
 					</div>
 					<div className="bigaxe">
 						<div>
-							<ChartPaint
+							<PiePaint
 								height="150px"
 								data={[match.bigaxe.paint.hits, (match.bigaxe.paint.attempts - (match.bigaxe.paint.hits + match.bigaxe.paint.drops)), match.bigaxe.paint.drops]}
 							/>
 						</div>
 						<div>
-							<ChartRegular
+							<PieRegular
 								height="150px"
 								data={[match.bigaxe.points.regular.fives, match.bigaxe.points.regular.threes, match.bigaxe.points.regular.ones, match.bigaxe.points.regular.zeros, match.bigaxe.points.regular.drops]}
 							/>
 						</div>
 						<div>
-							<ChartClutch
+							<PieClutch
 								height="150px"
 								data={[match.bigaxe.points.clutches.hits, (match.bigaxe.points.clutches.attempts - (match.bigaxe.points.clutches.hits + match.bigaxe.points.clutches.drops)), match.bigaxe.points.clutches.drops]}
 							/>

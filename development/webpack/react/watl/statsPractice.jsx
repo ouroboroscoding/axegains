@@ -21,8 +21,8 @@ var Utils = require('../../utils.js');
 var Modal = require('../elements/modal.jsx');
 
 // Components
-var ChartKillshot = require('./chartKillshot.jsx');
-var ChartRegular = require('./chartRegular.jsx');
+var PieKillshot = require('./pieKillshot.jsx');
+var PieRegular = require('./pieRegular.jsx');
 
 // Practice component
 class Practice extends React.Component {
@@ -59,19 +59,19 @@ class Practice extends React.Component {
 				</div>
 				<div className="throws">
 					<div>
-						<ChartRegular
+						<PieRegular
 							height="150px"
 							data={[data.stats.regular.sixes, data.stats.regular.fours, data.stats.regular.threes, data.stats.regular.twos, data.stats.regular.ones, data.stats.regular.zeros, data.stats.regular.drops]}
 						/>
 					</div>
 					<div>
-						<ChartKillshot
+						<PieKillshot
 							height="150px"
 							data={[data.stats.ksLeft.hits, (data.stats.ksLeft.attempts - (data.stats.ksLeft.hits + data.stats.ksLeft.drops)), data.stats.ksLeft.drops]}
 						/>
 					</div>
 					<div>
-						<ChartKillshot
+						<PieKillshot
 							height="150px"
 							data={[data.stats.ksRight.hits, (data.stats.ksRight.attempts - (data.stats.ksRight.hits + data.stats.ksRight.drops)), data.stats.ksRight.drops]}
 						/>
@@ -251,19 +251,19 @@ class StatsPractice extends React.Component {
 					</div>
 					<div className="throws">
 						<div>
-							<ChartRegular
+							<PieRegular
 								height="150px"
 								data={[overall.regular.sixes, overall.regular.fours, overall.regular.threes, overall.regular.twos, overall.regular.ones, overall.regular.zeros, overall.regular.drops]}
 							/>
 						</div>
 						<div>
-							<ChartKillshot
+							<PieKillshot
 								height="150px"
 								data={[overall.ksLeft.hits, (overall.ksLeft.attempts - (overall.ksLeft.hits + overall.ksLeft.drops)), overall.ksLeft.drops]}
 							/>
 						</div>
 						<div>
-							<ChartKillshot
+							<PieKillshot
 								height="150px"
 								data={[overall.ksRight.hits, (overall.ksRight.attempts - (overall.ksRight.hits + overall.ksRight.drops)), overall.ksRight.drops]}
 							/>

@@ -1131,11 +1131,15 @@ class Natf(Services.Service):
 		# Fetch the ids and created dates of all practices
 		lPractices = Practice.get(data['thrower'], index='thrower', raw=['_id', '_created'], orderby='!_created')
 
+		# Fetch the stats for the last ten practices
+		lGraphs = Practice.get(data['thrower'], index='thrower', raw=['_created', 'stats'], orderby='!_created', limit=10)
+
 		# Fetch the overall stats
 		dOverall = PracticeStats.get(data['thrower'], raw=True)
 
 		# Return both
 		return Services.Effect({
+			"graphs": lGraphs,
 			"overall": dOverall,
 			"practices": lPractices
 		})

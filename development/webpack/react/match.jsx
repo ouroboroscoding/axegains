@@ -10,11 +10,7 @@
  */
 
 // Generic modules
-var Events = require('../generic/events.js');
 var Hash = require('../generic/hash.js');
-
-// Generic components
-var {Menu, Item} = require('./elements/menu.jsx');
 
 // Site components
 var Natf = require('./natf/match.jsx');
@@ -29,33 +25,26 @@ class Match extends React.Component {
 
 		// Initialise the state
 		this.state = {
-			"org": Hash.get('org', 'natf')
+			"org": Hash.get('org', this.props.thrower.org || 'natf')
 		};
 
 		// Bind methods
-		this.orgChange = this.orgChange.bind(this);
+		this.orgHash = this.orgHash.bind(this);
 	}
 
 	componentWillMount() {
 
 		// Track any org hash change events
-		Hash.watch('org', this.orgChange);
+		Hash.watch('org', this.orgHash);
 	}
 
 	componentWillUnmount() {
 
 		// Stop tracking any org hash change events
-		Hash.unwatch('org', this.orgChange);
-
-		// Remove the org from the hash
-		Hash.set('org', null);
+		Hash.unwatch('org', this.orgHash);
 	}
 
-	menuChange(org) {
-		Hash.set('org', org);
-	}
-
-	orgChange(org) {
+	orgHash(org) {
 		if(org != this.state.org) {
 			if(org == null) {
 				org = 'natf';
@@ -67,13 +56,13 @@ class Match extends React.Component {
 	render() {
 		return (
 			<div id="match">
-				<Menu className="menu secondary" selected={this.state.org} onChange={this.menuChange}>
-					<Item name="natf">NATF</Item>
-				</Menu>
 				<div id="content">
 					<div>
 						{this.state.org == 'natf' &&
 							<Natf thrower={this.props.thrower} />
+						}
+						{this.state.org == 'watl' &&
+							<p>WATL Matchs not available yet</p>
 						}
 					</div>
 				</div>

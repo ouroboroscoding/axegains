@@ -13,14 +13,13 @@ var Events = require('../generic/events.js');
 var Hash = require('../generic/hash.js');
 
 // Generic components
-//var {Menu, Item} = require('./elements/menu.jsx');
+var {Menu, Item} = require('./elements/menu.jsx');
 var Messages = require('./elements/messages.jsx');
 var Popups = require ('./elements/popups.jsx');
 
 // Site components
 var Header = require('./header.jsx');
 var Match = require('./match.jsx');
-var Menu = require('./menu.jsx');
 var Practice = require('./practice.jsx');
 var Stats = require('./stats.jsx');
 
@@ -32,9 +31,10 @@ class Site extends React.Component {
 		// Call the parent constructor
 		super(props);
 
-		// Init the hash module and watch for org changes
+		// Init the hash module and watch for org and page changes
 		Hash.init();
-		Hash.watch('org', this.orgChange.bind(this))
+		Hash.watch('org', this.orgHash.bind(this));
+		Hash.watch('page', this.pageHash.bind(this));
 
 		// Track any signin/signout events
 		Events.add('signin', this.signin.bind(this));
@@ -42,31 +42,69 @@ class Site extends React.Component {
 
 		// Initialise the state
 		this.state = {
-			"org": Hash.get('org', 'home'),
+			"org": Hash.get('org', 'natf'),
+			"page": Hash.get('page', 'home'),
 			"thrower": false
 		};
 
 		// Bind methods
-		this.orgChange = this.orgChange.bind(this);
+		this.pageChange = this.pageChange.bind(this);
 	}
 
-	orgChange(org) {
+	orgHash(org) {
+
 		// If the org has changed
 		if(org != this.state.org) {
-			this.setState({"org": org ? org : "home"})
+			this.setState({"org": org || 'natf'})
 		}
+	}
+
+	pageHash(page) {
+
+		// If the page has changed
+		if(page != this.state.page) {
+			this.setState({"page": page || "home"})
+			this.refs.menu.selected = page;
+		}
+	}
+
+	pageChange(name) {
+		Hash.set("page", name);
 	}
 
 	render() {
 
+		// Stupid react
+		var items = [
+			/*<Item key={0} name="games">Games</Item>,*/
+			<Item key={1} name="practice">Practice</Item>
+		];
+		if(this.state.thrower) {
+			if(this.state.org == 'natf') {
+				items.push(<Item key={2} name="match">Match</Item>);
+			}
+			//items.push(<Item key={3} name="league">League</Item>);
+			items.push(<Item key={4} name="stats">Stats</Item>);
+		}
+
 		return (
 			<div id="site">
-				<Header />
-				<Menu thrower={this.state.thrower} />
-				{this.state.org == 'home' &&
+				<Header thrower={this.state.thrower} />
+				<Menu ref="menu" className="menu primary" selected={this.state.page} onChange={this.pageChange}>
+					{items}
+				</Menu>
+				{this.state.page == 'home' &&
 					<div className="content">
 						<div>
 							<dl id="home">
+								<dt>v1.7.0</dt>
+								<dd>
+									<ul className="fa-ul">
+										<li><i className="fa-li fas fa-angle-double-right"></i>Moved organisation choice into header to save space.</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Added percentages to all pie charts.</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Added throw percentage graphing of last ten practices to stats.</li>
+									</ul>
+								</dd>
 								<dt>v1.6.0</dt>
 								<dd>
 									<ul className="fa-ul">
@@ -123,11 +161,14 @@ class Site extends React.Component {
 						</div>
 					</div>
 				}
-				{this.state.org == 'natf' &&
-					<Natf thrower={this.state.thrower} />
+				{this.state.page == 'practice' &&
+					<Practice thrower={this.state.thrower} />
 				}
-				{this.state.org == 'watl' &&
-					<Watl thrower={this.state.thrower} />
+				{this.state.page == 'match' &&
+					<Match thrower={this.state.thrower} />
+				}
+				{this.state.page == 'stats' &&
+					<Stats thrower={this.state.thrower} />
 				}
 				<Popups />
 				<Messages />
