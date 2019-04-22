@@ -550,7 +550,7 @@ class Practice extends React.Component {
 
 		// If we got a value
 		if(v > 0) {
-			this.state.totalPoints += v;
+			state.totalPoints += v;
 		}
 
 		// If we're in custom mode
