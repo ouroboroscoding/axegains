@@ -1,7 +1,7 @@
 /**
- * NATF Chart: Regular
+ * NATF Pie: Regular
  *
- * Shows the chart for regular (target) throws
+ * Shows the pie chart for regular (target) throws
  *
  * @author Chris Nasr
  * @copyright OuroborosCoding
@@ -9,7 +9,7 @@
  */
 
 // Regular component
-class ChartRegular extends React.Component {
+class PieRegular extends React.Component {
 
 	constructor(props) {
 
@@ -19,15 +19,27 @@ class ChartRegular extends React.Component {
 		// Initialise the state
 		this.state = {};
 
-		// Chart
-		this.chart = null;
+		// Pie
+		this.pie = null;
+
+		// Titles
+		this.titles = ["Fives", "Threes", "Ones", "Zeros", "Drops"];
+	}
+
+	calculateTitles() {
+		var ret = [];
+		var sum = this.props.data.reduce((p,i) => p+i);
+		for(var i = 0; i < 5; ++i) {
+			ret.push(this.titles[i] + ' ' + (sum == 0 ? '0.0' : ((this.props.data[i] / sum) * 100.0).toFixed(1)) + '% ');
+		}
+		return ret;
 	}
 
 	componentDidMount() {
-		this.chart = new Chart(this.refs.chart.getContext('2d'), {
+		this.pie = new Chart(this.refs.pie.getContext('2d'), {
 			"type": "pie",
 			"data": {
-				"labels": ["Fives", "Threes", "Ones", "Zeros", "Drops"],
+				"labels": this.calculateTitles(),
 				"datasets": [{
 					"data": this.props.data,
 					"backgroundColor": ["rgb(0,0,0,0.9)", "rgb(255,0,0,0.9)", "rgb(0,0,255,0.9)", "rgb(100,100,100,0.5)", "rgb(200,200,200,0.5)"]
@@ -43,8 +55,8 @@ class ChartRegular extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		this.chart.data.datasets[0].data = this.props.data;
-		this.chart.update();
+		this.pie.data.datasets[0].data = this.props.data;
+		this.pie.update();
 	}
 
 	render() {
@@ -52,11 +64,11 @@ class ChartRegular extends React.Component {
 		return (
 			<canvas
 				{...rest}
-				ref="chart"
+				ref="pie"
 			></canvas>
 		);
 	}
 }
 
 // Export the component
-module.exports = ChartRegular;
+module.exports = PieRegular;

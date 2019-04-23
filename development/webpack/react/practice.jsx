@@ -1,8 +1,7 @@
 /**
  * Pracitce
  *
- * Manages Org menu for practice and display the appropriate one based on what
- * is chosen
+ * Displays the appropriate practice based on what org mode we're in
  *
  * @author Chris Nasr
  * @copyright OuroborosCoding
@@ -10,11 +9,7 @@
  */
 
 // Generic modules
-var Events = require('../generic/events.js');
 var Hash = require('../generic/hash.js');
-
-// Generic components
-var {Menu, Item} = require('./elements/menu.jsx');
 
 // Site components
 var Natf = require('./natf/practice.jsx');
@@ -34,29 +29,26 @@ class Practice extends React.Component {
 		};
 
 		// Bind methods
-		this.orgChange = this.orgChange.bind(this);
+		this.orgHash = this.orgHash.bind(this);
 	}
 
 	componentWillMount() {
 
 		// Track any org hash change events
-		Hash.watch('org', this.orgChange);
+		Hash.watch('org', this.orgHash);
 	}
 
 	componentWillUnmount() {
 
 		// Stop tracking any org hash change events
-		Hash.unwatch('org', this.orgChange);
-
-		// Remove the org from the hash
-		Hash.set('org', null);
+		Hash.unwatch('org', this.orgHash);
 	}
 
 	menuChange(org) {
 		Hash.set('org', org);
 	}
 
-	orgChange(org) {
+	orgHash(org) {
 		if(org != this.state.org) {
 			if(org == null) {
 				org = this.props.thrower.org || 'natf';
@@ -68,10 +60,6 @@ class Practice extends React.Component {
 	render() {
 		return (
 			<div id="practice">
-				<Menu className="menu secondary" selected={this.state.org} onChange={this.menuChange}>
-					<Item name="natf">NATF</Item>
-					<Item name="watl">WATL</Item>
-				</Menu>
 				<div id="content">
 					<div>
 						{this.state.org == 'natf' &&
