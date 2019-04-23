@@ -18,6 +18,7 @@ var Tools = require('../../generic/tools.js');
 var Utils = require('../../utils.js');
 
 // Generic Components
+var Graph = require('../elements/graph.jsx');
 var Modal = require('../elements/modal.jsx');
 
 // Components
@@ -38,7 +39,6 @@ class Practice extends React.Component {
 		var data = this.props.data;
 		return (
 			<React.Fragment>
-				<h2>All Throws</h2>
 				<div className="allPoints">
 					{data.data.map(function(p, i) {
 						return <span key={i} className={p.killshot != '0' ? 'killshot' : ''}>{"" + p.value}</span>
@@ -46,7 +46,6 @@ class Practice extends React.Component {
 				</div>
 				<br />
 
-				<h2>Regular</h2>
 				<div className="throws">
 					<div>Regular</div>
 					<div>Killshot L</div>
@@ -93,6 +92,7 @@ class StatsPractice extends React.Component {
 		// Initialise the state
 		this.state = {
 			"all": false,
+			"graphs": false,
 			"one": false,
 			"overall": null,
 			"practices": [],
@@ -162,6 +162,7 @@ class StatsPractice extends React.Component {
 
 				// Add the stats to the state
 				this.setState({
+					"graphs": this.processGraphs(res.data.graphs),
 					"overall": res.data.overall,
 					"practices": res.data.practices
 				});
@@ -220,6 +221,95 @@ class StatsPractice extends React.Component {
 		this.setState({"one": false});
 	}
 
+	processGraphs(data) {
+
+		// Init the return data
+		var ret = {
+			"ksLeft": {
+				"labels": [],
+				"datasets": [
+					{"label": "Hits", "data": [], "fill": false, "borderColor": "rgb(0,0,255,0.9)", "lineTension": 0.1},
+					{"label": "Misses", "data": [], "fill": false, "borderColor": "rgb(100,100,100,0.5)", "lineTension": 0.1},
+					{"label": "Drops", "data": [], "fill": false, "borderColor": "rgb(200,200,200,0.5)", "lineTension": 0.1},
+				]
+			},
+			"ksRight": {
+				"labels": [],
+				"datasets": [
+					{"label": "Hits", "data": [], "fill": false, "borderColor": "rgb(0,0,255,0.9)", "lineTension": 0.1},
+					{"label": "Misses", "data": [], "fill": false, "borderColor": "rgb(100,100,100,0.5)", "lineTension": 0.1},
+					{"label": "Drops", "data": [], "fill": false, "borderColor": "rgb(200,200,200,0.5)", "lineTension": 0.1},
+				]
+			},
+			"regular": {
+				"labels": [],
+				"datasets": [
+					{"label": "Sixes", "data": [], "fill": false, "borderColor": "rgb(255,0,0,0.9)", "lineTension": 0.1},
+					{"label": "Fours", "data": [], "fill": false, "borderColor": "rgb(30,30,30,0.9)", "lineTension": 0.1},
+					{"label": "Threes", "data": [], "fill": false, "borderColor": "rgb(60,60,60,0.9)", "lineTension": 0.1},
+					{"label": "Twos", "data": [], "fill": false, "borderColor": "rgb(90,90,90,0.9)", "lineTension": 0.1},
+					{"label": "Ones", "data": [], "fill": false, "borderColor": "rgb(120,120,120,0.9)", "lineTension": 0.1},
+					{"label": "Zeros", "data": [], "fill": false, "borderColor": "rgb(150,150,150,0.5)", "lineTension": 0.1},
+					{"label": "Drops", "data": [], "fill": false, "borderColor": "rgb(200,200,200,0.5)", "lineTension": 0.1},
+				]
+			}
+		}
+
+		// Go through each set of stats backwards
+		for(var i = data.length-1; i >= 0; --i) {
+
+			// Add the labels
+			var ts = Utils.date(data[i]._created);
+			ret.regular.labels.push(ts);
+			ret.ksLeft.labels.push(ts);
+			ret.ksRight.labels.push(ts);
+
+			// Calculate the target percentages
+			if(data[i].stats.regular.attempts == 0) {
+				ret.regular.datasets[0].data.push(0.0);
+				ret.regular.datasets[1].data.push(0.0);
+				ret.regular.datasets[2].data.push(0.0);
+				ret.regular.datasets[3].data.push(0.0);
+				ret.regular.datasets[4].data.push(0.0);
+				ret.regular.datasets[5].data.push(0.0);
+				ret.regular.datasets[6].data.push(0.0);
+			} else {
+				ret.regular.datasets[0].data.push(((data[i].stats.regular.sixes / data[i].stats.regular.attempts) * 100.0).toFixed(1));
+				ret.regular.datasets[1].data.push(((data[i].stats.regular.fours / data[i].stats.regular.attempts) * 100.0).toFixed(1));
+				ret.regular.datasets[2].data.push(((data[i].stats.regular.threes / data[i].stats.regular.attempts) * 100.0).toFixed(1));
+				ret.regular.datasets[3].data.push(((data[i].stats.regular.twos / data[i].stats.regular.attempts) * 100.0).toFixed(1));
+				ret.regular.datasets[4].data.push(((data[i].stats.regular.ones / data[i].stats.regular.attempts) * 100.0).toFixed(1));
+				ret.regular.datasets[3].data.push(((data[i].stats.regular.zeros / data[i].stats.regular.attempts) * 100.0).toFixed(1));
+				ret.regular.datasets[4].data.push(((data[i].stats.regular.drops / data[i].stats.regular.attempts) * 100.0).toFixed(1));
+			}
+
+			// Calculate the killshot left percentages
+			if(data[i].stats.ksLeft.attempts == 0) {
+				ret.ksLeft.datasets[0].data.push(0.0);
+				ret.ksLeft.datasets[1].data.push(0.0);
+				ret.ksLeft.datasets[2].data.push(0.0);
+			} else {
+				ret.ksLeft.datasets[0].data.push(((data[i].stats.ksLeft.hits / data[i].stats.ksLeft.attempts) * 100.0).toFixed(1));
+				ret.ksLeft.datasets[1].data.push((((data[i].stats.ksLeft.attempts - (data[i].stats.ksLeft.drops + data[i].stats.ksLeft.hits)) / data[i].stats.ksLeft.attempts) * 100.0).toFixed(1));
+				ret.ksLeft.datasets[2].data.push(((data[i].stats.ksLeft.drops / data[i].stats.ksLeft.attempts) * 100.0).toFixed(1));
+			}
+
+			// Calculate the killshot right percentages
+			if(data[i].stats.ksRight.attempts == 0) {
+				ret.ksRight.datasets[0].data.push(0.0);
+				ret.ksRight.datasets[1].data.push(0.0);
+				ret.ksRight.datasets[2].data.push(0.0);
+			} else {
+				ret.ksRight.datasets[0].data.push(((data[i].stats.ksRight.hits / data[i].stats.ksRight.attempts) * 100.0).toFixed(1));
+				ret.ksRight.datasets[1].data.push((((data[i].stats.ksRight.attempts - (data[i].stats.ksRight.drops + data[i].stats.ksRight.hits)) / data[i].stats.ksRight.attempts) * 100.0).toFixed(1));
+				ret.ksRight.datasets[2].data.push(((data[i].stats.ksRight.drops / data[i].stats.ksRight.attempts) * 100.0).toFixed(1));
+			}
+		}
+
+		// Return the processed data
+		return ret;
+	}
+
 	render() {
 		var overall = this.state.overall;
 
@@ -229,20 +319,19 @@ class StatsPractice extends React.Component {
 				<div className="practice">
 
 					<h2>View Specific Practice</h2>
-					<p>
-						<select onChange={this.one}>
+					<div className="gap large">
+						<p><select onChange={this.one}>
 							<option value="-1">Select a Practice</option>
 							{this.state.practices.map(function(p, i) {
 								return <option value={p['_id']}>{Utils.datetime(p['_created'])}</option>
 							})}
-						</select>
-					</p>
+						</select></p>
+					</div>
 
-					<h2>Regular</h2>
 					<div className="throws">
 						<div>Regular</div>
-						<div>Killshot L</div>
-						<div>Killshot R</div>
+						<div>Left KS</div>
+						<div>Right KS</div>
 					</div>
 					<div className="throws">
 						<div>{overall.regular.attempts}</div>
@@ -269,7 +358,18 @@ class StatsPractice extends React.Component {
 							/>
 						</div>
 					</div>
-					<br />
+					<div className="title">Target</div>
+					<div className="gap small">
+						<Graph data={this.state.graphs.regular} />
+					</div>
+					<div className="title">Left Killshots</div>
+					<div className="gap small">
+						<Graph data={this.state.graphs.ksLeft} />
+					</div>
+					<div className="title">Right Killshots</div>
+					<div className="gap large">
+						<Graph data={this.state.graphs.ksRight} />
+					</div>
 
 					{this.state.one &&
 						<Modal

@@ -19,6 +19,7 @@ var Popups = require ('./elements/popups.jsx');
 
 // Site components
 var Header = require('./header.jsx');
+var Games = require('./games.jsx');
 var Match = require('./match.jsx');
 var Practice = require('./practice.jsx');
 var Stats = require('./stats.jsx');
@@ -75,15 +76,25 @@ class Site extends React.Component {
 	render() {
 
 		// Stupid react
-		var items = [
-			/*<Item key={0} name="games">Games</Item>,*/
-			<Item key={1} name="practice">Practice</Item>
-		];
+		var items = [];
+
+		// If we're in natf mode
+		if(this.state.org == 'natf') {
+			items.push(<Item key={0} name="games">Games</Item>)
+		}
+
+		// Everyone has practice
+		items.push(<Item key={1} name="practice">Practice</Item>);
+
+		// If we have a thrower
 		if(this.state.thrower) {
+
+			// If we're in natf mode
 			if(this.state.org == 'natf') {
 				items.push(<Item key={2} name="match">Match</Item>);
 			}
-			//items.push(<Item key={3} name="league">League</Item>);
+
+			// Every thrower has stats
 			items.push(<Item key={4} name="stats">Stats</Item>);
 		}
 
@@ -101,8 +112,9 @@ class Site extends React.Component {
 								<dd>
 									<ul className="fa-ul">
 										<li><i className="fa-li fas fa-angle-double-right"></i>Moved organisation choice into header to save space.</li>
-										<li><i className="fa-li fas fa-angle-double-right"></i>Added percentages to all pie charts.</li>
-										<li><i className="fa-li fas fa-angle-double-right"></i>Added throw percentage graphing of last ten practices to stats.</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Added percentages to all pie charts (NATF & WATL).</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Added throw percentage graphing of last ten sessions to practice stats (NATF & WATL).</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Added NATF games section with Around The World.</li>
 									</ul>
 								</dd>
 								<dt>v1.6.0</dt>
@@ -160,6 +172,9 @@ class Site extends React.Component {
 							</dl>
 						</div>
 					</div>
+				}
+				{this.state.page == 'games' &&
+					<Games thrower={this.state.thrower} />
 				}
 				{this.state.page == 'practice' &&
 					<Practice thrower={this.state.thrower} />

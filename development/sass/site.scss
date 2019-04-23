@@ -4,14 +4,22 @@ html, body {
 	width: 100%;
 }
 
+h1 {
+	font-size: 150%;
+}
+
+h2 {
+	font-size: 130%;
+}
+
+h3 {
+	font-size: 110%;
+}
+
 header {
 	background: $color-1;
 	color: $color-5;
 	padding: 8px;
-
-	h1 {
-		font-size: 150%;
-	}
 
 	.subtitle {
 		font-size: 80%;

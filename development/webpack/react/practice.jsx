@@ -1,8 +1,7 @@
 /**
  * Pracitce
  *
- * Manages Org menu for practice and display the appropriate one based on what
- * is chosen
+ * Displays the appropriate practice based on what org mode we're in
  *
  * @author Chris Nasr
  * @copyright OuroborosCoding

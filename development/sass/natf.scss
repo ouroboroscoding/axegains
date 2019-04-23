@@ -1,3 +1,25 @@
+#games {
+
+	.natf {
+		margin: 0 auto;
+		width: 304px;
+
+		.points {
+			border: 2px solid black;
+			margin: 5px 0;
+
+			.last {
+				cursor: pointer;
+			}
+
+			.overwrite {
+				background-color: red;
+				color: white;
+			}
+		}
+	}
+}
+
 #practice {
 
 	.natf {
@@ -243,6 +265,7 @@
 			display: inline-block;
 			height: 40px;
 			overflow: hidden;
+			position: relative;
 			width: 40px;
 
 			.atw {

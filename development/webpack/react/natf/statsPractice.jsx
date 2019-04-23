@@ -117,6 +117,7 @@ class StatsPractice extends React.Component {
 		// Initialise the state
 		this.state = {
 			"all": false,
+			"graphs": false,
 			"one": false,
 			"overall": null,
 			"practices": [],
@@ -367,14 +368,14 @@ class StatsPractice extends React.Component {
 				<div className="practice">
 
 					<h2>View Specific Practice</h2>
-					<p>
-						<select onChange={this.one}>
+					<div className="gap large">
+						<p><select onChange={this.one}>
 							<option value="-1">Select a Practice</option>
 							{this.state.practices.map(function(p, i) {
 								return <option value={p['_id']}>{Utils.datetime(p['_created'])}</option>
 							})}
-						</select>
-					</p>
+						</select></p>
+					</div>
 
 					<h2>Hatchet</h2>
 					<div className="throws">
@@ -400,14 +401,13 @@ class StatsPractice extends React.Component {
 						</div>
 					</div>
 					<div className="title">Target</div>
-					<div>
+					<div className="gap small">
 						<Graph data={this.state.graphs.standard.regular} />
 					</div>
 					<div className="title">Clutches</div>
-					<div>
+					<div className="gap large">
 						<Graph data={this.state.graphs.standard.clutches} />
 					</div>
-					<br />
 
 					<h2>Big Axe</h2>
 					<div className="throws">
@@ -433,11 +433,11 @@ class StatsPractice extends React.Component {
 						</div>
 					</div>
 					<div className="title">Target</div>
-					<div>
+					<div className="gap small">
 						<Graph data={this.state.graphs.bigaxe.regular} />
 					</div>
 					<div className="title">Clutches</div>
-					<div>
+					<div className="gap large">
 						<Graph data={this.state.graphs.bigaxe.clutches} />
 					</div>
 

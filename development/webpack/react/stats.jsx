@@ -1,8 +1,7 @@
 /**
  * Stats
  *
- * Manages Org menu for stats and display the appropriate one based on what
- * is chosen
+ * Displays the appropriate stats based on what org mode we're in
  *
  * @author Chris Nasr
  * @copyright OuroborosCoding
