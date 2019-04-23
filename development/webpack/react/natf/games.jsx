@@ -1,11 +1,11 @@
 /**
- * NATF Stats
+ * NATF Games
  *
- * Fetchs and displays NATF stats for practice and matches
+ * Fetchs and displays NATF games
  *
  * @author Chris Nasr
  * @copyright OuroborosCoding
- * @created 2019-03-25
+ * @created 2019-04-23
  */
 
 // Generic modules
@@ -15,12 +15,11 @@ var Hash = require('../../generic/hash.js');
 // Generic components
 var {Menu, Item} = require('../elements/menu.jsx');
 
-// Stats components
-var Match = require('./statsMatch.jsx');
-var Practice = require('./statsPractice.jsx');
+// Games components
+var ATW = require('./gamesATW.jsx');
 
-// Stats component
-class Stats extends React.Component {
+// Games component
+class Games extends React.Component {
 
 	constructor(props) {
 
@@ -29,7 +28,7 @@ class Stats extends React.Component {
 
 		// Initialise the state
 		this.state = {
-			"which": Hash.get('which', 'practice')
+			"which": Hash.get('which', 'atw')
 		};
 
 		// Bind methods
@@ -60,16 +59,12 @@ class Stats extends React.Component {
 		return (
 			<React.Fragment>
 				<Menu className="menu secondary" selected={self.state.which} onChange={self.whichChange}>
-					<Item name="practice">Practice</Item>
-					<Item name="match">Matches</Item>
+					<Item name="atw">Around The World</Item>
 				</Menu>
 				<div id="content">
 					<div className="natf">
-						{self.state.which == 'practice' &&
-							<Practice thrower={self.props.thrower} />
-						}
-						{self.state.which == 'match' &&
-							<Match thrower={self.props.thrower} />
+						{self.state.which == 'atw' &&
+							<ATW thrower={self.props.thrower} />
 						}
 					</div>
 				</div>
@@ -80,7 +75,7 @@ class Stats extends React.Component {
 	whichChange(which) {
 		if(which != this.state.which) {
 			if(which == null) {
-				which = 'practice';
+				which = 'atw';
 			}
 			this.setState({"which": which});
 		}
@@ -88,4 +83,4 @@ class Stats extends React.Component {
 }
 
 // Export the component
-module.exports = Stats;
+module.exports = Games;

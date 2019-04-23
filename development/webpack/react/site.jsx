@@ -19,6 +19,7 @@ var Popups = require ('./elements/popups.jsx');
 
 // Site components
 var Header = require('./header.jsx');
+var Games = require('./games.jsx');
 var Match = require('./match.jsx');
 var Practice = require('./practice.jsx');
 var Stats = require('./stats.jsx');
@@ -31,9 +32,10 @@ class Site extends React.Component {
 		// Call the parent constructor
 		super(props);
 
-		// Init the hash module and watch for page changes
+		// Init the hash module and watch for org and page changes
 		Hash.init();
-		Hash.watch('page', this.hashChange.bind(this))
+		Hash.watch('org', this.orgHash.bind(this));
+		Hash.watch('page', this.pageHash.bind(this));
 
 		// Track any signin/signout events
 		Events.add('signin', this.signin.bind(this));
@@ -41,6 +43,7 @@ class Site extends React.Component {
 
 		// Initialise the state
 		this.state = {
+			"org": Hash.get('org', 'natf'),
 			"page": Hash.get('page', 'home'),
 			"thrower": false
 		};
@@ -49,10 +52,19 @@ class Site extends React.Component {
 		this.pageChange = this.pageChange.bind(this);
 	}
 
-	hashChange(page) {
+	orgHash(org) {
+
+		// If the org has changed
+		if(org != this.state.org) {
+			this.setState({"org": org || 'natf'})
+		}
+	}
+
+	pageHash(page) {
+
 		// If the page has changed
 		if(page != this.state.page) {
-			this.setState({"page": page ? page : "home"})
+			this.setState({"page": page || "home"})
 			this.refs.menu.selected = page;
 		}
 	}
@@ -64,19 +76,31 @@ class Site extends React.Component {
 	render() {
 
 		// Stupid react
-		var items = [
-			/*<Item key={0} name="games">Games</Item>,*/
-			<Item key={1} name="practice">Practice</Item>
-		];
+		var items = [];
+
+		// If we're in natf mode
+		if(this.state.org == 'natf') {
+			items.push(<Item key={0} name="games">Games</Item>)
+		}
+
+		// Everyone has practice
+		items.push(<Item key={1} name="practice">Practice</Item>);
+
+		// If we have a thrower
 		if(this.state.thrower) {
-			items.push(<Item key={2} name="match">Match</Item>);
-			//items.push(<Item key={3} name="league">League</Item>);
+
+			// If we're in natf mode
+			if(this.state.org == 'natf') {
+				items.push(<Item key={2} name="match">Match</Item>);
+			}
+
+			// Every thrower has stats
 			items.push(<Item key={4} name="stats">Stats</Item>);
 		}
 
 		return (
 			<div id="site">
-				<Header />
+				<Header thrower={this.state.thrower} />
 				<Menu ref="menu" className="menu primary" selected={this.state.page} onChange={this.pageChange}>
 					{items}
 				</Menu>
@@ -84,6 +108,15 @@ class Site extends React.Component {
 					<div className="content">
 						<div>
 							<dl id="home">
+								<dt>v1.7.0</dt>
+								<dd>
+									<ul className="fa-ul">
+										<li><i className="fa-li fas fa-angle-double-right"></i>Moved organisation choice into header to save space.</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Added percentages to all pie charts (NATF & WATL).</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Added throw percentage graphing of last ten sessions to practice stats (NATF & WATL).</li>
+										<li><i className="fa-li fas fa-angle-double-right"></i>Added NATF games section with Around The World.</li>
+									</ul>
+								</dd>
 								<dt>v1.6.0</dt>
 								<dd>
 									<ul className="fa-ul">
@@ -139,6 +172,9 @@ class Site extends React.Component {
 							</dl>
 						</div>
 					</div>
+				}
+				{this.state.page == 'games' &&
+					<Games thrower={this.state.thrower} />
 				}
 				{this.state.page == 'practice' &&
 					<Practice thrower={this.state.thrower} />

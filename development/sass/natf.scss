@@ -1,3 +1,25 @@
+#games {
+
+	.natf {
+		margin: 0 auto;
+		width: 304px;
+
+		.points {
+			border: 2px solid black;
+			margin: 5px 0;
+
+			.last {
+				cursor: pointer;
+			}
+
+			.overwrite {
+				background-color: red;
+				color: white;
+			}
+		}
+	}
+}
+
 #practice {
 
 	.natf {
@@ -103,6 +125,10 @@
 				font-size: 120%;
 				width: 50%;
 			}
+		}
+
+		.title {
+			font-size: 120%;
 		}
 
 		.bigaxe {
@@ -238,7 +264,16 @@
 			border-radius: 50%;
 			display: inline-block;
 			height: 40px;
+			overflow: hidden;
+			position: relative;
 			width: 40px;
+
+			.atw {
+				background-color: #7F7F7F;
+				height: 100%;
+				position: absolute;
+				width: 100%;
+			}
 		}
 
 		.clutch.left {
@@ -281,8 +316,24 @@
 			border: 5px solid blue;
 			border-radius: 50%;
 			height: 300px;
+			overflow: hidden;
 			position: relative;
 			width: 300px;
+
+			.atw {
+				background-color: #7F7F7F;
+				height: 100%;
+				position: absolute;
+				width: 33%;
+			}
+
+			.left {
+				left: 0;
+			}
+
+			.right {
+				right: 0;
+			};
 		}
 
 		.one.active {
@@ -295,9 +346,25 @@
 			border-radius: 50%;
 			height: 68%;
 			left: 16%;
+			overflow: hidden;
 			position: relative;
 			top: 16%;
 			width: 68%;
+
+			.atw {
+				background-color: #7F7F7F;
+				height: 100%;
+				position: absolute;
+				width: 50%;
+			}
+
+			.left {
+				left: 0;
+			}
+
+			.right {
+				right: 0;
+			};
 		}
 
 		.three.active {
@@ -310,9 +377,17 @@
 			border-radius: 50%;
 			height: 46%;
 			left: 27%;
+			overflow: hidden;
 			position: relative;
 			top: 27%;
 			width: 46%;
+
+			.atw {
+				background-color: #7F7F7F;
+				height: 100%;
+				position: absolute;
+				width: 100%;
+			}
 		}
 
 		.five.active {

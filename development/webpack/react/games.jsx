@@ -1,21 +1,21 @@
 /**
- * Match
+ * Games
  *
- * Displays the appropriate match based on what org mode we're in
+ * Displays the appropriate games based on what org mode we're in
  *
  * @author Chris Nasr
  * @copyright OuroborosCoding
- * @created 2019-03-26
+ * @created 2019-04-23
  */
 
 // Generic modules
 var Hash = require('../generic/hash.js');
 
 // Site components
-var Natf = require('./natf/match.jsx');
+var Natf = require('./natf/games.jsx');
 
-// Match component
-class Match extends React.Component {
+// Games component
+class Games extends React.Component {
 
 	constructor(props) {
 
@@ -54,14 +54,14 @@ class Match extends React.Component {
 
 	render() {
 		return (
-			<div id="match">
+			<div id="games">
 				<div id="content">
 					<div>
 						{this.state.org == 'natf' &&
 							<Natf thrower={this.props.thrower} />
 						}
 						{this.state.org == 'watl' &&
-							<p>WATL Matchs not available yet</p>
+							<p>WATL Games not available yet</p>
 						}
 					</div>
 				</div>
@@ -71,4 +71,4 @@ class Match extends React.Component {
 }
 
 // Export the component
-module.exports = Match;
+module.exports = Games;
