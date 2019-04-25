@@ -75,14 +75,14 @@ class Favourites(Record_ReDB.Record):
 			# Generate the rethink query
 			dRes = Record_ReDB.r.branch(
 				t.get(thrower).ne(None),
-				t.get(thrower).update(lambda t: {
-					"ids": t['ids'].set_insert(favourite)
-				}).run(oCon),
+				t.get(thrower).update({
+					"ids": Record_ReDB.r.row['ids'].set_insert(favourite)
+				}),
 				t.insert({
 					"_thrower": thrower,
 					"ids": [favourite]
-				}).run(oCon)
-			)
+				})
+			).run(oCon)
 
 			# Return True if a record was changed
 			return dRes['replaced'] == 1 or dRes['inserted'] == 1
