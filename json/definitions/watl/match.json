@@ -1,0 +1,95 @@
+{
+	"__rethinkdb__": {
+		"db": "axegains",
+		"host": "primary",
+		"indexes": {
+			"finished": null,
+			"calculate": ["finished", "calculated"],
+			"initiator": null,
+			"opponent": null
+		},
+		"table": "watl_match"
+	},
+	"__name__": "WATL_Match",
+	"_id": {"__type__":"uuid", "__optional__":true},
+	"_created": "timestamp",
+	"finished": "bool",
+	"calculated": "bool",
+	"initiator": "uuid",
+	"opponent": "uuid",
+	"i": {
+		"1": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+		"2": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+		"3": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+		"4": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+		"5": {
+			"value": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6, 8], "__optional__": true},
+						{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"clutch": {"__type__": "bool"}
+		},
+		"6": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+		"7": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+		"8": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+		"9": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+		"10": {
+			"value": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6, 8], "__optional__": true},
+						{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"clutch": {"__type__": "bool"}
+		},
+		"finished": "bool"
+	},
+	"o": {
+		"1": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+		"2": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+		"3": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+		"4": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+		"5": {
+			"value": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6, 8], "__optional__": true},
+						{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"clutch": {"__type__": "bool"}
+		},
+		"6": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+		"7": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+		"8": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+		"9": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+		"10": {
+			"value": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6, 8], "__optional__": true},
+						{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"clutch": {"__type__": "bool"}
+		},
+		"finished": "bool"
+	},
+	"overtime": {
+		"__optional__": true,
+		"finished": {
+			"i": "bool",
+			"o": "bool"
+		},
+		"i": {
+			"__array__": "duplicates",
+			"__type__": [{"__type__": "int", "__options__": [0, 1]},
+						{"__type__": "string", "__options__": ["d"]}]
+		},
+		"o": {
+			"__array__": "duplicates",
+			"__type__": [{"__type__": "int", "__options__": [0, 1]},
+						{"__type__": "string", "__options__": ["d"]}]
+		}
+	}
+}

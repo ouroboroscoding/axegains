@@ -1,3 +1,67 @@
+#match {
+
+	.watl {
+		margin: 0 auto;
+		padding: 5px 0;
+		width: 95%;
+
+		.existing {
+			border: 1px solid $color-1;
+			margin: 5px 10px;
+			padding: 10px;
+
+			button {
+				margin: 0 5px;
+			}
+		}
+
+		.actual {
+
+			.stats {
+				margin: 10px 0;
+
+				.overall {
+					display: inline-block;
+					padding: 5px;
+					vertical-align: top;
+					width: 50%;
+				}
+
+				.game, .overtime {
+					display: inline-block;
+					padding: 5px;
+					text-align: center;
+					vertical-align: top;
+					width: 50%;
+				}
+
+				table {
+					margin-bottom: 10px;
+
+					th, td {
+						text-align: center;
+					}
+
+					th:first-child, td:first-child {
+						border-right: 1px solid black;
+						width: 20%;
+					}
+
+					td.clutch {
+						background-color: green;
+						color: white;
+					}
+
+					td.overwrite {
+						background-color: red;
+						color: white;
+					}
+				}
+			}
+		}
+	}
+}
+
 #practice {
 
 	.watl {

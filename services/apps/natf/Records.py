@@ -376,7 +376,7 @@ class Match(Record_ReDB.Record):
 	def finishBigAxe(cls, _type, _id, _is):
 		"""Finish Big Axe
 
-		Updates the bigaxe.[_type].finished int by ORing with the flag passed
+		Updates the bigaxe.[_type].finished bool
 
 		Arguments:
 			_type {str} -- The type to finish, 'points' or 'target'
@@ -492,7 +492,7 @@ class Match(Record_ReDB.Record):
 	def finishGames(cls, _id, _is):
 		"""Finish Games
 
-		Updates the games_finished int by ORing with the flag passed
+		Updates the games_finished bool
 
 		Arguments:
 			_id {str} -- The UUID of the match
@@ -581,8 +581,7 @@ class Match(Record_ReDB.Record):
 		# Get a connection to the host
 		with Record_ReDB._with(dStruct['host']) as oCon:
 
-			# Generate the rethink query to update the games_finished field
-			#	atomically
+			# Generate the rethink query to update or add a big axe throw
 			dRes = Record_ReDB.r \
 					.db(dStruct['db']) \
 					.table(dStruct['table']) \
@@ -727,9 +726,9 @@ class MatchStats(Record_ReDB.Record):
 							}
 						}
 					}
-				}).run(oCon),
-				t.insert(stats).run(oCon)
-			)
+				}),
+				t.insert(stats)
+			).run(oCon)
 
 			# Return true if something was updated
 			return dRes['replaced'] == 1 or dRes['inserted'] == 1
@@ -839,9 +838,9 @@ class PracticeStats(Record_ReDB.Record):
 							"points": Record_ReDB.r.row['standard']['regular']['points'] + stats['standard']['regular']['points']
 						}
 					}
-				}).run(oCon),
-				t.insert(stats).run(oCon)
-			)
+				}),
+				t.insert(stats)
+			).run(oCon)
 
 			# Return true if something was updated
 			return dRes['replaced'] == 1 or dRes['inserted'] == 1
