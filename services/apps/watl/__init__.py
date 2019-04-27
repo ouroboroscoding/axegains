@@ -335,13 +335,13 @@ class Watl(Services.Service):
 			for i in range(len(dMatch['overtime']['i'])):
 
 				# If we got a drop, consider it a zero
-				if dMatch['overtime']['i'][i]['value'] == 'd':
-					dMatch['overtime']['i'][i]['value'] = 0
-				if dMatch['overtime']['o'][i]['value'] == 'd':
-					dMatch['overtime']['o'][i]['value'] = 0
+				if dMatch['overtime']['i'][i] == 'd':
+					dMatch['overtime']['i'][i] = 0
+				if dMatch['overtime']['o'][i] == 'd':
+					dMatch['overtime']['o'][i] = 0
 
 				# If they aren't the same
-				if dMatch['overtime']['i'][i]['value'] != dMatch['overtime']['o'][i]['value']:
+				if dMatch['overtime']['i'][i] != dMatch['overtime']['o'][i]:
 
 					# Mark as finished
 					Match.finished(data['id'])
@@ -349,7 +349,7 @@ class Watl(Services.Service):
 					# Notify throwers
 					Sync.push('watl', 'match-%s' % data['id'], {
 						"type": "winner",
-						"is": dMatch['overtime']['i'][i]['value'] > dMatch['overtime']['o'][i]['value'] and 'i' or 'o'
+						"is": dMatch['overtime']['i'][i] > dMatch['overtime']['o'][i] and 'i' or 'o'
 					})
 
 					# Break out of the loop

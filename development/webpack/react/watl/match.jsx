@@ -39,8 +39,9 @@ class Match extends React.Component {
 			"game": false,
 			"id": false,
 			"loser": false,
-			"matchState": false,
+			"match": false,
 			"mode": "opponent",
+			"points": {},
 			"thrower": props.thrower,
 			"is": '',
 			"winner": false
@@ -68,14 +69,14 @@ class Match extends React.Component {
 		Loader.show();
 
 		// Clone the match state
-		var ms = this.state.matchState
+		var ms = this.state.match
 
 		// Remove the finish and set the waiting
 		ms.overtime_can_finish = false;
 		ms.waiting = true;
 
 		// Set the new state
-		this.setState({"matchState": ms});
+		this.setState({"match": ms});
 
 		// Let the service know
 		Services.update('watl', 'match/finish/overtime', {
@@ -112,8 +113,8 @@ class Match extends React.Component {
 
 			// Don't overwrite the actual data
 			var vals = {
-				'i': data.overtime['i'][i].value,
-				'o': data.overtime['o'][i].value
+				'i': data.overtime['i'][i],
+				'o': data.overtime['o'][i]
 			};
 
 			// If we got a drop, consider it a zero
@@ -147,12 +148,9 @@ class Match extends React.Component {
 		// Are we opponent or initiator
 		var is = (this.state.thrower._id == data.initiator) ? 'i' : 'o';
 
-		// If there's any bigaxe data it's safe to assume we're done with the
+		// If there's any overtime data it's safe to assume we're done with the
 		//	regular match
 		if(data.overtime && !Tools.empty(data.overtime)) {
-
-			// Overtime throw starts at 0
-			state.throw = 0;
 
 			// Set mode
 			state.mode = "overtime";
@@ -203,6 +201,32 @@ class Match extends React.Component {
 
 		// Return the state
 		return state;
+	}
+
+	calculatePoints(g) {
+
+		// Init the return
+		oPoints = {'i': 0, 'o': 0};
+
+		// Calculate the points
+		for(var t of ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]) {
+			if(g['i'][t]) {
+				if(['5', '10'].indexOf(t) != -1) {
+					oPoints['i'] += g['i'][t].value == 'd' ? 0 : g['i'][t].value;
+				} else {
+					oPoints['i'] += g['i'][t] == 'd' ? 0 : g['i'][t];
+				}
+			}
+			if(g['o'][t]) {
+				if(['5', '10'].indexOf(t) != -1) {
+					oPoints['o'] += g['o'][t].value == 'd' ? 0 : g['o'][t].value;
+				} else {
+					oPoints['o'] += g['o'][t] == 'd' ? 0 : g['o'][t];
+				}
+			}
+		}
+
+		return oPoints;
 	}
 
 	componentWillMount() {
@@ -373,18 +397,18 @@ class Match extends React.Component {
 	gameFinish(ev) {
 
 		// Clone the match state
-		var ms = Tools.clone(this.state.matchState);
+		var ms = Tools.clone(this.state.match);
 
 		// Show the loader
 		Loader.show()
 
 		// Clone the match state
-		var ms = Tools.clone(this.state.matchState);
+		var ms = Tools.clone(this.state.match);
 
 		// Set the match state to waiting
 		ms.waiting = true;
 		this.setState({
-			"matchState": ms
+			"match": ms
 		});
 
 		// Notify backend the match is over
@@ -503,11 +527,11 @@ class Match extends React.Component {
 							return;
 						}
 
-						// Are we initiator or opponent?
-						var t = res.data.initiator == this.state.thrower._id ? 'i' : 'o';
-
 						// Calculate the match state
 						var ms = this.calculateMatchState(res.data);
+
+						// Are we initiator or opponent?
+						var t = res.data.initiator == this.state.thrower._id ? 'i' : 'o';
 
 						// Store it in the state
 						this.setState({
@@ -515,16 +539,21 @@ class Match extends React.Component {
 							"overtime": res.data.overtime,
 							"game": res.data.game,
 							"id": id[1],
-							"matchState": ms,
+							"match": ms,
 							"mode": "match",
+							"points": this.calculatePoints(res.data.game),
 							"is": t,
 						}, function() {
 
 							// If we're in game mode on throw five/ten
-							if(ms.mode == 'game' && ['5', '10'].indexOf(ms.throw) != -1) {
-								this.refs.board.mode = 'select';
+							if(ms.mode == 'game') {
+								if(['5', '10'].indexOf(ms.throw) != -1) {
+									this.refs.board.mode = 'select';
+								} else {
+									this.refs.board.mode = 'none';
+								}
 							} else {
-								this.refs.board.mode = 'none';
+								this.refs.board.mode = 'expected';
 							}
 						});
 					}
@@ -541,8 +570,6 @@ class Match extends React.Component {
 
 	matchCallback(msg) {
 
-		console.log(msg);
-
 		// If we got an update on a big axe points throw
 		if(msg.type == "overtime") {
 
@@ -550,7 +577,7 @@ class Match extends React.Component {
 			if(msg.subtype == "start") {
 
 				// Clone the match state
-				var ms = Tools.clone(this.state.matchState);
+				var ms = Tools.clone(this.state.match);
 
 				// Set the mode to big axe target and reset the throw to 1
 				ms.mode = "overtime";
@@ -559,7 +586,7 @@ class Match extends React.Component {
 				ms.overtime_can_finish = false;
 
 				// Set the board mode
-				this.refs.board.mode = 'select';
+				this.refs.board.mode = 'expected';
 
 				// Set the new state
 				this.setState({
@@ -567,7 +594,7 @@ class Match extends React.Component {
 						"i": [],
 						"o": []
 					},
-					"matchState": ms
+					"match": ms
 				});
 			}
 
@@ -575,7 +602,7 @@ class Match extends React.Component {
 			else if(msg.subtype == "throw") {
 
 				// Clone the overtime and match state
-				var ms = Tools.clone(this.state.matchState);
+				var ms = Tools.clone(this.state.match);
 				var ot = Tools.clone(this.state.overtime);
 
 				// If it's false
@@ -604,8 +631,8 @@ class Match extends React.Component {
 
 				// Set the new state
 				this.setState({
-					"overtime": ot,
-					"matchState": ms
+					"match": ms,
+					"overtime": ot
 				});
 			}
 
@@ -613,14 +640,14 @@ class Match extends React.Component {
 			else if(msg.subtype == 'notfinished') {
 
 				// Clone the match state
-				var ms = Tools.clone(this.state.matchState);
+				var ms = Tools.clone(this.state.match);
 
 				// Remove waiting and set to bigaxe target just in case
 				ms.mode = 'overtime';
 				ms.waiting = false;
 
 				// Set the new state
-				this.setState({"matchState": ms});
+				this.setState({"match": ms});
 			}
 		}
 
@@ -637,8 +664,9 @@ class Match extends React.Component {
 		// Else if we got a message about a new throw in a game
 		else if(msg.type == 'throw') {
 
-			// Clone the game
+			// Clone the game and match state
 			var game = Tools.clone(this.state.game);
+			var ms = Tools.clone(this.state.match);
 
 			// Create the game if it doesn't exist
 			if(typeof game == 'undefined') {
@@ -657,7 +685,10 @@ class Match extends React.Component {
 			game[msg.thrower][msg.throw] = msg.value;
 
 			// Set the new state
-			this.setState({"game": game});
+			this.setState({
+				"game": game,
+				"points": this.calculatePoints(game)
+			});
 		}
 
 		// Else if we got a winner
@@ -683,7 +714,7 @@ class Match extends React.Component {
 	overwrite(ev) {
 
 		// Clone the match state
-		var ms = Tools.clone(this.state.matchState);
+		var ms = Tools.clone(this.state.match);
 
 		// If we're in game mode
 		if(ms.mode == 'game') {
@@ -704,7 +735,7 @@ class Match extends React.Component {
 
 		// Set the new state
 		this.setState({
-			"matchState": ms,
+			"match": ms,
 			"overwrite": true
 		});
 	}
@@ -712,7 +743,7 @@ class Match extends React.Component {
 	points(killshot, value) {
 
 		// Clone match state
-		var ms = Tools.clone(this.state.matchState);
+		var ms = Tools.clone(this.state.match);
 
 		// If we're in game
 		if(ms.mode == "game") {
@@ -774,8 +805,9 @@ class Match extends React.Component {
 					// Update the state
 					this.setState({
 						"game": game,
-						"matchState": ms,
-						"overwrite": false
+						"match": ms,
+						"overwrite": false,
+						"points": this.calculatePoints(game)
 					});
 				}
 
@@ -810,6 +842,9 @@ class Match extends React.Component {
 				return false;
 			}
 
+			// Killshots count, anything else fails
+			value = value == 8 ? 1 : 0;
+
 			// Show the loader
 			Loader.show();
 
@@ -827,7 +862,6 @@ class Match extends React.Component {
 			Services.update('watl', 'match/overtime', {
 				"id": this.state.id,
 				"throw": ms.throw,
-				"killshot": killshot,
 				"value": value
 			}).done(res => {
 
@@ -863,7 +897,7 @@ class Match extends React.Component {
 					// Set the new state
 					this.setState({
 						"overtime": overtime,
-						"matchState": ms,
+						"match": ms,
 						"overwrite": false
 					});
 				}
@@ -909,7 +943,7 @@ class Match extends React.Component {
 						<div className="stats">
 							{self.renderGame()}
 						</div>
-						<div className="overlay" style={{"display": self.state.matchState.waiting ? 'block' : 'none'}}>
+						<div className="overlay" style={{"display": self.state.match.waiting ? 'block' : 'none'}}>
 							<div><span>Waiting for {self.state.alias}</span></div>
 						</div>
 						{this.state.winner &&
@@ -936,57 +970,104 @@ class Match extends React.Component {
 
 	renderGame() {
 
-		// Init the points and rows for each thrower
-		var oPoints = {"i": 0, "o": 0}
-		var oRows = {"i": [], "o": []}
-
-		// The Game
-		var g = this.state.game;
-
 		// Opponent is opposite of thrower
 		var sT = this.state.is;
 		var sO = this.state.is == 'i' ? 'o': 'i';
 
-		// Calculate the points
-		for(var t of ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]) {
-			if(g[sT][t]) {
-				if(['5', '10'].indexOf(t) != -1) {
-					oPoints[sT] += g[sT][t].value == 'd' ? 0 : g[sT][t].value;
-					oRows[sT].push(this.renderGameThrow(t));
+		// Regulation or overtime
+		var title = '';
+		var cname = '';
+
+		// Init the rows for each thrower
+		var oRows = {"i": [], "o": []}
+
+		// If we're in game mode
+		if(this.state.match.mode == 'game') {
+
+			// Go through each regulation throw
+			for(var t of ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]) {
+				if(this.state.game[sT][t]) {
+					if(['5', '10'].indexOf(t) != -1) {
+						oRows[sT].push(this.renderGameThrow(t));
+					} else {
+						oRows[sT].push(this.renderGameThrow(t));
+					}
 				} else {
-					oPoints[sT] += g[sT][t] == 'd' ? 0 : g[sT][t];
-					oRows[sT].push(this.renderGameThrow(t));
+					oRows[sT].push(<span> </span>);
 				}
-			} else {
-				oRows[sT].push(<span> </span>);
-			}
-			if(g[sO][t]) {
-				if(['5', '10'].indexOf(t) != -1) {
-					oPoints[sO] += g[sO][t].value == 'd' ? 0 : g[sO][t].value;
-					oRows[sO].push(<span className={g[sO][t] && g[sO][t].killshot != '0' ? 'killshot' : ''}>{g[sO][t] ? (g[sO][t].value) : ''}</span>);
+				if(this.state.game[sO][t]) {
+					if(['5', '10'].indexOf(t) != -1) {
+						oRows[sO].push(<span className={this.state.game[sO][t] && this.state.game[sO][t].killshot != '0' ? 'killshot' : ''}>{this.state.game[sO][t] ? (this.state.game[sO][t].value) : ''}</span>);
+					} else {
+						oRows[sO].push(<span>{this.state.game[sO][t]}</span>);
+					}
 				} else {
-					oPoints[sO] += g[sO][t] == 'd' ? 0 : g[sO][t];
-					oRows[sO].push(<span>{g[sO][t]}</span>);
+					oRows[sO].push(<span> </span>);
 				}
-			} else {
-				oRows[sO].push(<span> </span>);
 			}
+
+			// Store the title and class name
+			title = 'Regulation';
+			cname = 'throws';
+		}
+
+		// Else we're in overtime
+		else {
+
+			// Go through each overtime throw
+			for(var i = 0; true; ++i) {
+				if(this.state.overtime['i'].length <= i &&
+					this.state.overtime['o'].length <= i) {
+					break;
+				}
+
+				var columns = ['', ''];
+				if(typeof this.state.overtime[sT][i] != 'undefined') {
+					oRows[sT].push(
+						<span
+							className={this.state.overwrite && this.state.match.throw == i ? 'overwrite' : ''}
+							data-throw={i}
+							onClick={this.overwrite}
+						>{this.state.overtime[sT][i]}</span>
+					);
+				}
+				if(typeof this.state.overtime[sO][i] != 'undefined') {
+					oRows[sO].push(<span>{this.state.overtime[sO][i]}</span>);
+				}
+			}
+
+			// Store the title
+			title = 'Overtime';
+			cname = 'overtime';
 		}
 
 		return (
 			<div className="game">
 				<div className="thrower">
-					<div>{this.state.thrower.alias}</div>
-					<div className="overall">{oPoints[sT]}</div>
-					<div className="throws">{oRows[sT]}</div>
+					<div className="overall">
+						<p>{this.state.thrower.alias}</p>
+						<div>{this.state.points[sT]}</div>
+					</div>
+					<div className={cname}>
+						<p>{title}</p>
+						<div>{oRows[sT]}</div>
+					</div>
 				</div>
 				<div className="thrower">
-					<div>{this.state.alias}</div>
-					<div className="overall">{oPoints[sO]}</div>
-					<div className="throws">{oRows[sO]}</div>
+					<div className="overall">
+						<p>{this.state.alias}</p>
+						<div>{this.state.points[sO]}</div>
+					</div>
+					<div className={cname}>
+						<p>{title}</p>
+						<div>{oRows[sO]}</div>
+					</div>
 				</div>
-				{this.state.matchState.throw == '11' &&
+				{(this.state.match.mode == 'game' && this.state.match.throw == '11') &&
 					<button onClick={this.gameFinish}>Finish</button>
+				}
+				{this.state.match.overtime_can_finish &&
+					<button onClick={this.overtimeFinish}>Finish</button>
 				}
 			</div>
 		);
@@ -1003,7 +1084,7 @@ class Match extends React.Component {
 			// If the value exists
 			if(typeof v != 'undefined') {
 				return <span
-							className={this.state.overwrite && this.state.matchState.throw == t ? 'overwrite' : (v.killshot != '0' ? 'killshot' : '')}
+							className={this.state.overwrite && this.state.match.throw == t ? 'overwrite' : (v.killshot != '0' ? 'killshot' : '')}
 							data-throw={t}
 							onClick={this.overwrite}
 						>{v.value}</span>
@@ -1021,7 +1102,7 @@ class Match extends React.Component {
 			// If the value exists
 			if(typeof v != 'undefined') {
 				return <span
-							className={this.state.overwrite && this.state.matchState.throw == t ? 'overwrite' : ''}
+							className={this.state.overwrite && this.state.match.throw == t ? 'overwrite' : ''}
 							data-throw={t}
 							onClick={this.overwrite}
 						>{v}</span>
@@ -1147,7 +1228,7 @@ class Match extends React.Component {
 			"game": false,
 			"id": false,
 			"loser": false,
-			"matchState": false,
+			"match": false,
 			"mode": "opponent",
 			"is": '',
 			"winner": false

@@ -23,47 +23,90 @@
 				width: 300px;
 
 				div.thrower {
-					margin-bottom: 20px;
+					margin-bottom: 15px;
 					text-align: left;
 
 					div.overall {
-						border: 2px solid black;
 						display: inline-block;
-						height: 25px;
-						margin-right: 20px;
-						padding: 3px 0;
-						text-align: center;
-						width: 28px;
+						width: 48px;
+						vertical-align: top;
+
+						div {
+							border: 2px solid black;
+							box-sizing: border-box;
+							height: 25px;
+							padding: 3px 0;
+							text-align: center;
+							width: 28px;
+						}
 					}
 
 					div.throws {
-						border: 1px solid black;
 						display: inline-block;
-						height: 25px;
-						text-align: center;
+						width: 252px;
 						vertical-align: top;
 
-						span {
-							border-left: 1px solid black;
-							display: inline-block;
-							height: 24px;
-							padding: 4px 0;
-							vertical-align: top;
-							width: 25px;
-						}
+						div {
+							border: 1px solid black;
+							box-sizing: border-box;
+							height: 25px;
+							text-align: center;
 
-						span:first-child {
-							border: 0;
-						}
+							span {
+								border-left: 1px solid black;
+								box-sizing: border-box;
+								display: inline-block;
+								height: 24px;
+								padding: 4px 0;
+								vertical-align: top;
+								width: 25px;
+							}
 
-						span.killshot {
-							background-color: blue;
-							color: white;
-						}
+							span:first-child {
+								border: 0;
+							}
 
-						span.overwrite {
-							background-color: red;
-							color: white;
+							span.killshot {
+								background-color: blue;
+								color: white;
+							}
+
+							span.overwrite {
+								background-color: red;
+								color: white;
+							}
+						}
+					}
+
+					div.overtime {
+						display: inline-block;
+						width: 252px;
+						vertical-align: top;
+
+						div {
+							box-sizing: border-box;
+							height: 25px;
+
+							span {
+								border: 1px solid black;
+								border-left: 0;
+								box-sizing: border-box;
+								display: inline-block;
+								height: 24px;
+								padding: 4px 0;
+								text-align: center;
+								width: 25px;
+								vertical-align: top;
+							}
+
+							span:first-child {
+								border-left: 1px solid black;
+							}
+
+							span.overwrite {
+								background-color: red;
+								color: white;
+							}
 						}
 					}
 				}
