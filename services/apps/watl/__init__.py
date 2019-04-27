@@ -99,8 +99,11 @@ class Watl(Services.Service):
 				"calculated": False,
 				"initiator": data['initiator'],
 				"opponent": data['opponent'],
-				"i": {"finished": False},
-				"o": {"finished": False}
+				"game_finished": {"i": False, "o": False},
+				"game": {
+					"i": {},
+					"o": {}
+				}
 			})
 		except ValueError as e:
 			return Services.Effect(error=(1001, e.args[0]))
@@ -389,7 +392,7 @@ class Watl(Services.Service):
 		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Get the match
-		dMatch = Match.get(data['id'], raw=True)
+		dMatch = Match.get(data['id'], raw=['finished', 'game_finished', 'initiator', 'opponent'])
 		if not dMatch:
 			return Services.Effect(error=(1104, 'natf_match:%s' % data['id']))
 
@@ -406,28 +409,28 @@ class Watl(Services.Service):
 			return Services.Effect(error=1000)
 
 		# If the thrower already marked the match as finished
-		if dMatch[sIs]['finished']:
+		if dMatch['game_finished'][sIs]:
 			return Services.Effect(True)
 
 		# Update the finished state
 		Match.finishGame(data['id'], sIs)
 
 		# Fetch the updated data
-		dMatch = Match.get(data['id'], raw=['i', 'o'])
+		dMatch = Match.get(data['id'], raw=['game', 'game_finished'])
 
 		# If both sides are done
-		if dMatch['i']['finished'] and dMatch['o']['finished']:
+		if dMatch['game_finished']['i'] and dMatch['game_finished']['o']:
 
 			# Calculate the stats
 			dPoints = {"i": 0, "o": 0}
 			for w in ["i", "o"]:
 				for t in ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]:
 					if t in ['5', '10']:
-						if dMatch['games'][w][t]['value'] != 'd':
-							dPoints[w] += dMatch['games'][w][t]['value']
+						if dMatch['game'][w][t]['value'] != 'd':
+							dPoints[w] += dMatch['game'][w][t]['value']
 					else:
-						if dMatch['games'][w][t] != 'd':
-							dPoints[w] += dMatch['games'][w][t]
+						if dMatch['game'][w][t] != 'd':
+							dPoints[w] += dMatch['game'][w][t]
 
 			# If we don't have a winner
 			if dPoints['i'] == dPoints['o']:
@@ -474,7 +477,7 @@ class Watl(Services.Service):
 		except ValueError as e: return Services.Effect(error=(1001, [(f, "missing") for f in e.args]))
 
 		# Get the match
-		dMatch = Match.get(data['id'], raw=True)
+		dMatch = Match.get(data['id'], raw=['finished', 'game_finished', 'initiator', 'opponent'])
 		if not dMatch:
 			return Services.Effect(error=(1104, 'natf_match:%s' % data['id']))
 
@@ -491,7 +494,7 @@ class Watl(Services.Service):
 			return Services.Effect(error=1000)
 
 		# If the thrower already marked the match as finished
-		if dMatch[sIs]['finished']:
+		if dMatch['game_finished'][sIs]:
 			return Services.Effect(error=1002)
 
 		# If the throw is not a valid value
@@ -500,7 +503,7 @@ class Watl(Services.Service):
 
 		# Validate the value
 		dStruct = Match.struct()
-		if not dStruct['tree'][sIs][data['throw']].valid(data['value']):
+		if not dStruct['tree']['game'][sIs][data['throw']].valid(data['value']):
 			return Services.Effect(error=(1001, [('value', 'invalid data.value')]))
 
 		# If it's throw 5, and clutch is set, but we didn't get 'd', 0, or 7

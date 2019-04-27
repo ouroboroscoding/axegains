@@ -506,26 +506,14 @@ class Match extends React.Component {
 						// Are we initiator or opponent?
 						var t = res.data.initiator == this.state.thrower._id ? 'i' : 'o';
 
-						// Make sure each game has an intiator and opponent
-						for(var k in res.data.games) {
-							for(var w of ['i', 'o']) {
-								if(typeof res.data.games[k][w] == 'undefined') {
-									res.data.games[k][w] = {}
-								}
-							}
-						}
-
 						// Calculate the match state
 						var ms = this.calculateMatchState(res.data);
 
 						// Store it in the state
 						this.setState({
 							"alias": t == 'i' ? res.data['opponent_alias'] : res.data['initiator_alias'],
-							"overtime": res.data.bigaxe,
-							"game": {
-								"i": res.data.i,
-								"o": res.data.o
-							},
+							"overtime": res.data.overtime,
+							"game": res.data.game,
 							"id": id[1],
 							"matchState": ms,
 							"mode": "match",
@@ -731,7 +719,7 @@ class Match extends React.Component {
 
 			// If we're on throw "11", aka, waiting to finish
 			if(ms.throw == '11') {
-				Events.trigger('error', "Go to next game or select a throw to overwrite.");
+				Events.trigger('error', "Finish the game or select a throw to overwrite.");
 				return false;
 			}
 
@@ -771,7 +759,7 @@ class Match extends React.Component {
 					if(this.state.overwrite) {
 						var t = "11"
 						for(t of ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]) {
-							if(typeof games[ms.game][this.state.is][t] == 'undefined') {
+							if(typeof game[this.state.is][t] == 'undefined') {
 								break;
 							}
 						}
@@ -785,7 +773,7 @@ class Match extends React.Component {
 
 					// Update the state
 					this.setState({
-						"games": games,
+						"game": game,
 						"matchState": ms,
 						"overwrite": false
 					});
@@ -919,8 +907,7 @@ class Match extends React.Component {
 					<div className="actual">
 						<Board ref="board" clutchMode="none" onPoints={self.points} />
 						<div className="stats">
-							{self.renderPrimary()}
-							{self.renderSecondary()}
+							{self.renderGame()}
 						</div>
 						<div className="overlay" style={{"display": self.state.matchState.waiting ? 'block' : 'none'}}>
 							<div><span>Waiting for {self.state.alias}</span></div>
@@ -947,32 +934,103 @@ class Match extends React.Component {
 		);
 	}
 
-	renderOvertime() {
-		return <div />
-	}
-
 	renderGame() {
-		return <div />
+
+		// Init the points and rows for each thrower
+		var oPoints = {"i": 0, "o": 0}
+		var oRows = {"i": [], "o": []}
+
+		// The Game
+		var g = this.state.game;
+
+		// Opponent is opposite of thrower
+		var sT = this.state.is;
+		var sO = this.state.is == 'i' ? 'o': 'i';
+
+		// Calculate the points
+		for(var t of ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]) {
+			if(g[sT][t]) {
+				if(['5', '10'].indexOf(t) != -1) {
+					oPoints[sT] += g[sT][t].value == 'd' ? 0 : g[sT][t].value;
+					oRows[sT].push(this.renderGameThrow(t));
+				} else {
+					oPoints[sT] += g[sT][t] == 'd' ? 0 : g[sT][t];
+					oRows[sT].push(this.renderGameThrow(t));
+				}
+			} else {
+				oRows[sT].push(<span> </span>);
+			}
+			if(g[sO][t]) {
+				if(['5', '10'].indexOf(t) != -1) {
+					oPoints[sO] += g[sO][t].value == 'd' ? 0 : g[sO][t].value;
+					oRows[sO].push(<span className={g[sO][t] && g[sO][t].killshot != '0' ? 'killshot' : ''}>{g[sO][t] ? (g[sO][t].value) : ''}</span>);
+				} else {
+					oPoints[sO] += g[sO][t] == 'd' ? 0 : g[sO][t];
+					oRows[sO].push(<span>{g[sO][t]}</span>);
+				}
+			} else {
+				oRows[sO].push(<span> </span>);
+			}
+		}
+
+		return (
+			<div className="game">
+				<div className="thrower">
+					<div>{this.state.thrower.alias}</div>
+					<div className="overall">{oPoints[sT]}</div>
+					<div className="throws">{oRows[sT]}</div>
+				</div>
+				<div className="thrower">
+					<div>{this.state.alias}</div>
+					<div className="overall">{oPoints[sO]}</div>
+					<div className="throws">{oRows[sO]}</div>
+				</div>
+				{this.state.matchState.throw == '11' &&
+					<button onClick={this.gameFinish}>Finish</button>
+				}
+			</div>
+		);
 	}
 
 	renderGameThrow(t) {
-		return <div />
-	}
 
-	renderPrimary() {
-		return <div />
-	}
+		// The value of the throw
+		var v = this.state.game[this.state.is][t];
 
-	renderSecondary() {
+		// If we're working on 5 or 10
+		if(['5', '10'].indexOf(t) != -1) {
 
-		// If we're in games mode
-		if(this.state.matchState.mode == "game") {
-			return this.renderGame();
+			// If the value exists
+			if(typeof v != 'undefined') {
+				return <span
+							className={this.state.overwrite && this.state.matchState.throw == t ? 'overwrite' : (v.killshot != '0' ? 'killshot' : '')}
+							data-throw={t}
+							onClick={this.overwrite}
+						>{v.value}</span>
+			}
+
+			// Else, there's no value
+			else {
+				return <span></span>
+			}
 		}
 
-		// Else we're in overtime mode
+		// Else it's 1-4 or 6-9
 		else {
-			return this.renderOvertime();
+
+			// If the value exists
+			if(typeof v != 'undefined') {
+				return <span
+							className={this.state.overwrite && this.state.matchState.throw == t ? 'overwrite' : ''}
+							data-throw={t}
+							onClick={this.overwrite}
+						>{v}</span>
+			}
+
+			// Else, there's no value
+			else {
+				return <span></span>
+			}
 		}
 	}
 

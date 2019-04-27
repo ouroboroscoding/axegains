@@ -18,43 +18,53 @@
 		.actual {
 
 			.stats {
-				margin: 10px 0;
+				margin: 10px auto;
+				text-align: center;
+				width: 300px;
 
-				.overall {
-					display: inline-block;
-					padding: 5px;
-					vertical-align: top;
-					width: 50%;
-				}
+				div.thrower {
+					margin-bottom: 20px;
+					text-align: left;
 
-				.game, .overtime {
-					display: inline-block;
-					padding: 5px;
-					text-align: center;
-					vertical-align: top;
-					width: 50%;
-				}
-
-				table {
-					margin-bottom: 10px;
-
-					th, td {
+					div.overall {
+						border: 2px solid black;
+						display: inline-block;
+						height: 25px;
+						margin-right: 20px;
+						padding: 3px 0;
 						text-align: center;
+						width: 28px;
 					}
 
-					th:first-child, td:first-child {
-						border-right: 1px solid black;
-						width: 20%;
-					}
+					div.throws {
+						border: 1px solid black;
+						display: inline-block;
+						height: 25px;
+						text-align: center;
+						vertical-align: top;
 
-					td.clutch {
-						background-color: green;
-						color: white;
-					}
+						span {
+							border-left: 1px solid black;
+							display: inline-block;
+							height: 24px;
+							padding: 4px 0;
+							vertical-align: top;
+							width: 25px;
+						}
 
-					td.overwrite {
-						background-color: red;
-						color: white;
+						span:first-child {
+							border: 0;
+						}
+
+						span.killshot {
+							background-color: blue;
+							color: white;
+						}
+
+						span.overwrite {
+							background-color: red;
+							color: white;
+						}
 					}
 				}
 			}

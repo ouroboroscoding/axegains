@@ -65,15 +65,13 @@ class Match(Record_ReDB.Record):
 		return _mdMatchConf
 
 	@classmethod
-	def addOvertime(cls, _type, _id):
+	def addOvertime(cls, _id):
 		"""Add Overtime
 
 		Adds a section to the existing match
 
 		Arguments:
 
-			_type {str} -- The type of section to add, either 'points' or
-							'target'
 			_id {str} -- The UUID of the match
 
 		Returns:
@@ -93,11 +91,9 @@ class Match(Record_ReDB.Record):
 					.get(_id) \
 					.update({
 						"overtime": {
-							_type: {
-								"finished": {"i": False, "o": False},
-								"i": [],
-								"o": []
-							}
+							"finished": {"i": False, "o": False},
+							"i": [],
+							"o": []
 						}
 					}) \
 					.run(oCon)
@@ -173,53 +169,53 @@ class Match(Record_ReDB.Record):
 		for t in ['1', '2', '3', '4', '6', '7', '8', '9']:
 
 			# Add the points
-			if self._dRecord['i'][t] != 'd':
-				dPoints['i'] += self._dRecord['i'][t]
-			if self._dRecord['o'][t] != 'd':
-				dPoints['o'] += self._dRecord['o'][t]
+			if self._dRecord['game']['i'][t] != 'd':
+				dPoints['i'] += self._dRecord['game']['i'][t]
+			if self._dRecord['game']['o'][t] != 'd':
+				dPoints['o'] += self._dRecord['game']['o'][t]
 
 			# Increase the attempts
 			dStats['regular']['attempts'] += 1
 
 			# Increase the type of throw
-			if self._dRecord[_is][t] == 'd':
+			if self._dRecord['game'][_is][t] == 'd':
 				dStats['regular']['drops'] += 1
-			elif self._dRecord[_is][t] == 6:
+			elif self._dRecord['game'][_is][t] == 6:
 				dStats['regular']['sixes'] += 1
-			elif self._dRecord[_is][t] == 4:
+			elif self._dRecord['game'][_is][t] == 4:
 				dStats['regular']['fours'] += 1
-			elif self._dRecord[_is][t] == 3:
+			elif self._dRecord['game'][_is][t] == 3:
 				dStats['regular']['threes'] += 1
-			elif self._dRecord[_is][t] == 2:
+			elif self._dRecord['game'][_is][t] == 2:
 				dStats['regular']['twos'] += 1
-			elif self._dRecord[_is][t] == 1:
+			elif self._dRecord['game'][_is][t] == 1:
 				dStats['regular']['ones'] += 1
-			elif self._dRecord[_is][t] == 0:
+			elif self._dRecord['game'][_is][t] == 0:
 				dStats['regular']['zeros'] += 1
 
 		# Add the points for throw 5 and 10
 		for t in ['5', '10']:
 
-			if self._dRecord['i'][t]['value'] != 'd':
-				dPoints['i'] += self._dRecord['i'][t]['value']
-			if self._dRecord['o'][t]['value'] != 'd':
-				dPoints['o'] += self._dRecord['o'][t]['value']
+			if self._dRecord['game']['i'][t]['value'] != 'd':
+				dPoints['i'] += self._dRecord['game']['i'][t]['value']
+			if self._dRecord['game']['o'][t]['value'] != 'd':
+				dPoints['o'] += self._dRecord['game']['o'][t]['value']
 
 			# If it's a killshot
-			if self._dRecord[_is][t]['killshot']:
+			if self._dRecord['game'][_is][t]['killshot']:
 
 				# Is it left or right?
-				w = self._dRecord[_is][t]['clutch'] == 'L' and 'ksLeft' or 'ksRight'
+				w = self._dRecord['game'][_is][t]['clutch'] == 'L' and 'ksLeft' or 'ksRight'
 
 				# Increase the attempts
 				dStats[w]['attempts'] += 1
 
 				# If it's a drop
-				if self._dRecord[_is][t]['value'] == 'd':
+				if self._dRecord['game'][_is][t]['value'] == 'd':
 					dStats[w]['drops'] += 1
 
 				# Else if it's a 7
-				elif self._dRecord[_is][t]['value'] == 7:
+				elif self._dRecord['game'][_is][t]['value'] == 7:
 					dStats[w]['hits'] += 1
 
 			# Else it's a regular throw
@@ -227,19 +223,19 @@ class Match(Record_ReDB.Record):
 				dStats['regular']['attempts'] += 1
 
 				# Increase the type of throw
-				if self._dRecord[_is][t]['value'] == 'd':
+				if self._dRecord['game'][_is][t]['value'] == 'd':
 					dStats['regular']['drops'] += 1
-				elif self._dRecord[_is][t]['value'] == 6:
+				elif self._dRecord['game'][_is][t]['value'] == 6:
 					dStats['regular']['sixes'] += 1
-				elif self._dRecord[_is][t]['value'] == 4:
+				elif self._dRecord['game'][_is][t]['value'] == 4:
 					dStats['regular']['fours'] += 1
-				elif self._dRecord[_is][t]['value'] == 3:
+				elif self._dRecord['game'][_is][t]['value'] == 3:
 					dStats['regular']['threes'] += 1
-				elif self._dRecord[_is][t]['value'] == 2:
+				elif self._dRecord['game'][_is][t]['value'] == 2:
 					dStats['regular']['twos'] += 1
-				elif self._dRecord[_is][t]['value'] == 1:
+				elif self._dRecord['game'][_is][t]['value'] == 1:
 					dStats['regular']['ones'] += 1
-				elif self._dRecord[_is][t]['value'] == 0:
+				elif self._dRecord['game'][_is][t]['value'] == 0:
 					dStats['regular']['zeros'] += 1
 
 		# Add the points
@@ -420,8 +416,8 @@ class Match(Record_ReDB.Record):
 					.table(dStruct['table']) \
 					.get(_id) \
 					.update({
-						_is: {
-							"finished": True
+						"game_finished": {
+							_is: True
 						}
 					}) \
 					.run(oCon)
@@ -528,7 +524,7 @@ class Match(Record_ReDB.Record):
 					.db(dStruct['db']) \
 					.table(dStruct['table']) \
 					.get(_id) \
-					.update({"games": {
+					.update({"game": {
 						_is: {
 							throw: value
 						}

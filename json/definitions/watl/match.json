@@ -17,63 +17,71 @@
 	"calculated": "bool",
 	"initiator": "uuid",
 	"opponent": "uuid",
-	"i": {
-		"1": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
-				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-		"2": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
-				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-		"3": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
-				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-		"4": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
-				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-		"5": {
-			"value": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6, 8], "__optional__": true},
-						{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-			"clutch": {"__type__": "bool"}
-		},
-		"6": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
-				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-		"7": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
-				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-		"8": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
-				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-		"9": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
-				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-		"10": {
-			"value": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6, 8], "__optional__": true},
-						{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-			"clutch": {"__type__": "bool"}
-		},
-		"finished": "bool"
+	"game_finished": {
+		"i": "bool",
+		"o": "bool"
 	},
-	"o": {
-		"1": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
-				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-		"2": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
-				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-		"3": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
-				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-		"4": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
-				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-		"5": {
-			"value": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6, 8], "__optional__": true},
-						{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-			"clutch": {"__type__": "bool"}
+	"game": {
+		"i": {
+			"1": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"2": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"3": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"4": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"5": {
+				"__optional__": true,
+				"value": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6, 8]},
+							{"__type__": "string", "__options__": ["d"]}],
+				"killshot": {"__type__": "string", "__options": ["0", "L", "R"]}
+			},
+			"6": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"7": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"8": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"9": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"10": {
+				"__optional__": true,
+				"value": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6, 8]},
+							{"__type__": "string", "__options__": ["d"]}],
+				"killshot": {"__type__": "string", "__options": ["0", "L", "R"]}
+			}
 		},
-		"6": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
-				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-		"7": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
-				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-		"8": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
-				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-		"9": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
-				{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-		"10": {
-			"value": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6, 8], "__optional__": true},
-						{"__type__": "string", "__options__": ["d"], "__optional__": true}],
-			"clutch": {"__type__": "bool"}
-		},
-		"finished": "bool"
+		"o": {
+			"1": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"2": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"3": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"4": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"5": {
+				"__optional__": true,
+				"value": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6, 8]},
+							{"__type__": "string", "__options__": ["d"]}],
+				"killshot": {"__type__": "string", "__options": ["0", "L", "R"]}
+			},
+			"6": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"7": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"8": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"9": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6], "__optional__": true},
+					{"__type__": "string", "__options__": ["d"], "__optional__": true}],
+			"10": {
+				"__optional__": true,
+				"value": [{"__type__": "int", "__options__": [0, 1, 2, 3, 4, 6, 8]},
+							{"__type__": "string", "__options__": ["d"]}],
+				"killshot": {"__type__": "string", "__options": ["0", "L", "R"]}
+			}
+		}
 	},
 	"overtime": {
 		"__optional__": true,
