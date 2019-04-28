@@ -986,7 +986,7 @@ class Match extends React.Component {
 
 			// Go through each regulation throw
 			for(var t of ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]) {
-				if(this.state.game[sT][t]) {
+				if(typeof this.state.game[sT][t] != 'undefined') {
 					if(['5', '10'].indexOf(t) != -1) {
 						oRows[sT].push(this.renderGameThrow(t));
 					} else {
@@ -995,7 +995,7 @@ class Match extends React.Component {
 				} else {
 					oRows[sT].push(<span> </span>);
 				}
-				if(this.state.game[sO][t]) {
+				if(typeof this.state.game[sO][t] != 'undefined') {
 					if(['5', '10'].indexOf(t) != -1) {
 						oRows[sO].push(<span className={this.state.game[sO][t] && this.state.game[sO][t].killshot != '0' ? 'killshot' : ''}>{this.state.game[sO][t] ? (this.state.game[sO][t].value) : ''}</span>);
 					} else {

@@ -202,10 +202,10 @@ class Match(Record_ReDB.Record):
 				dPoints['o'] += self._dRecord['game']['o'][t]['value']
 
 			# If it's a killshot
-			if self._dRecord['game'][_is][t]['killshot']:
+			if self._dRecord['game'][_is][t]['killshot'] != '0':
 
 				# Is it left or right?
-				w = self._dRecord['game'][_is][t]['clutch'] == 'L' and 'ksLeft' or 'ksRight'
+				w = self._dRecord['game'][_is][t]['killshot'] == 'L' and 'ksLeft' or 'ksRight'
 
 				# Increase the attempts
 				dStats[w]['attempts'] += 1
@@ -246,11 +246,11 @@ class Match(Record_ReDB.Record):
 			dStats['sixtyfours'] = 1
 
 		# If the thrower won
-		if dPoints['i'] > dPoints['o']:
+		if dPoints[_is] > dPoints[sO]:
 			dStats['wins'] += 1
 
 		# Else if the thrower lost
-		elif dPoints['i'] < dPoints['o']:
+		elif dPoints[_is] < dPoints[sO]:
 			dStats['losses'] +=1
 
 		# Else, go to overtime

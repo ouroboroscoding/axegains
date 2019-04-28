@@ -1459,12 +1459,6 @@ class Match extends React.Component {
 		// Opponent is opposite of thrower
 		var sO = this.state.is == 'i' ? 'o': 'i';
 
-		// Thrower and Opponent Rows
-		var oRows = {
-			"i": [],
-			"o": []
-		}
-
 		// Calculate the points
 		for(var g of ["1", "2", "3"]) {
 			var iG = parseInt(g) - 1;

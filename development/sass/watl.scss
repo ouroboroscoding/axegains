@@ -210,6 +210,28 @@
 				width: 300px;
 			}
 		}
+
+		.match {
+
+			.smwl {
+				margin: 10px auto 0;
+				text-align: center;
+
+				div {
+					display: inline-block;
+					font-size: 120%;
+					width: 23%;
+				}
+
+				div.win {
+					color: green;
+				}
+
+				div.loss {
+					color: red;
+				}
+			}
+		}
 	}
 }
 
