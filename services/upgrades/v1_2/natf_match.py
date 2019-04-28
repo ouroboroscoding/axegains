@@ -4,7 +4,7 @@ from apps.natf.Records import Match
 # Entry point
 def run():
 
-	# Install `match_request` table in the primary DB
+	# Install `natf_match` table in the primary DB
 	print('Creating `natf_match`')
 	Match.tableCreate()
 

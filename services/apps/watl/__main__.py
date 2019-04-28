@@ -49,6 +49,14 @@ Services.register({
 
 # Create the HTTP server and map requests to service
 REST.Server({
+	"/match": {"methods": REST.CREATE | REST.DELETE | REST.READ, "session": True},
+	"/match/overtime": {"methods": REST.UPDATE, "session": True},
+	"/match/finish/overtime": {"methods": REST.UPDATE, "session": True},
+	"/match/finish/game": {"methods": REST.UPDATE, "session": True},
+	"/match/game": {"methods": REST.UPDATE, "session": True},
+	"/match/stats": {"methods": REST.READ, "session": True},
+	"/match/unfinished": {"methods": REST.READ, "session": True},
+
 	"/practice": {"methods": REST.CREATE, "session": True},
 	"/practice/data": {"methods": REST.READ, "session": True},
 	"/practice/pattern": {"methods": REST.CREATE | REST.DELETE | REST.UPDATE, "session": True},

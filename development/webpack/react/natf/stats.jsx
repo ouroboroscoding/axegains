@@ -34,25 +34,22 @@ class Stats extends React.Component {
 
 		// Bind methods
 		this.whichChange = this.whichChange.bind(this);
+		this.whichHash = this.whichHash.bind(this);
 	}
 
 	componentWillMount() {
 
 		// Track any which hash change events
-		Hash.watch('which', this.whichChange);
+		Hash.watch('which', this.whichHash);
 	}
 
 	componentWillUnmount() {
 
 		// Stop tracking any which hash change events
-		Hash.unwatch('which', this.whichChange);
+		Hash.unwatch('which', this.whichHash);
 
 		// Remove the which from the hash
 		Hash.set('which', null);
-	}
-
-	whichChange(which) {
-		Hash.set('which', which);
 	}
 
 	render() {
@@ -78,6 +75,10 @@ class Stats extends React.Component {
 	}
 
 	whichChange(which) {
+		Hash.set('which', which);
+	}
+
+	whichHash(which) {
 		if(which != this.state.which) {
 			if(which == null) {
 				which = 'practice';
