@@ -102,6 +102,12 @@ class Site extends React.Component {
 					<div className="content">
 						<div>
 							<dl id="home">
+								<dt>v1.8.0</dt>
+								<dd>
+									<ul className="fa-ul">
+										<li><i className="fa-li fas fa-angle-double-right"></i>Added WATL match and match stats.</li>
+									</ul>
+								</dd>
 								<dt>v1.7.0</dt>
 								<dd>
 									<ul className="fa-ul">
