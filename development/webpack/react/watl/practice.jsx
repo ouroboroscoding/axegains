@@ -703,7 +703,7 @@ class Practice extends React.Component {
 						{self.state.points.length > 0 &&
 							<React.Fragment>
 								<div className="averages">
-									<span className="killshot fright"><b>Killshot %: </b><span>{(self.state.kslAttempts == 0 ? "0.0" : ((self.state.kslHits / self.state.kslAttempts) * 100.0).toFixed(1)) + ' / ' + (self.state.ksrAttempts == 0 ? "0.0" : ((self.state.ksrHits / self.state.ksrAttempts) * 100.0).toFixed(1))}</span></span>
+									<span className="killshot fright"><b>KS %: </b><span>{(self.state.kslAttempts == 0 ? "0.0" : ((self.state.kslHits / self.state.kslAttempts) * 100.0).toFixed(1)) + ' / ' + (self.state.ksrAttempts == 0 ? "0.0" : ((self.state.ksrHits / self.state.ksrAttempts) * 100.0).toFixed(1))}</span></span>
 									<span className="average fleft"><b>Avg Throw: </b><span>{(self.state.totalPoints / self.state.points.length).toFixed(2)}</span></span>
 									<br />
 								</div>
