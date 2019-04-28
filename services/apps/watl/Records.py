@@ -214,8 +214,8 @@ class Match(Record_ReDB.Record):
 				if self._dRecord['game'][_is][t]['value'] == 'd':
 					dStats[w]['drops'] += 1
 
-				# Else if it's a 7
-				elif self._dRecord['game'][_is][t]['value'] == 7:
+				# Else if it's an 8
+				elif self._dRecord['game'][_is][t]['value'] == 8:
 					dStats[w]['hits'] += 1
 
 			# Else it's a regular throw
