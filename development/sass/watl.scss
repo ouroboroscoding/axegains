@@ -1,3 +1,120 @@
+#match {
+
+	.watl {
+		margin: 0 auto;
+		padding: 5px 0;
+		width: 95%;
+
+		.existing {
+			border: 1px solid $color-1;
+			margin: 5px 10px;
+			padding: 10px;
+
+			button {
+				margin: 0 5px;
+			}
+		}
+
+		.actual {
+
+			.stats {
+				margin: 10px auto;
+				text-align: center;
+				width: 300px;
+
+				div.thrower {
+					margin-bottom: 15px;
+					text-align: left;
+
+					div.overall {
+						display: inline-block;
+						width: 48px;
+						vertical-align: top;
+
+						div {
+							border: 2px solid black;
+							box-sizing: border-box;
+							height: 25px;
+							padding: 3px 0;
+							text-align: center;
+							width: 28px;
+						}
+					}
+
+					div.throws {
+						display: inline-block;
+						width: 252px;
+						vertical-align: top;
+
+						div {
+							border: 1px solid black;
+							box-sizing: border-box;
+							height: 25px;
+							text-align: center;
+
+							span {
+								border-left: 1px solid black;
+								box-sizing: border-box;
+								display: inline-block;
+								height: 24px;
+								padding: 4px 0;
+								vertical-align: top;
+								width: 25px;
+							}
+
+							span:first-child {
+								border: 0;
+							}
+
+							span.killshot {
+								background-color: blue;
+								color: white;
+							}
+
+							span.overwrite {
+								background-color: red;
+								color: white;
+							}
+						}
+					}
+
+					div.overtime {
+						display: inline-block;
+						width: 252px;
+						vertical-align: top;
+
+						div {
+							box-sizing: border-box;
+							height: 25px;
+
+							span {
+								border: 1px solid black;
+								border-left: 0;
+								box-sizing: border-box;
+								display: inline-block;
+								height: 24px;
+								padding: 4px 0;
+								text-align: center;
+								width: 25px;
+								vertical-align: top;
+							}
+
+							span:first-child {
+								border-left: 1px solid black;
+							}
+
+							span.overwrite {
+								background-color: red;
+								color: white;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 #practice {
 
 	.watl {
@@ -91,6 +208,28 @@
 
 			.allPoints {
 				width: 300px;
+			}
+		}
+
+		.match {
+
+			.smwl {
+				margin: 10px auto 0;
+				text-align: center;
+
+				div {
+					display: inline-block;
+					font-size: 120%;
+					width: 23%;
+				}
+
+				div.win {
+					color: green;
+				}
+
+				div.loss {
+					color: red;
+				}
 			}
 		}
 	}

@@ -23,11 +23,6 @@ var Utils = require('../../utils.js');
 var Board = require('./board.jsx');
 var Opponent = require('../opponent.jsx');
 
-// Defines
-FINISHED_INITIATOR = 0x01;
-FINISHED_OPPONENT = 0x02;
-FINISHED_BOTH = 0x03;
-
 // Match Component
 class Match extends React.Component {
 
@@ -587,20 +582,18 @@ class Match extends React.Component {
 					// If there's data
 					if(res.data) {
 
-					// Change the mode
-					this.setState({
-						"alias": res.data.alias,
-						"id": id[1],
-						"mode": "request"
-					});
+						// Change the mode
+						this.setState({
+							"alias": res.data.alias,
+							"id": id[1],
+							"mode": "request"
+						});
 
-					// Listen for an update on the request
-					TwoWay.track(
-						'auth', 'request-' + id[1],
-						this.requestCallback
-					);
-
-
+						// Listen for an update on the request
+						TwoWay.track(
+							'auth', 'request-' + id[1],
+							this.requestCallback
+						);
 					}
 
 				})
@@ -713,7 +706,7 @@ class Match extends React.Component {
 				ms.mode = "bigaxe_points";
 				ms.throw = 0;
 				ms.waiting = false;
-				ms.bigaxe_can_finish
+				ms.bigaxe_can_finish = false;
 
 				// Add the points section
 				ba['points'] = {
@@ -950,7 +943,7 @@ class Match extends React.Component {
 		// Clone match state
 		var ms = Tools.clone(this.state.matchState);
 
-		// If we're in big axe mode
+		// If we're in games mode
 		if(ms.mode == "games") {
 
 			// If we're on throw "6", aka, waiting to finish
@@ -986,7 +979,7 @@ class Match extends React.Component {
 				// If there's data
 				if(res.data) {
 
-					// Clone the games and match state
+					// Clone the games state
 					var games = Tools.clone(this.state.games);
 
 					// Store the point value

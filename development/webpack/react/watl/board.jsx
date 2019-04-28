@@ -21,12 +21,18 @@ class Board extends React.Component {
 			throw 'must specify onPoints property for WATL Board';
 		}
 
+		// Init the killshot flag
+		var killshot = false;
+		switch(props.mode) {
+			case 'expected_left': killshot = 'L'; break;
+			case 'expected_right': killshot = 'R'; break;
+			case 'expected': killshot = 'B'; break;
+		}
+
 		// Initialise the state
 		this.state = {
 			"mode": props.mode,
-			"killshot": props.mode == 'expected_left' ? 'L' : (
-							props.mode == 'expected_right' ? 'R' : false
-						)
+			"killshot": killshot
 		};
 
 		// Bind methods
@@ -72,7 +78,7 @@ class Board extends React.Component {
 
 		else {
 
-			if(this.state.killshot == 'L') {
+			if(this.state.killshot == 'L' || this.state.killshot == 'B') {
 				if(this.props.onPoints('L', 8) !== false) {
 					if(this.state.mode == 'select') {
 						this.setState({"killshot": false});
@@ -120,7 +126,7 @@ class Board extends React.Component {
 
 		else {
 
-			if(this.state.killshot == 'R') {
+			if(this.state.killshot == 'R' || this.state.killshot == 'B') {
 				if(this.props.onPoints('R', 8) !== false) {
 					if(this.state.mode == 'select') {
 						this.setState({"killshot": false});
@@ -185,7 +191,9 @@ class Board extends React.Component {
 		if(this.state.killshot) {
 			accepted = this.props.onPoints(this.state.killshot, 0);
 			if(accepted !== false) {
-				this.setState({"killshot": false});
+				if(this.state.mode == 'select') {
+					this.setState({"killshot": false});
+				}
 			}
 		} else {
 			accepted = this.props.onPoints('0', parseInt(target.dataset.value));
@@ -209,7 +217,7 @@ class Board extends React.Component {
 			<div className="board" data-value={0} onClick={this.pointClick}>
 				<div className="drop" onClick={this.dropClick}>DROP</div>
 				<div className="one" data-value={1} onClick={this.pointClick}>
-					<div className={"killshot left" + (this.state.killshot == 'L' ? ' selected' : '')} onClick={this.ksLeftClick} />
+					<div className={"killshot left" + (['L', 'B'].indexOf(this.state.killshot) != -1 ? ' selected' : '')} onClick={this.ksLeftClick} />
 					<div className="two" data-value={2} onClick={this.pointClick}>
 						<div className="three" data-value={3} onClick={this.pointClick}>
 							<div className="four" data-value={4} onClick={this.pointClick}>
@@ -217,7 +225,7 @@ class Board extends React.Component {
 							</div>
 						</div>
 					</div>
-					<div className={"killshot right" + (this.state.killshot == 'R' ? ' selected' : '')} onClick={this.ksRightClick} />
+					<div className={"killshot right" + (['R', 'B'].indexOf(this.state.killshot) != -1 ? ' selected' : '')} onClick={this.ksRightClick} />
 				</div>
 			</div>
 		);
@@ -231,6 +239,7 @@ class Board extends React.Component {
 			case 'none': killshot = false; break;
 			case 'expected_left': killshot = 'L'; break;
 			case 'expected_right': killshot = 'R'; break;
+			case 'expected': killshot = 'B'; break;
 			case 'select': killshot = this.state.killshot; break;
 		}
 

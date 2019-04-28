@@ -88,14 +88,8 @@ class Site extends React.Component {
 
 		// If we have a thrower
 		if(this.state.thrower) {
-
-			// If we're in natf mode
-			if(this.state.org == 'natf') {
-				items.push(<Item key={2} name="match">Match</Item>);
-			}
-
-			// Every thrower has stats
-			items.push(<Item key={4} name="stats">Stats</Item>);
+			items.push(<Item key={2} name="match">Match</Item>);
+			items.push(<Item key={3} name="stats">Stats</Item>);
 		}
 
 		return (

@@ -133,6 +133,8 @@ class Natf(Services.Service):
 
 		# Get the match
 		dMatch = Match.get(data['id'], raw=['finished', 'initiator', 'opponent'])
+		if not dMatch:
+			return Services.Effect(error=(1104, 'natf_match:%s' % data['id']))
 
 		# If the thrower is neither the initiator or opponent, or the match is
 		#	already marked finished

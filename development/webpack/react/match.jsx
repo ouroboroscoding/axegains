@@ -13,6 +13,7 @@ var Hash = require('../generic/hash.js');
 
 // Site components
 var Natf = require('./natf/match.jsx');
+var Watl = require('./watl/match.jsx');
 
 // Match component
 class Match extends React.Component {
@@ -61,7 +62,7 @@ class Match extends React.Component {
 							<Natf thrower={this.props.thrower} />
 						}
 						{this.state.org == 'watl' &&
-							<p>WATL Matchs not available yet</p>
+							<Watl thrower={this.props.thrower} />
 						}
 					</div>
 				</div>
