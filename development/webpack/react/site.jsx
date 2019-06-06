@@ -13,9 +13,9 @@ var Events = require('../generic/events.js');
 var Hash = require('../generic/hash.js');
 
 // Generic components
-var {Menu, Item} = require('./elements/menu.jsx');
-var Messages = require('./elements/messages.jsx');
-var Popups = require ('./elements/popups.jsx');
+var {Menu, Item} = require('./generic/menu.jsx');
+var Messages = require('./generic/messages.jsx');
+var Popups = require ('./generic/popups.jsx');
 
 // Site components
 var Header = require('./header.jsx');

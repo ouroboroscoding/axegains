@@ -12,7 +12,7 @@
 var Events = require('../../generic/events.js');
 
 // Generic components
-var Modal = require('../elements/modal.jsx');
+var Modal = require('../generic/modal.jsx');
 
 // Components
 var Board = require('./board.jsx');

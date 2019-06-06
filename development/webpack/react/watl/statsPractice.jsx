@@ -18,8 +18,8 @@ var Tools = require('../../generic/tools.js');
 var Utils = require('../../utils.js');
 
 // Generic Components
-var Graph = require('../elements/graph.jsx');
-var Modal = require('../elements/modal.jsx');
+var Graph = require('../generic/graph.jsx');
+var Modal = require('../generic/modal.jsx');
 
 // Components
 var PieKillshot = require('./pieKillshot.jsx');

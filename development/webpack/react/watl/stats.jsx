@@ -13,7 +13,7 @@ var Events = require('../../generic/events.js');
 var Hash = require('../../generic/hash.js');
 
 // Generic components
-var {Menu, Item} = require('../elements/menu.jsx');
+var {Menu, Item} = require('../generic/menu.jsx');
 
 // Stats components
 var Match = require('./statsMatch.jsx');

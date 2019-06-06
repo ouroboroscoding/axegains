@@ -10,7 +10,7 @@
 
 // Components
 var Forms = require('./base/forms.jsx');
-var Modal = require('./elements/modal.jsx');
+var Modal = require('./generic/modal.jsx');
 var Thrower = require('./thrower.jsx');
 
 // Generic modules

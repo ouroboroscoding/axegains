@@ -17,7 +17,7 @@ var Services = require('../generic/services.js');
 var Utils = require('../utils.js');
 
 // Elements
-var InputEnter = require("./elements/inputEnter.jsx");
+var InputEnter = require("./generic/inputEnter.jsx");
 
 // Sort favourites
 function aliasSort(a, b) {

@@ -21,7 +21,7 @@ var Utils = require('../../utils.js');
 var Forms = require('../base/forms.jsx');
 
 // React components
-var Modal = require('../elements/modal.jsx');
+var Modal = require('../generic/modal.jsx');
 var Board = require('./board.jsx');
 
 // Pattern component
