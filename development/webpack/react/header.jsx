@@ -278,9 +278,7 @@ class Header extends React.Component {
 						</React.Fragment>
 					}
 				</div>
-				<div className="orgs fright">
-				</div>
-				<h1 style={{"cursor": "pointer"}} onClick={this.home}>AxeGains.com</h1>
+				<img src={"//static." + window.location.hostname + "/images/logo_small.png"} alt="AxeGains.com" onClick={this.home} />
 				<div className="subtitle">By <a href="http://ouroboroscoding.com/" target="_blank">OuroborosCoding</a></div>
 				{self.state.modal == 'signin' &&
 					<div id="signin" className="form">
@@ -366,10 +364,6 @@ class Header extends React.Component {
 						break;
 					case 1201:
 						Events.trigger('error', 'Alias or password invalid');
-						break;
-					case 1204:
-						Forms.errorAdd(this.refs['signup_passwd']);
-						Events.trigger('error', 'Password not strong enough');
 						break;
 					default:
 						Events.trigger('error', JSON.stringify(res.error));
