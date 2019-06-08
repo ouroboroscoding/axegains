@@ -12,9 +12,6 @@
 var Events = require('../../generic/events.js');
 var Hash = require('../../generic/hash.js');
 
-// Generic components
-var {Menu, Item} = require('../elements/menu.jsx');
-
 // Stats components
 var Match = require('./statsMatch.jsx');
 var Practice = require('./statsPractice.jsx');
@@ -33,7 +30,6 @@ class Stats extends React.Component {
 		};
 
 		// Bind methods
-		this.whichChange = this.whichChange.bind(this);
 		this.whichHash = this.whichHash.bind(this);
 	}
 
@@ -47,35 +43,20 @@ class Stats extends React.Component {
 
 		// Stop tracking any which hash change events
 		Hash.unwatch('which', this.whichHash);
-
-		// Remove the which from the hash
-		Hash.set('which', null);
 	}
 
 	render() {
 		var self = this;
 		return (
-			<React.Fragment>
-				<Menu className="menu secondary" selected={self.state.which} onChange={self.whichChange}>
-					<Item name="practice">Practice</Item>
-					<Item name="match">Match</Item>
-				</Menu>
-				<div id="content">
-					<div className="watl">
-						{self.state.which == 'practice' &&
-							<Practice thrower={self.props.thrower} />
-						}
-						{self.state.which == 'match' &&
-							<Match thrower={self.props.thrower} />
-						}
-					</div>
-				</div>
-			</React.Fragment>
+			<div className="watl">
+				{self.state.which == 'practice' &&
+					<Practice thrower={self.props.thrower} />
+				}
+				{self.state.which == 'match' &&
+					<Match thrower={self.props.thrower} />
+				}
+			</div>
 		);
-	}
-
-	whichChange(which) {
-		Hash.set('which', which);
 	}
 
 	whichHash(which) {

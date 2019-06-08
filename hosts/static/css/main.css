@@ -128,23 +128,23 @@ input, select {
 
 @-webkit-keyframes bang {
   to {
-    box-shadow: -217px -373.66667px #00ff2f, -168px 2.33333px #00ffdd, 26px -332.66667px #d0ff00, -93px -360.66667px #ff0066, 233px -327.66667px #c800ff, 2px -345.66667px #f7ff00, -188px -131.66667px #00e1ff, 96px -238.66667px #00ff4d, 153px -32.66667px #007bff, 121px -345.66667px #00d5ff, -119px -121.66667px #8cff00, 22px -245.66667px #ff00d9, -14px -323.66667px #009dff, -249px 14.33333px #0022ff, 114px -26.66667px #00c8ff, 230px -189.66667px #ff4d00, 225px -336.66667px #00ffa2, -86px -400.66667px #00ff8c, -91px 21.33333px #ff00a2, -159px 68.33333px #5500ff, 97px -2.66667px #ff0044, -193px -153.66667px #002fff, -141px -302.66667px #ff9900, -99px -26.66667px #0022ff, -116px -258.66667px #9500ff, -109px -260.66667px #0033ff, -209px -294.66667px #ff0015, -120px -113.66667px #3700ff, 170px -23.66667px #00ff51, -60px -66.66667px #ff4d00, -47px -296.66667px #ff0080, 132px 39.33333px #00ff88, -118px -50.66667px #2fff00, -47px -266.66667px #d000ff, 173px -307.66667px #ff4800, -120px 10.33333px #aaff00, 221px -356.66667px #0011ff, 205px -16.66667px #00d9ff, 89px 56.33333px #ff0400, -50px -253.66667px #eeff00, -200px -300.66667px #001aff, -194px -60.66667px #ff5500, 26px -91.66667px #c800ff, -94px 59.33333px #0900ff, -70px 6.33333px #00ff5e, -228px 28.33333px #ff001e, -161px -9.66667px #00f7ff, -149px 59.33333px #ff8400, -133px -338.66667px #0073ff, 82px -38.66667px #ff004d, -40px -104.66667px #ff00d5; } }
+    box-shadow: -68px -332.66667px #ff009d, 169px -77.66667px #ff6600, 32px -218.66667px #5eff00, -242px -43.66667px #ff0099, 164px 75.33333px #00ff3c, 130px -125.66667px #00ff22, 79px 50.33333px #ff002f, -65px -84.66667px #d500ff, 102px -207.66667px #00ff7b, 129px -158.66667px #00ff73, 151px -252.66667px #ff00e1, -174px -376.66667px #2fff00, -143px -274.66667px #aa00ff, -19px 41.33333px #eeff00, -6px -356.66667px magenta, 143px -257.66667px #ff00d0, -117px -377.66667px #0d00ff, 137px -95.66667px #00ff9d, -49px -150.66667px #0088ff, 208px 68.33333px #6aff00, 246px -141.66667px #6fff00, 4px -355.66667px #00ff77, -158px -395.66667px #ff00f7, -122px -48.66667px #1100ff, 173px 66.33333px #00bbff, -177px -199.66667px #00ff3c, 70px -248.66667px deepskyblue, 117px -260.66667px #00ff99, -130px -335.66667px #00ff37, -100px -407.66667px #ff3c00, -160px 28.33333px #00ff1a, -110px -106.66667px #2600ff, -214px -272.66667px #ffa200, -226px -2.66667px #26ff00, 46px -38.66667px #ff4000, -202px 49.33333px #ffa600, -141px -34.66667px #5500ff, -27px -164.66667px #ff006a, -201px -170.66667px #009dff, -244px -366.66667px #ff0044, 213px -237.66667px #00f7ff, 106px -100.66667px #00ff1a, 70px -386.66667px #ff1100, 45px -247.66667px #73ff00, -31px -329.66667px #ff4d00, 85px -408.66667px #ff4d00, 43px 13.33333px #4d00ff, -132px -186.66667px #00ff22, -52px 25.33333px #bf00ff, 203px 26.33333px #ffae00, -49px -100.66667px #ff2600; } }
 
 @-moz-keyframes bang {
   to {
-    box-shadow: -217px -373.66667px #00ff2f, -168px 2.33333px #00ffdd, 26px -332.66667px #d0ff00, -93px -360.66667px #ff0066, 233px -327.66667px #c800ff, 2px -345.66667px #f7ff00, -188px -131.66667px #00e1ff, 96px -238.66667px #00ff4d, 153px -32.66667px #007bff, 121px -345.66667px #00d5ff, -119px -121.66667px #8cff00, 22px -245.66667px #ff00d9, -14px -323.66667px #009dff, -249px 14.33333px #0022ff, 114px -26.66667px #00c8ff, 230px -189.66667px #ff4d00, 225px -336.66667px #00ffa2, -86px -400.66667px #00ff8c, -91px 21.33333px #ff00a2, -159px 68.33333px #5500ff, 97px -2.66667px #ff0044, -193px -153.66667px #002fff, -141px -302.66667px #ff9900, -99px -26.66667px #0022ff, -116px -258.66667px #9500ff, -109px -260.66667px #0033ff, -209px -294.66667px #ff0015, -120px -113.66667px #3700ff, 170px -23.66667px #00ff51, -60px -66.66667px #ff4d00, -47px -296.66667px #ff0080, 132px 39.33333px #00ff88, -118px -50.66667px #2fff00, -47px -266.66667px #d000ff, 173px -307.66667px #ff4800, -120px 10.33333px #aaff00, 221px -356.66667px #0011ff, 205px -16.66667px #00d9ff, 89px 56.33333px #ff0400, -50px -253.66667px #eeff00, -200px -300.66667px #001aff, -194px -60.66667px #ff5500, 26px -91.66667px #c800ff, -94px 59.33333px #0900ff, -70px 6.33333px #00ff5e, -228px 28.33333px #ff001e, -161px -9.66667px #00f7ff, -149px 59.33333px #ff8400, -133px -338.66667px #0073ff, 82px -38.66667px #ff004d, -40px -104.66667px #ff00d5; } }
+    box-shadow: -68px -332.66667px #ff009d, 169px -77.66667px #ff6600, 32px -218.66667px #5eff00, -242px -43.66667px #ff0099, 164px 75.33333px #00ff3c, 130px -125.66667px #00ff22, 79px 50.33333px #ff002f, -65px -84.66667px #d500ff, 102px -207.66667px #00ff7b, 129px -158.66667px #00ff73, 151px -252.66667px #ff00e1, -174px -376.66667px #2fff00, -143px -274.66667px #aa00ff, -19px 41.33333px #eeff00, -6px -356.66667px magenta, 143px -257.66667px #ff00d0, -117px -377.66667px #0d00ff, 137px -95.66667px #00ff9d, -49px -150.66667px #0088ff, 208px 68.33333px #6aff00, 246px -141.66667px #6fff00, 4px -355.66667px #00ff77, -158px -395.66667px #ff00f7, -122px -48.66667px #1100ff, 173px 66.33333px #00bbff, -177px -199.66667px #00ff3c, 70px -248.66667px deepskyblue, 117px -260.66667px #00ff99, -130px -335.66667px #00ff37, -100px -407.66667px #ff3c00, -160px 28.33333px #00ff1a, -110px -106.66667px #2600ff, -214px -272.66667px #ffa200, -226px -2.66667px #26ff00, 46px -38.66667px #ff4000, -202px 49.33333px #ffa600, -141px -34.66667px #5500ff, -27px -164.66667px #ff006a, -201px -170.66667px #009dff, -244px -366.66667px #ff0044, 213px -237.66667px #00f7ff, 106px -100.66667px #00ff1a, 70px -386.66667px #ff1100, 45px -247.66667px #73ff00, -31px -329.66667px #ff4d00, 85px -408.66667px #ff4d00, 43px 13.33333px #4d00ff, -132px -186.66667px #00ff22, -52px 25.33333px #bf00ff, 203px 26.33333px #ffae00, -49px -100.66667px #ff2600; } }
 
 @-o-keyframes bang {
   to {
-    box-shadow: -217px -373.66667px #00ff2f, -168px 2.33333px #00ffdd, 26px -332.66667px #d0ff00, -93px -360.66667px #ff0066, 233px -327.66667px #c800ff, 2px -345.66667px #f7ff00, -188px -131.66667px #00e1ff, 96px -238.66667px #00ff4d, 153px -32.66667px #007bff, 121px -345.66667px #00d5ff, -119px -121.66667px #8cff00, 22px -245.66667px #ff00d9, -14px -323.66667px #009dff, -249px 14.33333px #0022ff, 114px -26.66667px #00c8ff, 230px -189.66667px #ff4d00, 225px -336.66667px #00ffa2, -86px -400.66667px #00ff8c, -91px 21.33333px #ff00a2, -159px 68.33333px #5500ff, 97px -2.66667px #ff0044, -193px -153.66667px #002fff, -141px -302.66667px #ff9900, -99px -26.66667px #0022ff, -116px -258.66667px #9500ff, -109px -260.66667px #0033ff, -209px -294.66667px #ff0015, -120px -113.66667px #3700ff, 170px -23.66667px #00ff51, -60px -66.66667px #ff4d00, -47px -296.66667px #ff0080, 132px 39.33333px #00ff88, -118px -50.66667px #2fff00, -47px -266.66667px #d000ff, 173px -307.66667px #ff4800, -120px 10.33333px #aaff00, 221px -356.66667px #0011ff, 205px -16.66667px #00d9ff, 89px 56.33333px #ff0400, -50px -253.66667px #eeff00, -200px -300.66667px #001aff, -194px -60.66667px #ff5500, 26px -91.66667px #c800ff, -94px 59.33333px #0900ff, -70px 6.33333px #00ff5e, -228px 28.33333px #ff001e, -161px -9.66667px #00f7ff, -149px 59.33333px #ff8400, -133px -338.66667px #0073ff, 82px -38.66667px #ff004d, -40px -104.66667px #ff00d5; } }
+    box-shadow: -68px -332.66667px #ff009d, 169px -77.66667px #ff6600, 32px -218.66667px #5eff00, -242px -43.66667px #ff0099, 164px 75.33333px #00ff3c, 130px -125.66667px #00ff22, 79px 50.33333px #ff002f, -65px -84.66667px #d500ff, 102px -207.66667px #00ff7b, 129px -158.66667px #00ff73, 151px -252.66667px #ff00e1, -174px -376.66667px #2fff00, -143px -274.66667px #aa00ff, -19px 41.33333px #eeff00, -6px -356.66667px magenta, 143px -257.66667px #ff00d0, -117px -377.66667px #0d00ff, 137px -95.66667px #00ff9d, -49px -150.66667px #0088ff, 208px 68.33333px #6aff00, 246px -141.66667px #6fff00, 4px -355.66667px #00ff77, -158px -395.66667px #ff00f7, -122px -48.66667px #1100ff, 173px 66.33333px #00bbff, -177px -199.66667px #00ff3c, 70px -248.66667px deepskyblue, 117px -260.66667px #00ff99, -130px -335.66667px #00ff37, -100px -407.66667px #ff3c00, -160px 28.33333px #00ff1a, -110px -106.66667px #2600ff, -214px -272.66667px #ffa200, -226px -2.66667px #26ff00, 46px -38.66667px #ff4000, -202px 49.33333px #ffa600, -141px -34.66667px #5500ff, -27px -164.66667px #ff006a, -201px -170.66667px #009dff, -244px -366.66667px #ff0044, 213px -237.66667px #00f7ff, 106px -100.66667px #00ff1a, 70px -386.66667px #ff1100, 45px -247.66667px #73ff00, -31px -329.66667px #ff4d00, 85px -408.66667px #ff4d00, 43px 13.33333px #4d00ff, -132px -186.66667px #00ff22, -52px 25.33333px #bf00ff, 203px 26.33333px #ffae00, -49px -100.66667px #ff2600; } }
 
 @-ms-keyframes bang {
   to {
-    box-shadow: -217px -373.66667px #00ff2f, -168px 2.33333px #00ffdd, 26px -332.66667px #d0ff00, -93px -360.66667px #ff0066, 233px -327.66667px #c800ff, 2px -345.66667px #f7ff00, -188px -131.66667px #00e1ff, 96px -238.66667px #00ff4d, 153px -32.66667px #007bff, 121px -345.66667px #00d5ff, -119px -121.66667px #8cff00, 22px -245.66667px #ff00d9, -14px -323.66667px #009dff, -249px 14.33333px #0022ff, 114px -26.66667px #00c8ff, 230px -189.66667px #ff4d00, 225px -336.66667px #00ffa2, -86px -400.66667px #00ff8c, -91px 21.33333px #ff00a2, -159px 68.33333px #5500ff, 97px -2.66667px #ff0044, -193px -153.66667px #002fff, -141px -302.66667px #ff9900, -99px -26.66667px #0022ff, -116px -258.66667px #9500ff, -109px -260.66667px #0033ff, -209px -294.66667px #ff0015, -120px -113.66667px #3700ff, 170px -23.66667px #00ff51, -60px -66.66667px #ff4d00, -47px -296.66667px #ff0080, 132px 39.33333px #00ff88, -118px -50.66667px #2fff00, -47px -266.66667px #d000ff, 173px -307.66667px #ff4800, -120px 10.33333px #aaff00, 221px -356.66667px #0011ff, 205px -16.66667px #00d9ff, 89px 56.33333px #ff0400, -50px -253.66667px #eeff00, -200px -300.66667px #001aff, -194px -60.66667px #ff5500, 26px -91.66667px #c800ff, -94px 59.33333px #0900ff, -70px 6.33333px #00ff5e, -228px 28.33333px #ff001e, -161px -9.66667px #00f7ff, -149px 59.33333px #ff8400, -133px -338.66667px #0073ff, 82px -38.66667px #ff004d, -40px -104.66667px #ff00d5; } }
+    box-shadow: -68px -332.66667px #ff009d, 169px -77.66667px #ff6600, 32px -218.66667px #5eff00, -242px -43.66667px #ff0099, 164px 75.33333px #00ff3c, 130px -125.66667px #00ff22, 79px 50.33333px #ff002f, -65px -84.66667px #d500ff, 102px -207.66667px #00ff7b, 129px -158.66667px #00ff73, 151px -252.66667px #ff00e1, -174px -376.66667px #2fff00, -143px -274.66667px #aa00ff, -19px 41.33333px #eeff00, -6px -356.66667px magenta, 143px -257.66667px #ff00d0, -117px -377.66667px #0d00ff, 137px -95.66667px #00ff9d, -49px -150.66667px #0088ff, 208px 68.33333px #6aff00, 246px -141.66667px #6fff00, 4px -355.66667px #00ff77, -158px -395.66667px #ff00f7, -122px -48.66667px #1100ff, 173px 66.33333px #00bbff, -177px -199.66667px #00ff3c, 70px -248.66667px deepskyblue, 117px -260.66667px #00ff99, -130px -335.66667px #00ff37, -100px -407.66667px #ff3c00, -160px 28.33333px #00ff1a, -110px -106.66667px #2600ff, -214px -272.66667px #ffa200, -226px -2.66667px #26ff00, 46px -38.66667px #ff4000, -202px 49.33333px #ffa600, -141px -34.66667px #5500ff, -27px -164.66667px #ff006a, -201px -170.66667px #009dff, -244px -366.66667px #ff0044, 213px -237.66667px #00f7ff, 106px -100.66667px #00ff1a, 70px -386.66667px #ff1100, 45px -247.66667px #73ff00, -31px -329.66667px #ff4d00, 85px -408.66667px #ff4d00, 43px 13.33333px #4d00ff, -132px -186.66667px #00ff22, -52px 25.33333px #bf00ff, 203px 26.33333px #ffae00, -49px -100.66667px #ff2600; } }
 
 @keyframes bang {
   to {
-    box-shadow: -217px -373.66667px #00ff2f, -168px 2.33333px #00ffdd, 26px -332.66667px #d0ff00, -93px -360.66667px #ff0066, 233px -327.66667px #c800ff, 2px -345.66667px #f7ff00, -188px -131.66667px #00e1ff, 96px -238.66667px #00ff4d, 153px -32.66667px #007bff, 121px -345.66667px #00d5ff, -119px -121.66667px #8cff00, 22px -245.66667px #ff00d9, -14px -323.66667px #009dff, -249px 14.33333px #0022ff, 114px -26.66667px #00c8ff, 230px -189.66667px #ff4d00, 225px -336.66667px #00ffa2, -86px -400.66667px #00ff8c, -91px 21.33333px #ff00a2, -159px 68.33333px #5500ff, 97px -2.66667px #ff0044, -193px -153.66667px #002fff, -141px -302.66667px #ff9900, -99px -26.66667px #0022ff, -116px -258.66667px #9500ff, -109px -260.66667px #0033ff, -209px -294.66667px #ff0015, -120px -113.66667px #3700ff, 170px -23.66667px #00ff51, -60px -66.66667px #ff4d00, -47px -296.66667px #ff0080, 132px 39.33333px #00ff88, -118px -50.66667px #2fff00, -47px -266.66667px #d000ff, 173px -307.66667px #ff4800, -120px 10.33333px #aaff00, 221px -356.66667px #0011ff, 205px -16.66667px #00d9ff, 89px 56.33333px #ff0400, -50px -253.66667px #eeff00, -200px -300.66667px #001aff, -194px -60.66667px #ff5500, 26px -91.66667px #c800ff, -94px 59.33333px #0900ff, -70px 6.33333px #00ff5e, -228px 28.33333px #ff001e, -161px -9.66667px #00f7ff, -149px 59.33333px #ff8400, -133px -338.66667px #0073ff, 82px -38.66667px #ff004d, -40px -104.66667px #ff00d5; } }
+    box-shadow: -68px -332.66667px #ff009d, 169px -77.66667px #ff6600, 32px -218.66667px #5eff00, -242px -43.66667px #ff0099, 164px 75.33333px #00ff3c, 130px -125.66667px #00ff22, 79px 50.33333px #ff002f, -65px -84.66667px #d500ff, 102px -207.66667px #00ff7b, 129px -158.66667px #00ff73, 151px -252.66667px #ff00e1, -174px -376.66667px #2fff00, -143px -274.66667px #aa00ff, -19px 41.33333px #eeff00, -6px -356.66667px magenta, 143px -257.66667px #ff00d0, -117px -377.66667px #0d00ff, 137px -95.66667px #00ff9d, -49px -150.66667px #0088ff, 208px 68.33333px #6aff00, 246px -141.66667px #6fff00, 4px -355.66667px #00ff77, -158px -395.66667px #ff00f7, -122px -48.66667px #1100ff, 173px 66.33333px #00bbff, -177px -199.66667px #00ff3c, 70px -248.66667px deepskyblue, 117px -260.66667px #00ff99, -130px -335.66667px #00ff37, -100px -407.66667px #ff3c00, -160px 28.33333px #00ff1a, -110px -106.66667px #2600ff, -214px -272.66667px #ffa200, -226px -2.66667px #26ff00, 46px -38.66667px #ff4000, -202px 49.33333px #ffa600, -141px -34.66667px #5500ff, -27px -164.66667px #ff006a, -201px -170.66667px #009dff, -244px -366.66667px #ff0044, 213px -237.66667px #00f7ff, 106px -100.66667px #00ff1a, 70px -386.66667px #ff1100, 45px -247.66667px #73ff00, -31px -329.66667px #ff4d00, 85px -408.66667px #ff4d00, 43px 13.33333px #4d00ff, -132px -186.66667px #00ff22, -52px 25.33333px #bf00ff, 203px 26.33333px #ffae00, -49px -100.66667px #ff2600; } }
 
 @-webkit-keyframes gravity {
   to {
@@ -532,7 +532,6 @@ button.large:active {
   -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, 5px 0 5px -3px rgba(0, 0, 0, 0.2) inset;
   box-shadow: 0 0 1px rgba(0, 0, 0, 0.2) inset, 5px 0 5px -3px rgba(0, 0, 0, 0.2) inset; }
 
-/* elements */
 #loader {
   background-color: rgba(0, 0, 0, 0.33);
   position: fixed;
@@ -552,6 +551,649 @@ button.large:active {
       margin: 0 auto;
       text-align: center; }
 
+/* natf */
+#games .natf {
+  width: 304px; }
+  #games .natf .points {
+    border: 2px solid black;
+    margin: 5px 0; }
+    #games .natf .points .last {
+      cursor: pointer; }
+    #games .natf .points .overwrite {
+      background-color: red;
+      color: white; }
+
+#practice .natf {
+  width: 304px; }
+  #practice .natf div.aright {
+    margin-top: 5px; }
+    #practice .natf div.aright i {
+      color: #2C689B; }
+  #practice .natf dl.select dt i {
+    margin-left: 10px; }
+  #practice .natf div.bigaxe {
+    background-color: blue;
+    border: 1px solid blue;
+    color: white;
+    display: inline-block;
+    margin-top: 5px;
+    padding: 6px 0 4px;
+    position: relative;
+    text-align: center;
+    top: -30px;
+    width: 50px;
+    vertical-align: top; }
+  #practice .natf div.bigaxe.on {
+    background-color: white;
+    color: blue; }
+  #practice .natf div.pattern div.throw {
+    border: 1px solid #2C689B;
+    padding: 5px;
+    margin-bottom: 5px; }
+    #practice .natf div.pattern div.throw span {
+      display: inline-block;
+      width: 80px; }
+    #practice .natf div.pattern div.throw input[type=radio] {
+      vertical-align: bottom;
+      height: 16px; }
+  #practice .natf .points {
+    border: 2px solid black;
+    margin: 5px 0; }
+    #practice .natf .points .last {
+      cursor: pointer; }
+    #practice .natf .points .overwrite {
+      background-color: red;
+      color: white; }
+  #practice .natf .allPoints {
+    width: 300px; }
+  #practice .natf .averages {
+    margin: 10px 0 0 0; }
+  #practice .natf .reset, #practice .natf .save {
+    cursor: pointer; }
+
+#stats .natf {
+  padding: 10px; }
+  #stats .natf .throws {
+    margin: 10px auto;
+    text-align: center; }
+    #stats .natf .throws div {
+      display: inline-block;
+      font-size: 120%;
+      width: 50%; }
+  #stats .natf .title {
+    font-size: 120%; }
+  #stats .natf .bigaxe {
+    margin: 10px auto;
+    text-align: center; }
+    #stats .natf .bigaxe div {
+      display: inline-block;
+      font-size: 120%;
+      width: 33%; }
+  #stats .natf .practice {
+    overflow: auto; }
+    #stats .natf .practice .allPoints {
+      width: 300px; }
+  #stats .natf .match .mwl {
+    margin: 10px auto 0;
+    text-align: center; }
+    #stats .natf .match .mwl div {
+      display: inline-block;
+      font-size: 150%;
+      width: 30%; }
+    #stats .natf .match .mwl div.win {
+      color: green; }
+    #stats .natf .match .mwl div.loss {
+      color: red; }
+  #stats .natf .match .esnu {
+    margin: 10px auto;
+    text-align: center; }
+    #stats .natf .match .esnu div {
+      display: inline-block;
+      font-size: 120%;
+      text-align: left;
+      width: 23%; }
+
+#match .natf {
+  width: 304px; }
+  #match .natf .existing {
+    border: 1px solid #2C689B;
+    margin: 5px 10px;
+    padding: 10px; }
+    #match .natf .existing button {
+      margin: 0 5px; }
+  #match .natf .actual .stats {
+    margin: 10px 0; }
+    #match .natf .actual .stats .overall {
+      display: inline-block;
+      padding: 5px;
+      vertical-align: top;
+      width: 50%; }
+    #match .natf .actual .stats .game, #match .natf .actual .stats .bigaxe {
+      display: inline-block;
+      padding: 5px;
+      text-align: center;
+      vertical-align: top;
+      width: 50%; }
+    #match .natf .actual .stats table {
+      margin-bottom: 10px; }
+      #match .natf .actual .stats table th, #match .natf .actual .stats table td {
+        text-align: center; }
+      #match .natf .actual .stats table th:first-child, #match .natf .actual .stats table td:first-child {
+        border-right: 1px solid black;
+        width: 20%; }
+      #match .natf .actual .stats table td.clutch {
+        background-color: green;
+        color: white; }
+      #match .natf .actual .stats table td.overwrite {
+        background-color: red;
+        color: white; }
+
+.natf {
+  margin: 0 auto; }
+  .natf .board {
+    background-color: white;
+    height: 350px;
+    margin: 0 auto;
+    width: 300px; }
+    .natf .board .clutch {
+      background-color: green;
+      border: 5px solid green;
+      border-radius: 50%;
+      display: inline-block;
+      height: 40px;
+      overflow: hidden;
+      position: relative;
+      width: 40px; }
+      .natf .board .clutch .atw {
+        background-color: #7F7F7F;
+        height: 100%;
+        position: absolute;
+        width: 100%; }
+    .natf .board .clutch.left {
+      margin: 5px 55px 0px 20px; }
+    .natf .board .clutch.right {
+      margin: 5px 20px 0px 55px; }
+    .natf .board .clutch.selected {
+      border: 5px solid black; }
+    .natf .board .clutch.invalid {
+      border: 5px solid red; }
+    .natf .board .drop {
+      background-color: grey;
+      border: 1px solid grey;
+      color: white;
+      display: inline-block;
+      margin-top: 5px;
+      padding: 6px 0 4px 0;
+      position: relative;
+      text-align: center;
+      width: 70px;
+      vertical-align: top; }
+    .natf .board .drop.active {
+      background-color: white;
+      border: 1px solid black;
+      color: grey; }
+    .natf .board .one {
+      background-color: white;
+      border: 5px solid blue;
+      border-radius: 50%;
+      height: 300px;
+      overflow: hidden;
+      position: relative;
+      width: 300px; }
+      .natf .board .one .atw {
+        background-color: #7F7F7F;
+        height: 100%;
+        position: absolute;
+        width: 33%; }
+      .natf .board .one .left {
+        left: 0; }
+      .natf .board .one .right {
+        right: 0; }
+    .natf .board .one.active {
+      background-color: blue; }
+    .natf .board .three {
+      background-color: white;
+      border: 5px solid red;
+      border-radius: 50%;
+      height: 68%;
+      left: 16%;
+      overflow: hidden;
+      position: relative;
+      top: 16%;
+      width: 68%; }
+      .natf .board .three .atw {
+        background-color: #7F7F7F;
+        height: 100%;
+        position: absolute;
+        width: 50%; }
+      .natf .board .three .left {
+        left: 0; }
+      .natf .board .three .right {
+        right: 0; }
+    .natf .board .three.active {
+      background-color: red; }
+    .natf .board .five {
+      background-color: white;
+      border: 5px solid black;
+      border-radius: 50%;
+      height: 46%;
+      left: 27%;
+      overflow: hidden;
+      position: relative;
+      top: 27%;
+      width: 46%; }
+      .natf .board .five .atw {
+        background-color: #7F7F7F;
+        height: 100%;
+        position: absolute;
+        width: 100%; }
+    .natf .board .five.active {
+      background-color: black; }
+  .natf .board.active {
+    background-color: grey; }
+  .natf .points span, .natf .allPoints span {
+    display: inline-block;
+    padding: 3px 0;
+    text-align: center;
+    width: 30px; }
+  .natf .points span.clutch, .natf .allPoints span.clutch {
+    background-color: green;
+    color: white; }
+  .natf .points span.bigaxe, .natf .allPoints span.bigaxe {
+    background-color: blue;
+    color: white; }
+  .natf .points span.bigaxe.clutch, .natf .allPoints span.bigaxe.clutch {
+    background-color: #00cccc; }
+
+/* watl */
+#match .watl {
+  padding: 5px 0;
+  width: 95%; }
+  #match .watl .existing {
+    border: 1px solid #2C689B;
+    margin: 5px 10px;
+    padding: 10px; }
+    #match .watl .existing button {
+      margin: 0 5px; }
+  #match .watl .actual .stats {
+    margin: 10px auto;
+    text-align: center;
+    width: 300px; }
+    #match .watl .actual .stats div.thrower {
+      margin-bottom: 15px;
+      text-align: left; }
+      #match .watl .actual .stats div.thrower div.overall {
+        display: inline-block;
+        width: 48px;
+        vertical-align: top; }
+        #match .watl .actual .stats div.thrower div.overall div {
+          border: 2px solid black;
+          box-sizing: border-box;
+          height: 25px;
+          padding: 3px 0;
+          text-align: center;
+          width: 28px; }
+      #match .watl .actual .stats div.thrower div.throws {
+        display: inline-block;
+        width: 252px;
+        vertical-align: top; }
+        #match .watl .actual .stats div.thrower div.throws div {
+          border: 1px solid black;
+          box-sizing: border-box;
+          height: 25px;
+          text-align: center; }
+          #match .watl .actual .stats div.thrower div.throws div span {
+            border-left: 1px solid black;
+            box-sizing: border-box;
+            display: inline-block;
+            height: 24px;
+            padding: 4px 0;
+            vertical-align: top;
+            width: 25px; }
+          #match .watl .actual .stats div.thrower div.throws div span:first-child {
+            border: 0; }
+          #match .watl .actual .stats div.thrower div.throws div span.killshot {
+            background-color: blue;
+            color: white; }
+          #match .watl .actual .stats div.thrower div.throws div span.overwrite {
+            background-color: red;
+            color: white; }
+      #match .watl .actual .stats div.thrower div.overtime {
+        display: inline-block;
+        width: 252px;
+        vertical-align: top; }
+        #match .watl .actual .stats div.thrower div.overtime div {
+          box-sizing: border-box;
+          height: 25px; }
+          #match .watl .actual .stats div.thrower div.overtime div span {
+            border: 1px solid black;
+            border-left: 0;
+            box-sizing: border-box;
+            display: inline-block;
+            height: 24px;
+            padding: 4px 0;
+            text-align: center;
+            width: 25px;
+            vertical-align: top; }
+          #match .watl .actual .stats div.thrower div.overtime div span:first-child {
+            border-left: 1px solid black; }
+          #match .watl .actual .stats div.thrower div.overtime div span.overwrite {
+            background-color: red;
+            color: white; }
+
+#practice .watl {
+  width: 304px; }
+  #practice .watl div.aright {
+    margin-top: 5px; }
+    #practice .watl div.aright i {
+      color: #2C689B; }
+  #practice .watl dl.select dt i {
+    margin-left: 10px; }
+  #practice .watl div.pattern div.throw {
+    border: 1px solid #2C689B;
+    padding: 5px;
+    margin-bottom: 5px; }
+    #practice .watl div.pattern div.throw span {
+      display: inline-block;
+      width: 80px; }
+    #practice .watl div.pattern div.throw input[type=radio] {
+      vertical-align: bottom;
+      height: 16px; }
+  #practice .watl .points {
+    border: 2px solid black;
+    margin: 5px 0; }
+    #practice .watl .points .last {
+      cursor: pointer; }
+    #practice .watl .points .overwrite {
+      background-color: red;
+      color: white; }
+  #practice .watl .allPoints {
+    width: 300px; }
+  #practice .watl .averages {
+    margin: 10px 0 0 0; }
+  #practice .watl .reset, #practice .watl .save {
+    cursor: pointer; }
+
+#stats .watl {
+  padding: 5px 0;
+  width: 95%; }
+  #stats .watl .throws {
+    margin: 10px auto;
+    text-align: center; }
+    #stats .watl .throws div {
+      display: inline-block;
+      font-size: 120%;
+      width: 33%; }
+  #stats .watl .practice {
+    overflow: auto; }
+    #stats .watl .practice .allPoints {
+      width: 300px; }
+  #stats .watl .match .smwl {
+    margin: 10px auto 0;
+    text-align: center; }
+    #stats .watl .match .smwl div {
+      display: inline-block;
+      font-size: 120%;
+      width: 23%; }
+    #stats .watl .match .smwl div.win {
+      color: green; }
+    #stats .watl .match .smwl div.loss {
+      color: red; }
+
+.watl {
+  margin: 0 auto; }
+  .watl .board {
+    background-color: white;
+    height: 350px;
+    margin: 0 auto;
+    width: 300px; }
+    .watl .board .killshot {
+      background-color: blue;
+      border: 5px solid blue;
+      border-radius: 50%;
+      display: inline-block;
+      height: 30px;
+      position: absolute;
+      top: 38px;
+      width: 30px; }
+    .watl .board .killshot.left {
+      left: 38px; }
+    .watl .board .killshot.right {
+      right: 38px; }
+    .watl .board .killshot.selected {
+      border: 5px solid black; }
+    .watl .board .killshot.invalid {
+      border: 5px solid red; }
+    .watl .board .drop {
+      background-color: grey;
+      border: 1px solid grey;
+      color: white;
+      display: inline-block;
+      margin: 5px 115px 10px 115px;
+      padding: 6px 0 4px 0;
+      position: relative;
+      text-align: center;
+      width: 70px;
+      vertical-align: top; }
+    .watl .board .drop.active {
+      background-color: white;
+      border: 1px solid black;
+      color: grey; }
+    .watl .board .one {
+      background-color: white;
+      border: 5px solid black;
+      border-radius: 50%;
+      height: 300px;
+      position: relative;
+      width: 300px; }
+    .watl .board .one.active {
+      background-color: black; }
+    .watl .board .two {
+      background-color: white;
+      border: 5px solid black;
+      border-radius: 50%;
+      height: 80%;
+      left: 10%;
+      position: relative;
+      top: 10%;
+      width: 80%; }
+    .watl .board .two.active {
+      background-color: black; }
+    .watl .board .three {
+      background-color: white;
+      border: 5px solid black;
+      border-radius: 50%;
+      height: 74%;
+      left: 13%;
+      position: relative;
+      top: 13%;
+      width: 74%; }
+    .watl .board .three.active {
+      background-color: black; }
+    .watl .board .four {
+      background-color: white;
+      border: 5px solid black;
+      border-radius: 50%;
+      height: 62%;
+      left: 19%;
+      position: relative;
+      top: 19%;
+      width: 62%; }
+    .watl .board .four.active {
+      background-color: black; }
+    .watl .board .six {
+      background-color: red;
+      border: 5px solid red;
+      border-radius: 50%;
+      height: 40%;
+      left: 30%;
+      position: relative;
+      top: 30%;
+      width: 40%; }
+    .watl .board .six.active {
+      background-color: white; }
+  .watl .board.active {
+    background-color: grey; }
+  .watl .points span, .watl .allPoints span {
+    display: inline-block;
+    padding: 3px 0;
+    text-align: center;
+    width: 30px; }
+  .watl .points span.killshot, .watl .allPoints span.killshot {
+    background-color: blue;
+    color: white; }
+
+/* site */
+html, body {
+  height: 100%;
+  width: 100%; }
+
+h1 {
+  font-size: 150%; }
+
+h2 {
+  font-size: 130%; }
+
+h3 {
+  font-size: 110%; }
+
+#react {
+  height: 100%; }
+
+#site {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row; }
+  #site #left {
+    flex-grow: 1;
+    height: 100%;
+    flex-direction: column; }
+    #site #left header {
+      background: #2C689B;
+      flex-grow: 0;
+      flex-shrink: 0;
+      padding: 5px 10px 5px; }
+      #site #left header .subtitle {
+        font-size: 80%; }
+        #site #left header .subtitle a {
+          color: white;
+          text-decoration: none; }
+    #site #left #content {
+      height: calc(100vh - 71px);
+      flex-grow: 1;
+      flex-shrink: 1;
+      overflow: auto; }
+      #site #left #content .overlay {
+        background-color: rgba(0, 0, 0, 0.33);
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        z-index: 40; }
+        #site #left #content .overlay div {
+          height: 100%;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center; }
+          #site #left #content .overlay div span {
+            background-color: white;
+            border: 2px solid black;
+            border-radius: 20px;
+            color: black;
+            margin: -30px auto 0;
+            padding: 10px 20px;
+            text-align: center; }
+          #site #left #content .overlay div span.winner {
+            color: green;
+            font-weight: bold;
+            font-size: 150%; }
+          #site #left #content .overlay div span.loser {
+            color: red;
+            font-weight: bold; }
+  #site #menu {
+    flex-grow: 0; }
+    #site #menu .menu_toggle {
+      background-color: white;
+      border: 1px solid #E8B15A;
+      border-right: 0;
+      border-radius: 5px 0 0 5px;
+      color: #E8B15A;
+      display: none;
+      padding: 10px;
+      position: absolute;
+      right: 0;
+      top: 10px;
+      width: 35px; }
+    #site #menu .menu_content {
+      background-color: #2C689B;
+      border-left: 2px solid black;
+      float: right;
+      height: 100%;
+      padding: 10px;
+      width: 200px; }
+      #site #menu .menu_content .link {
+        color: #E8B15A;
+        margin: 0 10px 20px 0; }
+      #site #menu .menu_content ul {
+        list-style-type: none; }
+        #site #menu .menu_content ul li {
+          margin-top: 5px; }
+          #site #menu .menu_content ul li span {
+            color: white;
+            font-weight: bold; }
+      #site #menu .menu_content ul.one li {
+        margin-bottom: 20px; }
+      #site #menu .menu_content ul.two, #site #menu .menu_content ul.three {
+        padding-left: 10px; }
+        #site #menu .menu_content ul.two li, #site #menu .menu_content ul.three li {
+          margin-bottom: 0; }
+      #site #menu .menu_content a {
+        text-decoration: none;
+        color: #E8B15A;
+        /*color: #454298;*/ }
+
+@media screen and (max-width: 630px) {
+  #site #menu .menu_toggle {
+    display: inline-block; }
+  #site #menu .menu_toggle.open {
+    right: 200px; }
+  #site #menu .menu_content {
+    display: none; }
+  #site #menu .menu_content.open {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0; } }
+
+#signin {
+  background-color: #7CC3FF;
+  border: 2px solid #2C689B;
+  padding: 10px;
+  position: absolute;
+  right: 4px;
+  top: 30px;
+  width: 250px;
+  z-index: 1; }
+
+#signup {
+  background-color: #7CC3FF;
+  border: 2px solid #2C689B;
+  padding: 10px;
+  position: absolute;
+  right: 32px;
+  top: 30px;
+  width: 250px;
+  z-index: 1; }
+
+#home {
+  margin: 10px auto;
+  width: 80%; }
+
+/* generic components */
 #messages {
   position: fixed;
   top: 0;
@@ -650,636 +1292,3 @@ button.large:active {
   #popups div.warning {
     border-color: #E8E24C;
     color: #E8E24C; }
-
-/* natf */
-#games .natf {
-  margin: 0 auto;
-  width: 304px; }
-  #games .natf .points {
-    border: 2px solid black;
-    margin: 5px 0; }
-    #games .natf .points .last {
-      cursor: pointer; }
-    #games .natf .points .overwrite {
-      background-color: red;
-      color: white; }
-
-#practice .natf {
-  margin: 0 auto;
-  width: 304px; }
-  #practice .natf div.aright {
-    margin-top: 5px; }
-    #practice .natf div.aright i {
-      color: #2C689B; }
-  #practice .natf dl.select dt i {
-    margin-left: 10px; }
-  #practice .natf div.bigaxe {
-    background-color: blue;
-    border: 1px solid blue;
-    color: white;
-    display: inline-block;
-    margin-top: 5px;
-    padding: 6px 0 4px;
-    position: relative;
-    text-align: center;
-    top: -30px;
-    width: 50px;
-    vertical-align: top; }
-  #practice .natf div.bigaxe.on {
-    background-color: white;
-    color: blue; }
-  #practice .natf div.pattern div.throw {
-    border: 1px solid #2C689B;
-    padding: 5px;
-    margin-bottom: 5px; }
-    #practice .natf div.pattern div.throw span {
-      display: inline-block;
-      width: 80px; }
-    #practice .natf div.pattern div.throw input[type=radio] {
-      vertical-align: bottom;
-      height: 16px; }
-  #practice .natf .points {
-    border: 2px solid black;
-    margin: 5px 0; }
-    #practice .natf .points .last {
-      cursor: pointer; }
-    #practice .natf .points .overwrite {
-      background-color: red;
-      color: white; }
-  #practice .natf .allPoints {
-    width: 300px; }
-  #practice .natf .averages {
-    margin: 10px 0 0 0; }
-  #practice .natf .reset, #practice .natf .save {
-    cursor: pointer; }
-
-#stats .natf {
-  margin: 0 auto;
-  overflow: auto;
-  padding: 5px 0;
-  width: 95%; }
-  #stats .natf .throws {
-    margin: 10px auto;
-    text-align: center; }
-    #stats .natf .throws div {
-      display: inline-block;
-      font-size: 120%;
-      width: 50%; }
-  #stats .natf .title {
-    font-size: 120%; }
-  #stats .natf .bigaxe {
-    margin: 10px auto;
-    text-align: center; }
-    #stats .natf .bigaxe div {
-      display: inline-block;
-      font-size: 120%;
-      width: 33%; }
-  #stats .natf .practice {
-    overflow: auto; }
-    #stats .natf .practice .allPoints {
-      width: 300px; }
-  #stats .natf .match .mwl {
-    margin: 10px auto 0;
-    text-align: center; }
-    #stats .natf .match .mwl div {
-      display: inline-block;
-      font-size: 150%;
-      width: 30%; }
-    #stats .natf .match .mwl div.win {
-      color: green; }
-    #stats .natf .match .mwl div.loss {
-      color: red; }
-  #stats .natf .match .esnu {
-    margin: 10px auto;
-    text-align: center; }
-    #stats .natf .match .esnu div {
-      display: inline-block;
-      font-size: 120%;
-      text-align: left;
-      width: 23%; }
-
-#match .natf {
-  margin: 0 auto;
-  padding: 5px 0;
-  width: 95%; }
-  #match .natf .existing {
-    border: 1px solid #2C689B;
-    margin: 5px 10px;
-    padding: 10px; }
-    #match .natf .existing button {
-      margin: 0 5px; }
-  #match .natf .actual .stats {
-    margin: 10px 0; }
-    #match .natf .actual .stats .overall {
-      display: inline-block;
-      padding: 5px;
-      vertical-align: top;
-      width: 50%; }
-    #match .natf .actual .stats .game, #match .natf .actual .stats .bigaxe {
-      display: inline-block;
-      padding: 5px;
-      text-align: center;
-      vertical-align: top;
-      width: 50%; }
-    #match .natf .actual .stats table {
-      margin-bottom: 10px; }
-      #match .natf .actual .stats table th, #match .natf .actual .stats table td {
-        text-align: center; }
-      #match .natf .actual .stats table th:first-child, #match .natf .actual .stats table td:first-child {
-        border-right: 1px solid black;
-        width: 20%; }
-      #match .natf .actual .stats table td.clutch {
-        background-color: green;
-        color: white; }
-      #match .natf .actual .stats table td.overwrite {
-        background-color: red;
-        color: white; }
-
-.natf .board {
-  background-color: white;
-  height: 350px;
-  margin: 0 auto;
-  width: 300px; }
-  .natf .board .clutch {
-    background-color: green;
-    border: 5px solid green;
-    border-radius: 50%;
-    display: inline-block;
-    height: 40px;
-    overflow: hidden;
-    position: relative;
-    width: 40px; }
-    .natf .board .clutch .atw {
-      background-color: #7F7F7F;
-      height: 100%;
-      position: absolute;
-      width: 100%; }
-  .natf .board .clutch.left {
-    margin: 5px 55px 0px 20px; }
-  .natf .board .clutch.right {
-    margin: 5px 20px 0px 55px; }
-  .natf .board .clutch.selected {
-    border: 5px solid black; }
-  .natf .board .clutch.invalid {
-    border: 5px solid red; }
-  .natf .board .drop {
-    background-color: grey;
-    border: 1px solid grey;
-    color: white;
-    display: inline-block;
-    margin-top: 5px;
-    padding: 6px 0 4px 0;
-    position: relative;
-    text-align: center;
-    width: 70px;
-    vertical-align: top; }
-  .natf .board .drop.active {
-    background-color: white;
-    border: 1px solid black;
-    color: grey; }
-  .natf .board .one {
-    background-color: white;
-    border: 5px solid blue;
-    border-radius: 50%;
-    height: 300px;
-    overflow: hidden;
-    position: relative;
-    width: 300px; }
-    .natf .board .one .atw {
-      background-color: #7F7F7F;
-      height: 100%;
-      position: absolute;
-      width: 33%; }
-    .natf .board .one .left {
-      left: 0; }
-    .natf .board .one .right {
-      right: 0; }
-  .natf .board .one.active {
-    background-color: blue; }
-  .natf .board .three {
-    background-color: white;
-    border: 5px solid red;
-    border-radius: 50%;
-    height: 68%;
-    left: 16%;
-    overflow: hidden;
-    position: relative;
-    top: 16%;
-    width: 68%; }
-    .natf .board .three .atw {
-      background-color: #7F7F7F;
-      height: 100%;
-      position: absolute;
-      width: 50%; }
-    .natf .board .three .left {
-      left: 0; }
-    .natf .board .three .right {
-      right: 0; }
-  .natf .board .three.active {
-    background-color: red; }
-  .natf .board .five {
-    background-color: white;
-    border: 5px solid black;
-    border-radius: 50%;
-    height: 46%;
-    left: 27%;
-    overflow: hidden;
-    position: relative;
-    top: 27%;
-    width: 46%; }
-    .natf .board .five .atw {
-      background-color: #7F7F7F;
-      height: 100%;
-      position: absolute;
-      width: 100%; }
-  .natf .board .five.active {
-    background-color: black; }
-
-.natf .board.active {
-  background-color: grey; }
-
-.natf .points span, .natf .allPoints span {
-  display: inline-block;
-  padding: 3px 0;
-  text-align: center;
-  width: 30px; }
-
-.natf .points span.clutch, .natf .allPoints span.clutch {
-  background-color: green;
-  color: white; }
-
-.natf .points span.bigaxe, .natf .allPoints span.bigaxe {
-  background-color: blue;
-  color: white; }
-
-.natf .points span.bigaxe.clutch, .natf .allPoints span.bigaxe.clutch {
-  background-color: #00cccc; }
-
-/* watl */
-#match .watl {
-  margin: 0 auto;
-  padding: 5px 0;
-  width: 95%; }
-  #match .watl .existing {
-    border: 1px solid #2C689B;
-    margin: 5px 10px;
-    padding: 10px; }
-    #match .watl .existing button {
-      margin: 0 5px; }
-  #match .watl .actual .stats {
-    margin: 10px auto;
-    text-align: center;
-    width: 300px; }
-    #match .watl .actual .stats div.thrower {
-      margin-bottom: 15px;
-      text-align: left; }
-      #match .watl .actual .stats div.thrower div.overall {
-        display: inline-block;
-        width: 48px;
-        vertical-align: top; }
-        #match .watl .actual .stats div.thrower div.overall div {
-          border: 2px solid black;
-          box-sizing: border-box;
-          height: 25px;
-          padding: 3px 0;
-          text-align: center;
-          width: 28px; }
-      #match .watl .actual .stats div.thrower div.throws {
-        display: inline-block;
-        width: 252px;
-        vertical-align: top; }
-        #match .watl .actual .stats div.thrower div.throws div {
-          border: 1px solid black;
-          box-sizing: border-box;
-          height: 25px;
-          text-align: center; }
-          #match .watl .actual .stats div.thrower div.throws div span {
-            border-left: 1px solid black;
-            box-sizing: border-box;
-            display: inline-block;
-            height: 24px;
-            padding: 4px 0;
-            vertical-align: top;
-            width: 25px; }
-          #match .watl .actual .stats div.thrower div.throws div span:first-child {
-            border: 0; }
-          #match .watl .actual .stats div.thrower div.throws div span.killshot {
-            background-color: blue;
-            color: white; }
-          #match .watl .actual .stats div.thrower div.throws div span.overwrite {
-            background-color: red;
-            color: white; }
-      #match .watl .actual .stats div.thrower div.overtime {
-        display: inline-block;
-        width: 252px;
-        vertical-align: top; }
-        #match .watl .actual .stats div.thrower div.overtime div {
-          box-sizing: border-box;
-          height: 25px; }
-          #match .watl .actual .stats div.thrower div.overtime div span {
-            border: 1px solid black;
-            border-left: 0;
-            box-sizing: border-box;
-            display: inline-block;
-            height: 24px;
-            padding: 4px 0;
-            text-align: center;
-            width: 25px;
-            vertical-align: top; }
-          #match .watl .actual .stats div.thrower div.overtime div span:first-child {
-            border-left: 1px solid black; }
-          #match .watl .actual .stats div.thrower div.overtime div span.overwrite {
-            background-color: red;
-            color: white; }
-
-#practice .watl {
-  margin: 0 auto;
-  width: 304px; }
-  #practice .watl div.aright {
-    margin-top: 5px; }
-    #practice .watl div.aright i {
-      color: #2C689B; }
-  #practice .watl dl.select dt i {
-    margin-left: 10px; }
-  #practice .watl div.pattern div.throw {
-    border: 1px solid #2C689B;
-    padding: 5px;
-    margin-bottom: 5px; }
-    #practice .watl div.pattern div.throw span {
-      display: inline-block;
-      width: 80px; }
-    #practice .watl div.pattern div.throw input[type=radio] {
-      vertical-align: bottom;
-      height: 16px; }
-  #practice .watl .points {
-    border: 2px solid black;
-    margin: 5px 0; }
-    #practice .watl .points .last {
-      cursor: pointer; }
-    #practice .watl .points .overwrite {
-      background-color: red;
-      color: white; }
-  #practice .watl .allPoints {
-    width: 300px; }
-  #practice .watl .averages {
-    margin: 10px 0 0 0; }
-  #practice .watl .reset, #practice .watl .save {
-    cursor: pointer; }
-
-#stats .watl {
-  margin: 0 auto;
-  overflow: auto;
-  padding: 5px 0;
-  width: 95%; }
-  #stats .watl .throws {
-    margin: 10px auto;
-    text-align: center; }
-    #stats .watl .throws div {
-      display: inline-block;
-      font-size: 120%;
-      width: 33%; }
-  #stats .watl .practice {
-    overflow: auto; }
-    #stats .watl .practice .allPoints {
-      width: 300px; }
-  #stats .watl .match .smwl {
-    margin: 10px auto 0;
-    text-align: center; }
-    #stats .watl .match .smwl div {
-      display: inline-block;
-      font-size: 120%;
-      width: 23%; }
-    #stats .watl .match .smwl div.win {
-      color: green; }
-    #stats .watl .match .smwl div.loss {
-      color: red; }
-
-.watl .board {
-  background-color: white;
-  height: 350px;
-  margin: 0 auto;
-  width: 300px; }
-  .watl .board .killshot {
-    background-color: blue;
-    border: 5px solid blue;
-    border-radius: 50%;
-    display: inline-block;
-    height: 30px;
-    position: absolute;
-    top: 38px;
-    width: 30px; }
-  .watl .board .killshot.left {
-    left: 38px; }
-  .watl .board .killshot.right {
-    right: 38px; }
-  .watl .board .killshot.selected {
-    border: 5px solid black; }
-  .watl .board .killshot.invalid {
-    border: 5px solid red; }
-  .watl .board .drop {
-    background-color: grey;
-    border: 1px solid grey;
-    color: white;
-    display: inline-block;
-    margin: 5px 115px 10px 115px;
-    padding: 6px 0 4px 0;
-    position: relative;
-    text-align: center;
-    width: 70px;
-    vertical-align: top; }
-  .watl .board .drop.active {
-    background-color: white;
-    border: 1px solid black;
-    color: grey; }
-  .watl .board .one {
-    background-color: white;
-    border: 5px solid black;
-    border-radius: 50%;
-    height: 300px;
-    position: relative;
-    width: 300px; }
-  .watl .board .one.active {
-    background-color: black; }
-  .watl .board .two {
-    background-color: white;
-    border: 5px solid black;
-    border-radius: 50%;
-    height: 80%;
-    left: 10%;
-    position: relative;
-    top: 10%;
-    width: 80%; }
-  .watl .board .two.active {
-    background-color: black; }
-  .watl .board .three {
-    background-color: white;
-    border: 5px solid black;
-    border-radius: 50%;
-    height: 74%;
-    left: 13%;
-    position: relative;
-    top: 13%;
-    width: 74%; }
-  .watl .board .three.active {
-    background-color: black; }
-  .watl .board .four {
-    background-color: white;
-    border: 5px solid black;
-    border-radius: 50%;
-    height: 62%;
-    left: 19%;
-    position: relative;
-    top: 19%;
-    width: 62%; }
-  .watl .board .four.active {
-    background-color: black; }
-  .watl .board .six {
-    background-color: red;
-    border: 5px solid red;
-    border-radius: 50%;
-    height: 40%;
-    left: 30%;
-    position: relative;
-    top: 30%;
-    width: 40%; }
-  .watl .board .six.active {
-    background-color: white; }
-
-.watl .board.active {
-  background-color: grey; }
-
-.watl .points span, .watl .allPoints span {
-  display: inline-block;
-  padding: 3px 0;
-  text-align: center;
-  width: 30px; }
-
-.watl .points span.killshot, .watl .allPoints span.killshot {
-  background-color: blue;
-  color: white; }
-
-/* site */
-html, body {
-  height: 100%;
-  width: 100%; }
-
-h1 {
-  font-size: 150%; }
-
-h2 {
-  font-size: 130%; }
-
-h3 {
-  font-size: 110%; }
-
-header {
-  background: #2C689B;
-  color: #E8B15A;
-  padding: 8px; }
-  header .subtitle {
-    font-size: 80%; }
-    header .subtitle a {
-      color: white;
-      text-decoration: none; }
-  header .actions i {
-    margin-left: 10px;
-    margin-bottom: 10px; }
-  header .actions select {
-    margin-right: 5px;
-    vertical-align: top; }
-
-#signin {
-  background-color: #7CC3FF;
-  border: 2px solid #2C689B;
-  padding: 10px;
-  position: absolute;
-  right: 4px;
-  top: 30px;
-  width: 250px;
-  z-index: 1; }
-
-#signup {
-  background-color: #7CC3FF;
-  border: 2px solid #2C689B;
-  padding: 10px;
-  position: absolute;
-  right: 32px;
-  top: 30px;
-  width: 250px;
-  z-index: 1; }
-
-.menu {
-  margin: 0;
-  text-align: center;
-  width: 100%; }
-  .menu span {
-    cursor: pointer;
-    display: inline-block;
-    border-radius: 10px;
-    margin: 3px 5px;
-    padding: 3px 7px; }
-  .menu span:hover {
-    padding: 5px; }
-  .menu span.active {
-    font-weight: 600;
-    padding: 5px; }
-
-.menu.primary {
-  background-color: #7CC3FF;
-  color: #172A3B; }
-  .menu.primary span:hover {
-    border-left: 2px solid #E8B15A;
-    border-right: 2px solid #E8B15A; }
-  .menu.primary span.active {
-    border-left: 2px solid #9B6A1D;
-    border-right: 2px solid #9B6A1D; }
-
-.menu.secondary {
-  background-color: #2C689B;
-  color: #E8B15A; }
-  .menu.secondary span:hover {
-    border-left: 2px solid #9B6A1D;
-    border-right: 2px solid #9B6A1D; }
-  .menu.secondary span.active {
-    border-left: 2px solid #E8B15A;
-    border-right: 2px solid #E8B15A; }
-
-#content {
-  position: relative;
-  width: 100%; }
-  #content > div {
-    margin: 0 auto; }
-  #content .overlay {
-    background-color: rgba(0, 0, 0, 0.33);
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin: 0;
-    height: 100%;
-    width: 100%;
-    z-index: 40; }
-    #content .overlay div {
-      height: 100%;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center; }
-      #content .overlay div span {
-        background-color: white;
-        border: 2px solid black;
-        border-radius: 20px;
-        color: black;
-        margin: -30px auto 0;
-        padding: 10px 20px;
-        text-align: center; }
-      #content .overlay div span.winner {
-        color: green;
-        font-weight: bold;
-        font-size: 150%; }
-      #content .overlay div span.loser {
-        color: red;
-        font-weight: bold; }
-
-#home {
-  margin: 10px auto;
-  width: 80%; }

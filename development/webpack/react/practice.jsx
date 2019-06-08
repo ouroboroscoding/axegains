@@ -60,15 +60,13 @@ class Practice extends React.Component {
 	render() {
 		return (
 			<div id="practice">
-				<div id="content">
-					<div>
-						{this.state.org == 'natf' &&
-							<Natf thrower={this.props.thrower} />
-						}
-						{this.state.org == 'watl' &&
-							<Watl thrower={this.props.thrower} />
-						}
-					</div>
+				<div>
+					{this.state.org == 'natf' &&
+						<Natf thrower={this.props.thrower} />
+					}
+					{this.state.org == 'watl' &&
+						<Watl thrower={this.props.thrower} />
+					}
 				</div>
 			</div>
 		);

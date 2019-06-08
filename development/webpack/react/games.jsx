@@ -55,15 +55,13 @@ class Games extends React.Component {
 	render() {
 		return (
 			<div id="games">
-				<div id="content">
-					<div>
-						{this.state.org == 'natf' &&
-							<Natf thrower={this.props.thrower} />
-						}
-						{this.state.org == 'watl' &&
-							<p>WATL Games not available yet</p>
-						}
-					</div>
+				<div>
+					{this.state.org == 'natf' &&
+						<Natf thrower={this.props.thrower} />
+					}
+					{this.state.org == 'watl' &&
+						<p>WATL Games not available yet</p>
+					}
 				</div>
 			</div>
 		);
