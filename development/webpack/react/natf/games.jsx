@@ -12,9 +12,6 @@
 var Events = require('../../generic/events.js');
 var Hash = require('../../generic/hash.js');
 
-// Generic components
-var {Menu, Item} = require('../generic/menu.jsx');
-
 // Games components
 var ATW = require('./gamesATW.jsx');
 
@@ -32,35 +29,25 @@ class Games extends React.Component {
 		};
 
 		// Bind methods
-		this.whichChange = this.whichChange.bind(this);
+		this.whichHash = this.whichHash.bind(this);
 	}
 
 	componentWillMount() {
 
 		// Track any which hash change events
-		Hash.watch('which', this.whichChange);
+		Hash.watch('which', this.whichHash);
 	}
 
 	componentWillUnmount() {
 
 		// Stop tracking any which hash change events
-		Hash.unwatch('which', this.whichChange);
-
-		// Remove the which from the hash
-		Hash.set('which', null);
-	}
-
-	whichChange(which) {
-		Hash.set('which', which);
+		Hash.unwatch('which', this.whichHash);
 	}
 
 	render() {
 		var self = this;
 		return (
 			<React.Fragment>
-				<Menu className="menu secondary" selected={self.state.which} onChange={self.whichChange}>
-					<Item name="atw">Around The World</Item>
-				</Menu>
 				<div id="content">
 					<div className="natf">
 						{self.state.which == 'atw' &&
@@ -72,7 +59,7 @@ class Games extends React.Component {
 		);
 	}
 
-	whichChange(which) {
+	whichHash(which) {
 		if(which != this.state.which) {
 			if(which == null) {
 				which = 'atw';

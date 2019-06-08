@@ -36,7 +36,6 @@ class Thrower extends React.Component {
 		this.alias = this.alias.bind(this);
 		this.email = this.email.bind(this);
 		this.password = this.password.bind(this);
-		this.org = this.org.bind(this);
 	}
 
 	alias() {
@@ -148,52 +147,6 @@ class Thrower extends React.Component {
 
 	}
 
-	org() {
-
-		// Save the org
-		var org = this.refs.org.value;
-
-		// Show the loader
-		Loader.show();
-
-		// Update the org
-		Services.update('auth', 'thrower/org', {
-			"org": org
-		}).done(res => {
-
-			// If there's an error
-			if(res.error && !Utils.serviceError(res.error)) {
-				var error = ' ';
-				switch(res.error.code) {
-					case 1001:
-						Forms.errorAdd(this.refs.org);
-						break;
-					default:
-						Events.trigger('error', JSON.stringify(res.error));
-						break;
-				}
-			}
-
-			// If there's a warning
-			if(res.warning) {
-				Events.trigger('warning', JSON.stringify(res.warning));
-			}
-
-			// If we got success
-			if(res.data) {
-
-				// Let everyone know the org changed
-				this.state.thrower.org = org;
-				this.setState({"thrower": this.state.thrower});
-				Events.trigger('signin', this.state.thrower);
-			}
-
-		}).always(() => {
-			// Hide the loader
-			Loader.hide();
-		});
-	}
-
 	password() {
 
 		// If the passwords don't match
@@ -268,15 +221,6 @@ class Thrower extends React.Component {
 					<p><input ref="new_passwd" type="password" title="New password" placeholder="Enter your new password" onFocus={Forms.errorFocus} autocomplete="new-password" /></p>
 					<p><input ref="repeat_passwd" type="password" title="Repeat new password" placeholder="Repeat your new password" onFocus={Forms.errorFocus} autocomplete="repeat-password" /></p>
 					<p className="aright"><button onClick={this.password}>Change Password</button></p>
-				</div>
-				<div className="form">
-					<h3>Change preferred organisation</h3>
-					<p>
-						<select ref="org" value={this.state.thrower.org} onChange={this.org}>
-							<option value="natf">NATF</option>
-							<option value="watl">WATL</option>
-						</select>
-					</p>
 				</div>
 			</React.Fragment>
 		)

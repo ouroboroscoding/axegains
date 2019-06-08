@@ -1,7 +1,6 @@
 #games {
 
 	.natf {
-		margin: 0 auto;
 		width: 304px;
 
 		.points {
@@ -23,7 +22,6 @@
 #practice {
 
 	.natf {
-		margin: 0 auto;
 		width: 304px;
 
 		div.aright {
@@ -111,10 +109,7 @@
 #stats {
 
 	.natf {
-		margin: 0 auto;
-		overflow: auto;
-		padding: 5px 0;
-		width: 95%;
+		padding: 10px;
 
 		.throws {
 			margin: 10px auto;
@@ -189,9 +184,7 @@
 #match {
 
 	.natf {
-		margin: 0 auto;
-		padding: 5px 0;
-		width: 95%;
+		width: 304px;
 
 		.existing {
 			border: 1px solid $color-1;
@@ -251,6 +244,7 @@
 }
 
 .natf {
+	margin: 0 auto;
 
 	.board {
 		background-color: white;

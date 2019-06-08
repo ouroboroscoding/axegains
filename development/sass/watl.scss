@@ -1,7 +1,6 @@
 #match {
 
 	.watl {
-		margin: 0 auto;
 		padding: 5px 0;
 		width: 95%;
 
@@ -118,7 +117,6 @@
 #practice {
 
 	.watl {
-		margin: 0 auto;
 		width: 304px;
 
 		div.aright {
@@ -187,8 +185,6 @@
 #stats {
 
 	.watl {
-		margin: 0 auto;
-		overflow: auto;
 		padding: 5px 0;
 		width: 95%;
 
@@ -236,6 +232,7 @@
 }
 
 .watl {
+	margin: 0 auto;
 
 	.board {
 		background-color: white;
