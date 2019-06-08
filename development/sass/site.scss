@@ -16,29 +16,176 @@ h3 {
 	font-size: 110%;
 }
 
-header {
-	background: $color-1;
-	color: $color-5;
-	padding: 8px;
+#react {
+	height: 100%;
+}
 
-	.subtitle {
-		font-size: 80%;
+#site {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
 
-		a {
-			color: white;
-			text-decoration: none;
+	#left {
+		flex-grow: 1;
+		height: 100%;
+		flex-direction: column;
+
+		header {
+			background: $color-1;
+			flex-grow: 0;
+			flex-shrink: 0;
+			padding: 5px 10px 5px;
+
+			.subtitle {
+				font-size: 80%;
+
+				a {
+					color: white;
+					text-decoration: none;
+				}
+			}
+		}
+
+		#content {
+			height: calc(100vh - 71px);
+			flex-grow: 1;
+			flex-shrink: 1;
+			overflow: auto;
+
+			.overlay {
+				background-color: rgba(0, 0, 0, 0.33);
+				position: absolute;
+				top: 0;
+				left: 0;
+				margin: 0;
+				height: 100%;
+				width: 100%;
+				z-index: $zi_loader;
+
+				div {
+					height: 100%;
+					width: 100%;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+
+					span {
+						background-color: white;
+						border: 2px solid black;
+						border-radius: 20px;
+						color: black;
+						margin: -30px auto 0;
+						padding: 10px 20px;
+						text-align: center;
+					}
+
+					span.winner {
+						color: green;
+						font-weight: bold;
+						font-size: 150%;
+					}
+
+					span.loser {
+						color: red;
+						font-weight: bold;
+					}
+				}
+			}
 		}
 	}
 
-	.actions {
-		i {
-			margin-left: 10px;
-			margin-bottom: 10px;
+	#menu {
+		flex-grow: 0;
+
+		.menu_toggle {
+			background-color: white;
+			border: 1px solid $color-5;
+			border-right: 0;
+			border-radius: 5px 0 0 5px;
+			color: $color-5;
+			display: none;
+			padding: 10px;
+			position: absolute;
+			right: 0;
+			top: 10px;
+			width: 35px;
 		}
 
-		select {
-			margin-right: 5px;
-			vertical-align: top;
+		.menu_content {
+			background-color: $color-1;
+			border-left: 2px solid black;
+			float: right;
+			height: 100%;
+			padding: 10px;
+			width: 200px;
+
+			.link {
+				color: $color-5;
+				margin: 0 10px 20px 0;
+			}
+
+			ul {
+				list-style-type: none;
+
+				li {
+					margin-top: 5px;
+
+					span {
+						color: white;
+						font-weight: bold;
+					}
+				}
+			}
+
+			ul.one {
+
+				li {
+					margin-bottom: 20px;
+				}
+			}
+
+			ul.two, ul.three {
+				padding-left: 10px;
+
+				li {
+					margin-bottom: 0;
+				}
+			}
+
+			a {
+				text-decoration: none;
+				color: $color-5;
+				/*color: #454298;*/
+			}
+		}
+	}
+}
+
+@media screen and (max-width: 630px) {
+
+	#site {
+
+		#menu {
+
+			.menu_toggle {
+				display: inline-block;
+			}
+
+			.menu_toggle.open {
+				right: 200px;
+			}
+
+			.menu_content {
+				display: none;
+			}
+
+			.menu_content.open {
+				display: block;
+				position: absolute;
+				top: 0;
+				right: 0;
+			}
 		}
 	}
 }
@@ -65,107 +212,7 @@ header {
 	z-index: $zi_primary + 1;
 }
 
-.menu {
-	margin: 0;
-	text-align: center;
-	width: 100%;
 
-	span {
-		cursor: pointer;
-		display: inline-block;
-		border-radius: 10px;
-		margin: 3px 5px;
-		padding: 3px 7px;
-	}
-
-	span:hover {
-		padding: 5px;
-	}
-
-	span.active {
-		font-weight: 600;
-		padding: 5px;
-	}
-}
-
-.menu.primary {
-	background-color: $color-2;
-	color: $color-dark-text;
-
-	span:hover {
-		border-left: 2px solid $color-5;
-		border-right: 2px solid $color-5;
-	}
-
-	span.active {
-		border-left: 2px solid $color-4;
-		border-right: 2px solid $color-4;
-	}
-}
-
-.menu.secondary {
-	background-color: $color-1;
-	color: $color-5;
-
-	span:hover {
-		border-left: 2px solid $color-4;
-		border-right: 2px solid $color-4;
-	}
-
-	span.active {
-		border-left: 2px solid $color-5;
-		border-right: 2px solid $color-5;
-	}
-}
-
-#content {
-	position: relative;
-	width: 100%;
-
-	> div {
-		margin: 0 auto;
-	}
-
-	.overlay {
-		background-color: rgba(0, 0, 0, 0.33);
-		position: absolute;
-		top: 0;
-		left: 0;
-		margin: 0;
-		height: 100%;
-		width: 100%;
-		z-index: $zi_loader;
-
-		div {
-			height: 100%;
-			width: 100%;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-
-			span {
-				background-color: white;
-				border: 2px solid black;
-				border-radius: 20px;
-				color: black;
-				margin: -30px auto 0;
-				padding: 10px 20px;
-				text-align: center;
-			}
-
-			span.winner {
-				color: green;
-				font-weight: bold;
-				font-size: 150%;
-			}
-
-			span.loser {
-				color: red;
-				font-weight: bold;
-			}
-		}
-	}
-}
 
 #home {
 	margin: 10px auto;
