@@ -17,6 +17,7 @@
 	"locale":{"__type__": "string","__regex__":"^[a-z]{2}-[A-Z]{2}$"},
 	"name":{"__type__":"string","__maximum__":32},
 	"address": {
+		"__optional__":true,
 		"line1": {"__type__":"string","__maximum__":32},
 		"line2": {"__type__":"string","__maximum__":16,"__optional__":true},
 		"city": {"__type__":"string","__maximum__":32},

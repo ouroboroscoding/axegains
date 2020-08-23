@@ -14,9 +14,10 @@ __created__		= "2018-09-09"
 # Python imports
 import re
 from time import time
+import uuid
 
 # Pip imports
-from RestOC import Conf, DictHelper, Errors, Record_ReDB, Services, \
+from RestOC import Conf, DictHelper, Errors, Services, \
 					Sesh, StrHelper, Templates
 
 # Shared imports
@@ -86,9 +87,9 @@ class Auth(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['opponent', 'org'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Find opponent
 		dOpponent = Thrower.get(data['opponent'], raw=['alias'])
@@ -135,9 +136,9 @@ class Auth(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Find the request
 		oRequest = MatchRequest.get(data['id'])
@@ -186,9 +187,9 @@ class Auth(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Find the request
 		dRequest = MatchRequest.get(data['id'], raw=True)
@@ -224,9 +225,9 @@ class Auth(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Find the request
 		oRequest = MatchRequest.get(data['id'])
@@ -320,9 +321,9 @@ class Auth(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['alias'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# If the alias is invalid
 		if not Thrower.struct()['tree']['alias'].valid(data['alias']):
@@ -357,9 +358,9 @@ class Auth(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['_internal_', 'ids'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Verify the key, remove it if it's ok
 		if not Services.internalKey(data['_internal_']):
@@ -392,9 +393,9 @@ class Auth(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['email', 'email_passwd'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Find the thrower
 		oThrower = Thrower.get(sesh['thrower']['_id'])
@@ -426,7 +427,7 @@ class Auth(Services.Service):
 
 		# Send en e-mail for verification
 		dConf = Conf.get("domain")
-		sURL = "%s://external.%s/verify/%s/%s" % (
+		sURL = "%s://external.%s/thrower/verify/%s/%s" % (
 			dConf['protocol'],
 			dConf['primary'],
 			oThrower['_id'],
@@ -457,9 +458,9 @@ class Auth(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# If someone tries to add themselves
 		if data['id'] == sesh['thrower']['_id']:
@@ -488,9 +489,9 @@ class Auth(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Remove the thrower from the logged in thrower's favourites and return
 		#	the result
@@ -537,9 +538,9 @@ class Auth(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['org'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Find the thrower
 		oThrower = Thrower.get(sesh['thrower']['_id'])
@@ -575,9 +576,9 @@ class Auth(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['passwd', 'new_passwd'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Find the thrower
 		oThrower = Thrower.get(sesh['thrower']['_id'])
@@ -612,23 +613,23 @@ class Auth(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['email'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
-		# Look for the thrower by email
+		# Look for the record by email
 		oThrower = Thrower.get(data['email'], index='email', limit=1)
 		if not oThrower:
 			return Services.Response(True)
 
-		# Is there already a key in the thrower?
+		# Is there already a key in the record?
 		if 'forgot' in oThrower and 'regenerate' not in data:
 
 			# Is it not expired?
 			if oThrower['forgot']['expires'] > int(time()):
 				return Services.Response(True)
 
-		# Update the thrower with a timestamp (for expiry) and the key
+		# Update the record with a timestamp (for expiry) and the key
 		sKey = StrHelper.random(32, '_0x')
 		oThrower['forgot'] = {
 			"expires": int(time()) + 300,
@@ -675,11 +676,11 @@ class Auth(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['passwd', 'key'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
-		# Look for the thrower by the key
+		# Look for the record by the key
 		oThrower = Thrower.get(filter={"forgot": {"key": data['key']}}, limit=1)
 		if not oThrower:
 			return Services.Response(error=1203) # Don't let people know if the key exists or not
@@ -716,9 +717,9 @@ class Auth(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['q'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Run a search and return the results
 		return Services.Response(
@@ -755,9 +756,9 @@ class Auth(Services.Service):
 			Result
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['alias', 'passwd'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Look for the thrower by alias
 		oThrower = Thrower.get(data['alias'], index='alias', limit=1)
@@ -768,13 +769,9 @@ class Auth(Services.Service):
 		if not oThrower.passwordValidate(data['passwd']):
 			return Services.Response(error=1201)
 
-		# Create a new session
-		oSesh = Sesh.create()
-
-		# Store the thrower ID and information in it
-		oSesh['thrower'] = oThrower.record()
-
-		# Save the session
+		# Create a new session, store the thrower, and save
+		oSesh = Sesh.create('thrower:%s' % uuid.uuid4().hex)
+		oSesh['venue'] = oVenue.record()
 		oSesh.save()
 
 		# Return the session ID and primary thrower data
@@ -818,9 +815,9 @@ class Auth(Services.Service):
 			Result
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['alias', 'passwd'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Make sure the email is valid structurally
 		if 'email' in data and not _emailRegex.match(data['email']):
@@ -935,23 +932,23 @@ class Auth(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['_internal_', 'id', 'verify'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Verify the key, remove it if it's ok
 		if not Services.internalKey(data['_internal_']):
 			return Services.Response(error=Errors.SERVICE_INTERNAL_KEY)
 		del data['_internal_']
 
-		# Find the thrower
+		# Find the record
 		oThrower = Thrower.get(data['id'])
 
 		# If it doesn't exist
 		if not oThrower:
 			return Services.Response(error=(1104, data['id']))
 
-		# If the thrower is already verified
+		# If the record is already verified
 		if oThrower['verified'] == True:
 			return Services.Response(True)
 
@@ -959,9 +956,531 @@ class Auth(Services.Service):
 		if data['verify'] != oThrower['verified']:
 			return Services.Response(error=1205)
 
-		# Update the thrower
+		# Update the record
 		oThrower['verified'] = True
 		oThrower.save(changes=False)
+
+		# Return OK
+		return Services.Response(True)
+
+	def venue_read(self, data, sesh):
+		"""Venue Read
+
+		Fetches an existing venue and returns it
+
+		Arguments:
+			data (dict): Data sent with the request
+			sesh (Sesh._Session): The session associated with the request
+
+		Returns:
+			Services.Response
+		"""
+
+		# Verify data
+		try: DictHelper.eval(data, ['_id'])
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
+
+		# Fetch the raw venue by ID and return it
+		return Services.Response(
+			Venue.get(data['_id'], raw=['email', 'name', 'locale', 'address'])
+		)
+
+	def venue_update(self, data, sesh):
+		"""Venue Update
+
+		Updates an existing venue
+
+		Arguments:
+			data (dict): Data sent with the request
+			sesh (Sesh._Session): The session associated with the request
+
+		Returns:
+			Services.Response
+		"""
+
+		# Verify data
+		try: DictHelper.eval(data, ['_id'])
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
+
+		# If the logged in user isn't an admin, or isn't the owner of the venue
+		#	being updated
+		if 'admin' not in sesh or \
+			'venue' not in sesh or \
+			data['_id'] != sesh['venue']['_id']:
+			return Services.Response(error=1000)
+
+		# Find the venue
+		oVenue = Venue.get(data['_id'])
+		if not oVenue:
+			return Services.Response(error=1104)
+
+		# Remove fields that can't be updated
+		for k in ['_id', '_created', 'email', 'passwd' 'verified', 'forgot']:
+			if k in data: del data[k]
+
+		# Step through each field passed and update/validate it
+		lErrors = []
+		for f in data:
+			try: oCustomeroVenue[f] = data[f]
+			except ValueError as e: lErrors.append(e.args[0])
+
+		# If there was any errors
+		if lErrors:
+			return Services.Response(error=(1001, lErrors))
+
+		# Update the record and return the result
+		return Services.Response(
+			oVenue.save()
+		)
+
+	def venueEmail_update(self, data, sesh):
+		"""Venue Email Update
+
+		Updates the email associated with a venue, marks them as unverified,
+		and re-sends the verification email
+
+		Arguments:
+			data (dict): Data sent with the request
+			sesh (Sesh._Session): The session associated with the request
+
+		Returns:
+			Services.Response
+		"""
+
+		# Verify data
+		try: DictHelper.eval(data, ['_id', 'email'])
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
+
+		# If the logged in user isn't an admin, or isn't the owner of the venue
+		#	being updated
+		if 'admin' not in sesh or \
+			'venue' not in sesh or \
+			data['_id'] != sesh['venue']['_id']:
+			return Services.Response(error=1000)
+
+		# If it's a venue
+		if 'venue' in sesh:
+			if 'email_passwd' not in data:
+				return Services.Response(error=(1001, [('email_passwd', 'missing')]))
+
+		# Find the venue
+		oVenue = Venue.get(data['_id'])
+		if not oVenue:
+			return Services.Response(error=1104)
+
+		# Validate the password
+		if not oVenue.passwordValidate(data['email_passwd']):
+			return Services.Response(error=(1001, [('email_passwd', 'invalid')]))
+
+		# Make sure the email is valid structurally
+		if not _emailRegex.match(data['email']):
+			return Services.Response(error=(1001, [('email', 'invalid')]))
+
+		# Look for someone else with that email
+		dVenue = Venue.get(data['email'], index='email', raw=['_id'])
+		if dVenue:
+			return Services.Response(error=(1406, data['email']))
+
+		# Update the email and verified fields
+		try:
+			oVenue['email'] = data['email']
+			oVenue['verified'] = StrHelper.random(32, '_0x')
+		except ValueError as e:
+			return Services.Response(error=(1001, e.args[0]))
+
+		# Update the venue
+		oVenue.save(changes={"creator":sesh['venue']['_id']})
+
+		# Send en e-mail for verification
+		dConf = Conf.get("domain")
+		sURL = "%s://external.%s/venue/verify/%s/%s" % (
+			dConf['protocol'],
+			dConf['primary'],
+			oVenue['_id'],
+			oVenue['verified']
+		)
+		oResponse = Services.create('communications', 'email', {
+			"_internal_": Services.internalKey(),
+			"html_body": Templates.generate('email/verify.html', {"url":sURL}, oVenue['locale']),
+			"subject": Templates.generate('email/verify_subject.txt', {}, oVenue['locale']),
+			"to": data['email'],
+		})
+		if oResponse.errorExists():
+			return oResponse
+
+		# Return OK
+		return Services.Response(True)
+
+	def venuePasswd_update(self, data, sesh):
+		"""Venue Password Update
+
+		Updates the password associated with a venue
+
+		Arguments:
+			data (dict): Data sent with the request
+			sesh (Sesh._Session): The session associated with the request
+
+		Returns:
+			Services.Response
+		"""
+
+		# Verify data
+		try: DictHelper.eval(data, ['_id', 'new_passwd'])
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
+
+		# If the logged in user isn't an admin, or isn't the owner of the venue
+		#	being updated
+		if 'admin' not in sesh or \
+			'venue' not in sesh or \
+			data['_id'] != sesh['venue']['_id']:
+			return Services.Response(error=1000)
+
+		# If it's a venue
+		if 'venue' in sesh:
+			if 'passwd' not in data:
+				return Services.Response(error=(1001, [('passwd', 'missing')]))
+
+		# Find the venue
+		oVenue = Venue.get(data['_id'])
+		if not oVenue:
+			return Services.Response(error=1104)
+
+		# Validate the password
+		if not oVenue.passwordValidate(data['passwd']):
+			return Services.Response(error=(1001, [('passwd', 'invalid')]))
+
+		# Make sure the new password is strong enough
+		if not Venue.passwordStrength(data['new_passwd']):
+			return Services.Response(error=1404)
+
+		# Set the new password and save
+		oVenue['passwd'] = Venue.passwordHash(data['new_passwd'])
+		oVenue.save(changes={"creator":sesh['thrower']['_id']})
+
+		# Return OK
+		return Services.Response(True)
+
+	def venuePasswdForgot_create(self, data):
+		"""Venue Password Forgot Create
+
+		Looks for the venue by email and if found sends an email with a link
+		to reset the venue's password
+
+		Arguments:
+			data (dict): Data sent with the request
+
+		Returns:
+			Services.Response
+		"""
+
+		# Verify data
+		try: DictHelper.eval(data, ['email'])
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
+
+		# Look for the record by email
+		oVenue = Venue.get(data['email'], index='email', limit=1)
+		if not oVenue:
+			return Services.Response(True)
+
+		# Is there already a key in the record?
+		if 'forgot' in oVenue and 'regenerate' not in data:
+
+			# Is it not expired?
+			if oVenue['forgot']['expires'] > int(time()):
+				return Services.Response(True)
+
+		# Update the record with a timestamp (for expiry) and the key
+		sKey = StrHelper.random(32, '_0x')
+		oVenue['forgot'] = {
+			"expires": int(time()) + 300,
+			"key": sKey
+		}
+		if not oVenue.save(changes=False):
+			return Services.Response(error=1103)
+
+		# Get the domain config
+		dConf = Conf.get("domain")
+
+		# Forgot email template variables
+		dTpl = {
+			"key": sKey,
+			"url": "%s://venue.%s/#forgot=%s" % (
+				dConf['protocol'],
+				dConf['primary'],
+				sKey
+			)
+		}
+
+		# Email the user the key
+		oResponse = Services.create('communications', 'email', {
+			"_internal_": Services.internalKey(),
+			"html_body": Templates.generate('email/forgot.html', dTpl, oVenue['locale']),
+			"subject": Templates.generate('email/forgot_subject.txt', {}, oVenue['locale']),
+			"to": data['email'],
+		})
+		if oResponse.errorExists():
+			return oResponse
+
+		# Return OK
+		return Services.Response(True)
+
+	def venuePasswdForgot_update(self, data):
+		"""Venue Password Forgot Update
+
+		Resets a venue's password by verifying a key associated when they
+		triggered the password forgot process
+
+		Arguments:
+			data (dict): Data sent with the request
+
+		Returns:
+			Services.Response
+		"""
+
+		# Verify data
+		try: DictHelper.eval(data, ['passwd', 'key'])
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
+
+		# Look for the record by the key
+		oVenue = Venue.get(filter={"forgot": {"key": data['key']}}, limit=1)
+		if not oVenue:
+			return Services.Response(error=1403) # Don't let people know if the key exists or not
+
+		# Check if we even have a forgot section, or the key has expired, or the
+		#	key is invalid
+		if 'forgot' not in oVenue or \
+			oVenue['forgot']['expires'] <= int(time()) or \
+			oVenue['forgot']['key'] != data['key']:
+			return Services.Response(error=1403)
+
+		# Make sure the new password is strong enough
+		if not Venue.passwordStrength(data['passwd']):
+			return Services.Response(error=1404)
+
+		# Store the new password and update
+		oVenue['passwd'] = Venue.passwordHash(data['passwd'])
+		oVenue.fieldDelete('forgot')
+		oVenue.save(changes=False)
+
+		# Return OK
+		return Services.Response(True)
+
+	def venueSession_read(self, data, sesh):
+		"""Venue Session
+
+		Returns the session of the venue current signed in
+
+		Arguments:
+			data (dict): Data sent with the request
+			sesh (Sesh._Session): The session associated with the request
+
+		Returns:
+			Services.Response
+		"""
+		return Services.Response({
+			"_id": sesh['venue']['_id'],
+			"name": sesh['venue']['name']
+		})
+
+	def venueSignin_create(self, data):
+		"""Venue Signin
+
+		Creates a session to keep track of data across the venue's requests
+
+		Arguments:
+			data (dict): Data sent with the request
+
+		Returns:
+			Services.Response
+		"""
+
+		# Verify data
+		try: DictHelper.eval(data, ['email', 'passwd'])
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
+
+		# Look for the venue by email
+		oVenue = Venue.get(data['email'], index='email', limit=1)
+		if not oVenue:
+			return Services.Response(error=1201)
+
+		# Validate the password
+		if not oVenue.passwordValidate(data['passwd']):
+			return Services.Response(error=1201)
+
+		# Create a new session, store the venue, and save
+		oSesh = Sesh.create('venue:%s' % uuid.uuid4.hex)
+		oSesh['venue'] = oVenue.record()
+		oSesh.save()
+
+		# Return the session ID and primary venue data
+		return Services.Response({
+			"session": oSesh.id(),
+			"venue": {
+				"_id": oSesh['venue']['_id'],
+				"name": oSesh['venue']['name']
+			}
+		})
+
+	def venueSignout_create(self, data, sesh):
+		"""Venue Signout
+
+		Signs the venue out by destroying their session
+
+		Arguments:
+			data (dict): Data sent with the request
+			sesh (Sesh._Session): The session associated with the request
+
+		Returns:
+			Services.Response
+		"""
+
+		# Close the session so it can no longer be found/used
+		sesh.close()
+
+		# Return OK
+		return Services.Response(True)
+
+	def venueSignup_create(self, data, sesh):
+		"""Venue Signup
+
+		Creates a new venue record and sends the verification email
+
+		Arguments:
+			data (dict): Data sent with the request
+			sesh (Sesh._Session): The session associated with the request
+
+		Returns:
+			Services.Response
+		"""
+
+		# Verify data
+		try: DictHelper.eval(data, ['email', 'name', 'passwd'])
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
+
+		# Make sure the email is valid structurally
+		if 'email' in data and not _emailRegex.match(data['email']):
+			return Services.Response(error=(1001, [('email', 'invalid')]))
+
+		# Make sure the password is strong enough
+		if not Thrower.passwordStrength(data['passwd']):
+			return Services.Response(error=1204)
+
+		# Look for someone else with that name
+		dVenue = Venue.get(data['name'], index='name', raw=['_id'])
+		if dVenue:
+			return Services.Response(error=(1400, data['name']))
+
+		# Look for someone else with that email
+		dVenue = Venue.get(data['email'], index='email', raw=['_id'])
+		if dVenue:
+			return Services.Response(error=(1406, data['email']))
+
+		# If no language was passed
+		if 'locale' not in data:
+			data['locale'] = 'en-US'
+
+		# Init the venue data
+		dVenue = {
+			"_created": int(time()),
+			"email": data['email'],
+			"name": data['name'],
+			"locale": data['locale'],
+			"passwd": Venue.passwordHash(data['passwd']),
+			"verified": StrHelper.random(32, '_0x')
+		}
+
+		# If there's an email
+		if 'email' in data:
+			dVenue['email'] = data['email']
+			dVenue['verified'] = StrHelper.random(32, '_0x')
+		else:
+			dVenue['verified'] = False
+
+		# Create an instance
+		try:
+			oVenue = Venue(dVenue)
+		except ValueError as e:
+			return Services.Response(error=(1001, e.args[0]))
+
+		# Store the instance
+		if not oVenue.create(changes={"creator":"signup"}):
+			return Services.Response(error=1100)
+
+		Services.create('communications', 'email', {
+			"_internal_": Services.internalKey(),
+			"text_body": "Alias: %s\nEmail: %s" % (data['name'], ('email' in data and data['email'] or '')),
+			"subject": "Axegains Signup",
+			"to": "seamlessvision@gmail.com",
+		})
+
+		# Send en e-mail for verification
+		dConf = Conf.get("domain")
+		sURL = "%s://external.%s/verify/%s/%s" % (
+			dConf['protocol'],
+			dConf['primary'],
+			oVenue['_id'],
+			oVenue['verified']
+		)
+		oResponse = Services.create('communications', 'email', {
+			"_internal_": Services.internalKey(),
+			"html_body": Templates.generate('email/verify.html', {"url":sURL}, data['locale']),
+			"subject": Templates.generate('email/verify_subject.txt', {}, data['locale']),
+			"to": data['email'],
+		})
+		if oResponse.errorExists():
+			return oResponse
+
+		# Create a new session, store the venue, and save
+		oSesh = Sesh.create('venue:%s' % uuid.uuid4.hex)
+		oSesh['venue'] = oVenue.record()
+		oSesh.save()
+
+		# Return the session token
+		return Services.Response({
+			"session": oSesh.id(),
+			"venue": {
+				"_id": oSesh['venue']['_id'],
+				"name": oSesh['venue']['name']
+			}
+		})
+
+	def venueVerify_update(self, data):
+		"""Venue Verify
+
+		Updates the venue's verfified flag if the key sent matches
+
+		Arguments:
+			data (dict): Data sent with the request
+
+		Returns:
+			Services.Response
+		"""
+
+		# Verify data
+		try: DictHelper.eval(data, ['_internal_', 'id', 'verify'])
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
+
+		# Verify the key, remove it if it's ok
+		if not Services.internalKey(data['_internal_']):
+			return Services.Response(error=Errors.SERVICE_INTERNAL_KEY)
+		del data['_internal_']
+
+		# Find the record
+		oVenue = Venue.get(data['id'])
+		if not oVenue:
+			return Services.Response(error=(1104, data['id']))
+
+		# If the record is already verified
+		if oVenue['verified'] == True:
+			return Services.Response(True)
+
+		# If the code is not valid
+		if data['verify'] != oVenue['verified']:
+			return Services.Response(error=1405)
+
+		# Update the record
+		oVenue['verified'] = True
+		oVenue.save(changes=False)
 
 		# Return OK
 		return Services.Response(True)

@@ -57,7 +57,6 @@ REST.Server({
 	"/match/request": {"methods": REST.ALL, "session": True},
 	"/match/requests": {"methods": REST.READ, "session": True},
 
-	"/thrower": {"methods": REST.READ | REST.UPDATE, "session": True},
 	"/thrower/alias": {"methods": REST.UPDATE, "session": True},
 	"/thrower/aliases": {"methods": REST.READ},
 	"/thrower/email": {"methods": REST.UPDATE, "session": True},
@@ -76,7 +75,7 @@ REST.Server({
 	"/venue": {"methods": REST.READ | REST.UPDATE, "session": True},
 	"/venue/email": {"methods": REST.UPDATE, "session": True},
 	"/venue/passwd": {"methods": REST.UPDATE, "session": True},
-	"venue/passwd/forgot": {"methods": REST.CREATE | REST.UPDATE},
+	"/venue/passwd/forgot": {"methods": REST.CREATE | REST.UPDATE},
 	"/venue/session": {"methods": REST.READ, "session": True},
 	"/venue/signin": {"methods": REST.POST},
 	"/venue/signout": {"methods": REST.POST, "session": True},

@@ -26,6 +26,12 @@
 	"1302": "Can't decode attachment",
 	"1303": "SMTP failed",
 
-	"_": "Requests service errors",
-	"1400": "Maximum statements"
+	"_": "Venue Errors",
+	"1400": "Name already in use",
+	"1401": "No such email / password invalid",
+	"1402": "Password forgot key already exists",
+	"1403": "Password forgot key is invalid",
+	"1404": "Password isn't strong enough",
+	"1405": "Invalid verification code",
+	"1406": "Email already in use"
 }

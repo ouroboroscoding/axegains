@@ -76,8 +76,8 @@ def show500():
 	</body>
 </html>"""
 
-@bottle.route('/verify/<id>/<key>')
-def verify(id, key):
+@bottle.route('/thrower/verify/<id>/<key>')
+def thrower_verify(id, key):
 
 	# Contact the auth service to verify the key
 	oResponse = Services.update('auth', 'thrower/verify', {
@@ -89,7 +89,7 @@ def verify(id, key):
 	# If there's an error
 	if oResponse.errorExists():
 		print(oResponse)
-		emailResponse(oResponse, {"request":"verify", "id": id, "key":key})
+		emailResponse(oResponse, {"request":"thrower_verify", "id": id, "key":key})
 		return show500()
 
 	# Redirect to main site
@@ -98,6 +98,30 @@ def verify(id, key):
 		dConf['protocol'],
 		dConf['primary']
 	))
+
+@bottle.route('/venue/verify/<id>/<key>')
+def venue_verify(id, key):
+
+	# Contact the auth service to verify the key
+	oResponse = Services.update('auth', 'venue/verify', {
+		"_internal_": Services.internalKey(),
+		"id": id,
+		"verify": key
+	})
+
+	# If there's an error
+	if oResponse.errorExists():
+		print(oResponse)
+		emailResponse(oResponse, {"request":"venue_verify", "id": id, "key":key})
+		return show500()
+
+	# Redirect to main site
+	dConf = Conf.get("domain")
+	bottle.redirect("%s://venue.%s/#verified" % (
+		dConf['protocol'],
+		dConf['primary']
+	))
+
 
 # Run the webserver
 bottle.run(

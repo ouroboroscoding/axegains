@@ -82,9 +82,9 @@ class IATF(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['_internal_', 'initiator', 'opponent'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Verify the key, remove it if it's ok
 		if not Services.internalKey(data['_internal_']):
@@ -127,9 +127,9 @@ class IATF(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Get the match
 		dMatch = Match.get(data['id'], raw=['finished', 'initiator', 'opponent'])
@@ -167,9 +167,9 @@ class IATF(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Find the match
 		dMatch = Match.get(data['id'], raw=True)
@@ -204,9 +204,9 @@ class IATF(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['id', 'throw', 'clutch', 'value'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# If the throw is not an int
 		if not isinstance(data['throw'], int):
@@ -285,9 +285,9 @@ class IATF(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['id', 'throw', 'value'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# If the throw is not an int
 		if not isinstance(data['throw'], int):
@@ -360,9 +360,9 @@ class IATF(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Get the match
 		dMatch = Match.get(data['id'], raw=['finished', 'initiator', 'opponent', 'bigaxe'])
@@ -466,9 +466,9 @@ class IATF(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Get the match
 		dMatch = Match.get(data['id'], raw=['finished', 'initiator', 'opponent', 'bigaxe'])
@@ -599,9 +599,9 @@ class IATF(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Get the match
 		dMatch = Match.get(data['id'], raw=['finished', 'initiator', 'opponent', 'games_finished'])
@@ -692,9 +692,9 @@ class IATF(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['id', 'game', 'throw', 'value'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Get the match
 		dMatch = Match.get(data['id'], raw=['finished', 'initiator', 'opponent', 'games_finished'])
@@ -832,9 +832,9 @@ class IATF(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['points'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Make sure the value is a list of data points
 		if not isinstance(data['points'], list):
@@ -967,9 +967,9 @@ class IATF(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Fetch the practice data
 		dPractice = Practice.get(data['id'], raw=['data', 'stats'])
@@ -992,9 +992,9 @@ class IATF(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['title', 'descr', 'throws'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Create the instance
 		try:
@@ -1028,9 +1028,9 @@ class IATF(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['id'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Find the pattern
 		oPattern = PracticePattern.get(data['id'])
@@ -1061,9 +1061,9 @@ class IATF(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['_id'])
-		except ValueError as e: return Services.Response(error=(1001, [(f, "missing") for f in e.args]))
+		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
 		# Find the pattern
 		oPattern = PracticePattern.get(data['_id'])

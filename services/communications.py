@@ -95,7 +95,7 @@ class Service(Services.Service):
 			Services.Response
 		"""
 
-		# Verify fields
+		# Verify data
 		try: DictHelper.eval(data, ['_internal_', 'subject', 'to'])
 		except ValueError as e: return Services.Response(error=(1001, [(f, 'missing') for f in e.args]))
 
