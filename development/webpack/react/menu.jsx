@@ -36,7 +36,7 @@ class Menu extends React.Component {
 			"forgot": false,
 			"modal": false,
 			"open": false,
-			"org": Hash.get('org', props.thrower.org || 'natf'),
+			"org": Hash.get('org', props.thrower.org || 'iatf'),
 			"resend": false,
 			"thrower": props.thrower || false
 		};
@@ -262,23 +262,23 @@ class Menu extends React.Component {
 					}
 					<ul className="one">
 						<li>
-							<span>NATF</span>
+							<span>IATF</span>
 							<ul className="two">
 								<li>
 									<span>Games</span>
 									<ul className="three">
-										<li><a href="#org=natf&page=games&which=atw" onClick={this.close}>Around The World</a></li>
+										<li><a href="#org=iatf&page=games&which=atw" onClick={this.close}>Around The World</a></li>
 									</ul>
 								</li>
-								<li><a href="#org=natf&page=practice" onClick={this.close}>Practice</a></li>
+								<li><a href="#org=iatf&page=practice" onClick={this.close}>Practice</a></li>
 								{self.state.thrower &&
 									<React.Fragment>
-										<li><a href="#org=natf&page=match" onClick={this.close}>Match</a></li>
+										<li><a href="#org=iatf&page=match" onClick={this.close}>Match</a></li>
 										<li>
 											<span>Stats</span>
 											<ul className="three">
-												<li><a href="#org=natf&page=stats&which=practice" onClick={this.close}>Practice</a></li>
-												<li><a href="#org=natf&page=stats&which=match" onClick={this.close}>Match</a></li>
+												<li><a href="#org=iatf&page=stats&which=practice" onClick={this.close}>Practice</a></li>
+												<li><a href="#org=iatf&page=stats&which=match" onClick={this.close}>Match</a></li>
 											</ul>
 										</li>
 									</React.Fragment>

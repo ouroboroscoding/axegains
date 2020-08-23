@@ -12,8 +12,8 @@
 @import 'general';
 @import 'loader';
 
-/* natf */
-@import 'natf';
+/* iatf */
+@import 'iatf';
 
 /* watl */
 @import 'watl';
@@ -22,6 +22,7 @@
 @import 'site';
 
 /* generic components */
+@import 'generic/inputMax';
 @import 'generic/messages';
 @import 'generic/modal';
 @import 'generic/popups';

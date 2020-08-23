@@ -1,7 +1,7 @@
 /**
- * NATF Games: Around The World
+ * IATF Games: Around The World
  *
- * NATF's Around The World Game
+ * IATF's Around The World Game
  *
  * @author Chris Nasr
  * @copyright OuroborosCoding
@@ -65,8 +65,8 @@ class ATW extends React.Component {
 	componentWillMount() {
 
 		// If we have data in local storage
-		if('natf_atw' in localStorage) {
-			var new_state = JSON.parse(localStorage['natf_atw']);
+		if('iatf_atw' in localStorage) {
+			var new_state = JSON.parse(localStorage['iatf_atw']);
 			this.setState(new_state, function() {
 
 				// Get the last value that's not a 0
@@ -80,7 +80,7 @@ class ATW extends React.Component {
 				// Or else reset the ATW
 				this.refs.board.atw(1);
 			});
-			delete localStorage['natf_atw'];
+			delete localStorage['iatf_atw'];
 		}
 	}
 
@@ -88,7 +88,7 @@ class ATW extends React.Component {
 
 		// If we have throws, store them in local storage
 		if(this.state.throws.length) {
-			localStorage['natf_atw'] = JSON.stringify(this.state);
+			localStorage['iatf_atw'] = JSON.stringify(this.state);
 		}
 	}
 

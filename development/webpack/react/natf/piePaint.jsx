@@ -1,5 +1,5 @@
 /**
- * NATF Pie: Paint
+ * IATF Pie: Paint
  *
  * Shows the pie chart for big axe throws in the paint
  *

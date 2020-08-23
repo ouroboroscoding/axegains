@@ -1,6 +1,6 @@
 {
   "name": "axegains",
-  "version": "1.9.1",
+  "version": "1.10.0",
   "description": "Scoring site for axe throwing",
   "main": " ",
   "scripts": {
@@ -16,7 +16,7 @@
   "keywords": [
     "axe",
     "throwing",
-    "natf",
+    "iatf",
     "watl",
     "axethrowing"
   ],

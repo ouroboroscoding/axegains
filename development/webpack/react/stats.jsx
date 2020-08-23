@@ -12,7 +12,7 @@
 var Hash = require('../generic/hash.js');
 
 // Site components
-var Natf = require('./natf/stats.jsx');
+var Natf = require('./iatf/stats.jsx');
 var Watl = require('./watl/stats.jsx');
 
 // Stats component
@@ -25,7 +25,7 @@ class Stats extends React.Component {
 
 		// Initialise the state
 		this.state = {
-			"org": Hash.get('org', this.props.thrower.org || 'natf')
+			"org": Hash.get('org', this.props.thrower.org || 'iatf')
 		};
 
 		// Bind methods
@@ -51,7 +51,7 @@ class Stats extends React.Component {
 	orgHash(org) {
 		if(org != this.state.org) {
 			if(org == null) {
-				org = this.props.thrower.org || 'natf';
+				org = this.props.thrower.org || 'iatf';
 			}
 			this.setState({"org": org});
 		}
@@ -61,7 +61,7 @@ class Stats extends React.Component {
 		return (
 			<div id="stats">
 				<div>
-					{this.state.org == 'natf' &&
+					{this.state.org == 'iatf' &&
 						<Natf thrower={this.props.thrower} />
 					}
 					{this.state.org == 'watl' &&

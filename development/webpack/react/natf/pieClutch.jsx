@@ -1,5 +1,5 @@
 /**
- * NATF Pie: Clutch
+ * IATF Pie: Clutch
  *
  * Shows the pie chart for clutch throws
  *

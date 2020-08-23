@@ -1,7 +1,7 @@
 /**
- * NATF Stats
+ * IATF Stats
  *
- * Fetchs and displays NATF stats for practice and matches
+ * Fetchs and displays IATF stats for practice and matches
  *
  * @author Chris Nasr
  * @copyright OuroborosCoding
@@ -48,7 +48,7 @@ class Stats extends React.Component {
 	render() {
 		var self = this;
 		return (
-			<div className="natf">
+			<div className="iatf">
 				{self.state.which == 'practice' &&
 					<Practice thrower={self.props.thrower} />
 				}

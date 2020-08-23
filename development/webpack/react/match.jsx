@@ -12,7 +12,7 @@
 var Hash = require('../generic/hash.js');
 
 // Site components
-var Natf = require('./natf/match.jsx');
+var Natf = require('./iatf/match.jsx');
 var Watl = require('./watl/match.jsx');
 
 // Match component
@@ -25,7 +25,7 @@ class Match extends React.Component {
 
 		// Initialise the state
 		this.state = {
-			"org": Hash.get('org', this.props.thrower.org || 'natf')
+			"org": Hash.get('org', this.props.thrower.org || 'iatf')
 		};
 
 		// Bind methods
@@ -47,7 +47,7 @@ class Match extends React.Component {
 	orgHash(org) {
 		if(org != this.state.org) {
 			if(org == null) {
-				org = 'natf';
+				org = 'iatf';
 			}
 			this.setState({"org": org});
 		}
@@ -57,7 +57,7 @@ class Match extends React.Component {
 		return (
 			<div id="match">
 				<div>
-					{this.state.org == 'natf' &&
+					{this.state.org == 'iatf' &&
 						<Natf thrower={this.props.thrower} />
 					}
 					{this.state.org == 'watl' &&

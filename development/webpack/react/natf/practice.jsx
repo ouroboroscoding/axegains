@@ -1,7 +1,7 @@
 /**
- * NATF Practice
+ * IATF Practice
  *
- * Manages tracking and storing practice on an NATF board
+ * Manages tracking and storing practice on an IATF board
  *
  * @author Chris Nasr
  * @copyright OuroborosCoding
@@ -215,11 +215,11 @@ class Practice extends React.Component {
 		Events.add('signout', this.signout);
 
 		// If we have data in local storage
-		if('natf_practice' in localStorage) {
-			var new_state = JSON.parse(localStorage['natf_practice']);
+		if('iatf_practice' in localStorage) {
+			var new_state = JSON.parse(localStorage['iatf_practice']);
 			new_state.thrower = this.state.thrower;
 			this.setState(new_state);
-			delete localStorage['natf_practice'];
+			delete localStorage['iatf_practice'];
 		}
 
 		// If there's a thrower
@@ -238,7 +238,7 @@ class Practice extends React.Component {
 
 		// If we have points, store them in local storage
 		if(this.state.points.length) {
-			localStorage['natf_practice'] = JSON.stringify(this.state);
+			localStorage['iatf_practice'] = JSON.stringify(this.state);
 		}
 	}
 
@@ -334,7 +334,7 @@ class Practice extends React.Component {
 		pattern = this.refs.pattern.pattern;
 
 		// Send the data to the service
-		Services.create('natf', 'practice/pattern', pattern).done(res => {
+		Services.create('iatf', 'practice/pattern', pattern).done(res => {
 
 			// If there's an error
 			if(res.error && !Utils.serviceError(res.error)) {
@@ -378,7 +378,7 @@ class Practice extends React.Component {
 			Loader.show();
 
 			// Delete it
-			Services.delete('natf', 'practice/pattern', {
+			Services.delete('iatf', 'practice/pattern', {
 				"id": id
 			}).done(res => {
 
@@ -429,7 +429,7 @@ class Practice extends React.Component {
 		Loader.show();
 
 		// Fetch the patterns from the service
-		Services.read('natf', 'practice/patterns', {}).done(res => {
+		Services.read('iatf', 'practice/patterns', {}).done(res => {
 
 			// If there's an error
 			if(res.error && !Utils.serviceError(res.error)) {
@@ -466,7 +466,7 @@ class Practice extends React.Component {
 		pattern._id = this.state.pattern._id;
 
 		// Send the data to the service
-		Services.update('natf', 'practice/pattern', pattern).done(res => {
+		Services.update('iatf', 'practice/pattern', pattern).done(res => {
 
 			// If there's an error
 			if(res.error && !Utils.serviceError(res.error)) {
@@ -611,7 +611,7 @@ class Practice extends React.Component {
 		}
 
 		return (
-			<div className="natf">
+			<div className="iatf">
 				{!this.state.mode &&
 					<React.Fragment>
 						{this.state.thrower &&
@@ -746,8 +746,8 @@ class Practice extends React.Component {
 		// Show loader
 		Loader.show();
 
-		// Send the practice to the NATF service
-		Services.create('natf', 'practice', {
+		// Send the practice to the IATF service
+		Services.create('iatf', 'practice', {
 			"points": this.state.points
 		}).done(res => {
 

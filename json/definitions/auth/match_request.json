@@ -13,5 +13,5 @@
 	"_created": "timestamp",
 	"initiator": "uuid",
 	"opponent": "uuid",
-	"org": {"__type__": "string", "__options__": ["NATF", "WATL"]}
+	"org": {"__type__": "string", "__options__": ["IATF", "WATL"]}
 }

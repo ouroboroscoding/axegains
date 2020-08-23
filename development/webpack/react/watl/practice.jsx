@@ -774,7 +774,7 @@ class Practice extends React.Component {
 		// Show loader
 		Loader.show();
 
-		// Send the practice to the NATF service
+		// Send the practice to the IATF service
 		Services.create('watl', 'practice', {
 			"points": this.state.points
 		}).done(res => {

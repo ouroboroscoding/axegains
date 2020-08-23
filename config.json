@@ -48,7 +48,7 @@
 			"auth": {"port":2},
 			"communications": {"port":3},
 			"external": {"port": 4},
-			"natf": {"port": 5},
+			"iatf": {"port": 5},
 			"watl": {"port": 7},
 			"webpoll": {"port": 6}
 		}

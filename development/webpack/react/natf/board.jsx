@@ -1,7 +1,7 @@
 /**
- * NATF Board
+ * IATF Board
  *
- * Manages a standard NATF board
+ * Manages a standard IATF board
  *
  * @author Chris Nasr
  * @copyright OuroborosCoding

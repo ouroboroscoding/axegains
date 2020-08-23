@@ -1,7 +1,7 @@
 /**
- * NATF Match
+ * IATF Match
  *
- * Manages creating and playing a standard NATF match
+ * Manages creating and playing a standard IATF match
  *
  * @author Chris Nasr
  * @copyright OuroborosCoding
@@ -86,7 +86,7 @@ class Match extends React.Component {
 		this.setState({"matchState": ms});
 
 		// Let the service know
-		Services.update('natf', noun, {
+		Services.update('iatf', noun, {
 			"id": this.state.id
 		}).done(res => {
 
@@ -345,7 +345,7 @@ class Match extends React.Component {
 
 			// Stop tracking the match
 			TwoWay.untrack(
-				'natf', 'match-' + this.state.id,
+				'iatf', 'match-' + this.state.id,
 				this.matchCallback
 			)
 		}
@@ -364,7 +364,7 @@ class Match extends React.Component {
 		var id = ev.currentTarget.parentNode.dataset.id;
 
 		// Notify the service the match won't be completed
-		Services.delete('natf', 'match', {
+		Services.delete('iatf', 'match', {
 			"id": id
 		}).done(res => {
 
@@ -408,7 +408,7 @@ class Match extends React.Component {
 
 		// Find out if there's any unfinished games associated with this
 		//	thrower
-		Services.read('natf', 'match/unfinished', {}).done(res => {
+		Services.read('iatf', 'match/unfinished', {}).done(res => {
 
 			// If there's an error
 			if(res.error && !Utils.serviceError(res.error)) {
@@ -485,7 +485,7 @@ class Match extends React.Component {
 			});
 
 			// Notify backend the match is over
-			Services.update('natf', 'match/finish/games', {
+			Services.update('iatf', 'match/finish/games', {
 				"id": this.state.id
 			}).done(res => {
 
@@ -604,12 +604,12 @@ class Match extends React.Component {
 
 				// List for an update on the match
 				TwoWay.track(
-					'natf', 'match-' + id[1],
+					'iatf', 'match-' + id[1],
 					this.matchCallback
 				)
 
 				// Fetch the match
-				Services.read('natf', 'match', {
+				Services.read('iatf', 'match', {
 					"id": id[1]
 				}).done(res => {
 
@@ -959,7 +959,7 @@ class Match extends React.Component {
 			var value = (ms.throw == '5') ? {"clutch": clutch, "value": value} : value;
 
 			// Save the value and notify the opponent
-			Services.update('natf', 'match/game', {
+			Services.update('iatf', 'match/game', {
 				"id": this.state.id,
 				"game": ms.game,
 				"throw": ms.throw,
@@ -1062,7 +1062,7 @@ class Match extends React.Component {
 				}
 
 				// Save the value and notify the opponent
-				Services.update('natf', 'match/bigaxe/target', {
+				Services.update('iatf', 'match/bigaxe/target', {
 					"id": this.state.id,
 					"throw": ms.throw,
 					"value": value
@@ -1144,7 +1144,7 @@ class Match extends React.Component {
 				}
 
 				// Save the value and notify the opponent
-				Services.update('natf', 'match/bigaxe/points', {
+				Services.update('iatf', 'match/bigaxe/points', {
 					"id": this.state.id,
 					"throw": ms.throw,
 					"clutch": clutch,
@@ -1199,7 +1199,7 @@ class Match extends React.Component {
 	render() {
 		var self = this;
 		return (
-			<div className="natf">
+			<div className="iatf">
 				{self.state.mode == 'opponent' &&
 					<Opponent thrower={self.state.thrower} onSelect={self.requestCreate} />
 				}
@@ -1587,7 +1587,7 @@ class Match extends React.Component {
 		// Make a match request for this opponent
 		Services.create('auth', 'match/request', {
 			"opponent": opponent._id,
-			"org": "NATF"
+			"org": "IATF"
 		}).done(res => {
 
 			// If there's an error

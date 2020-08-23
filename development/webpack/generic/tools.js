@@ -72,7 +72,7 @@ var Tools = {
 		if(Array.isArray()) {
 			n = [];
 			for(var i in o) {
-				n.push(Tools.clone(o[k]));
+				n.push(Tools.clone(o[i]));
 			}
 		}
 

@@ -1,7 +1,7 @@
 /**
- * NATF Stats: Practice
+ * IATF Stats: Practice
  *
- * Fetchs and displays NATF stats for practices
+ * Fetchs and displays IATF stats for practices
  *
  * @author Chris Nasr
  * @copyright OuroborosCoding
@@ -168,7 +168,7 @@ class StatsPractice extends React.Component {
 		Loader.show();
 
 		// Fetch the practice stats
-		Services.read('natf', 'practice/stats', {
+		Services.read('iatf', 'practice/stats', {
 			"all": all
 		}).done(res => {
 
@@ -213,7 +213,7 @@ class StatsPractice extends React.Component {
 		Loader.show();
 
 		// Fetch the practice data
-		Services.read('natf', 'practice/data', {
+		Services.read('iatf', 'practice/data', {
 			"id": id
 		}).done(res => {
 

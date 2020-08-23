@@ -1,7 +1,7 @@
 /**
- * NATF Stats: Match
+ * IATF Stats: Match
  *
- * Fetchs and displays NATF stats for matches
+ * Fetchs and displays IATF stats for matches
  *
  * @author Chris Nasr
  * @copyright OuroborosCoding
@@ -68,7 +68,7 @@ class StatsMatch extends React.Component {
 		Loader.show();
 
 		// Fetch the match stats
-		Services.read('natf', 'match/stats', {}).done(res => {
+		Services.read('iatf', 'match/stats', {}).done(res => {
 
 			// If there's an error
 			if(res.error && !Utils.serviceError(res.error)) {

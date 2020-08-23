@@ -24,5 +24,8 @@
 	"1300": "Missing Message Body",
 	"1301": "Invalid attachments data",
 	"1302": "Can't decode attachment",
-	"1303": "SMTP failed"
+	"1303": "SMTP failed",
+
+	"_": "Requests service errors",
+	"1400": "Maximum statements"
 }

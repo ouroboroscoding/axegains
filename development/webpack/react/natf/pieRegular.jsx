@@ -1,5 +1,5 @@
 /**
- * NATF Pie: Regular
+ * IATF Pie: Regular
  *
  * Shows the pie chart for regular (target) throws
  *

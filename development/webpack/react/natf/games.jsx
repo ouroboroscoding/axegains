@@ -1,7 +1,7 @@
 /**
- * NATF Games
+ * IATF Games
  *
- * Fetchs and displays NATF games
+ * Fetchs and displays IATF games
  *
  * @author Chris Nasr
  * @copyright OuroborosCoding
@@ -49,7 +49,7 @@ class Games extends React.Component {
 		return (
 			<React.Fragment>
 				<div id="content">
-					<div className="natf">
+					<div className="iatf">
 						{self.state.which == 'atw' &&
 							<ATW thrower={self.props.thrower} />
 						}

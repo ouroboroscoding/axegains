@@ -1,0 +1,58 @@
+{
+	"__rethinkdb__": {
+		"auto_primary": false,
+		"db": "axegains",
+		"host": "primary",
+		"indexes": {},
+		"primary": "_thrower",
+		"table": "iatf_match_stats"
+	},
+	"__name__": "IATF_Match_Stats",
+	"_thrower": {"__type__":"uuid"},
+	"matches": "uint",
+	"points": "uint",
+	"wins": "uint",
+	"losses": "uint",
+	"eightyones": "uint",
+	"supernaturals": "uint",
+	"naturals": "uint",
+	"unnaturals": "uint",
+	"clutches": {
+		"attempts": "uint",
+		"drops": "uint",
+		"hits": "uint"
+	},
+	"regular": {
+		"attempts": "uint",
+		"drops": "uint",
+		"fives": "uint",
+		"threes": "uint",
+		"ones": "uint",
+		"zeros": "uint"
+	},
+	"bigaxe": {
+		"matches": "uint",
+		"wins": "uint",
+		"losses": "uint",
+		"paint": {
+			"attempts": "uint",
+			"drops": "uint",
+			"hits": "uint"
+		},
+		"points": {
+			"clutches": {
+				"attempts": "uint",
+				"drops": "uint",
+				"hits": "uint"
+			},
+			"regular": {
+				"attempts": "uint",
+				"drops": "uint",
+				"fives": "uint",
+				"threes": "uint",
+				"ones": "uint",
+				"zeros": "uint"
+			}
+		}
+	}
+}
